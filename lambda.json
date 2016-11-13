@@ -1,0 +1,23 @@
+{
+  "name": "squeezebox",
+  "description": "Squeezebox integration for Alexa",
+  "region": "eu-west-1",
+  "handler": "handler.lambda_handler",
+  "role": "arn:aws:iam::917070425775:role/service-role/squeezebox",
+  "ignore": [
+    ".git",
+    ".idea/",
+    "metadata/",
+    "/.+\\.pyc",
+    "bin/",
+    "lib/",
+    "easy_install.py",
+    "pip/",
+    "pkg_resources/",
+    "wheel/",
+    "setuptools/",
+    "\\.dist-info/"
+  ],
+  "timeout": 7,
+  "memory": 128
+}

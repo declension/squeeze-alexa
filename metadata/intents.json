@@ -1,0 +1,80 @@
+{
+  "intents": [
+    {
+      "intent": "AMAZON.ResumeIntent"
+    },
+    {
+      "intent": "AMAZON.PauseIntent"
+    },
+    {
+      "intent": "AMAZON.NextIntent"
+    },
+    {
+      "intent": "AMAZON.PreviousIntent"
+    },
+    {
+      "intent": "AMAZON.LoopOnIntent"
+    },
+    {
+      "intent": "AMAZON.LoopOffIntent"
+    },
+    {
+      "intent": "AMAZON.ShuffleOnIntent"
+    },
+    {
+      "intent": "AMAZON.ShuffleOffIntent"
+    },
+    {
+      "intent": "IncreaseVolumeIntent",
+      "slots": [
+        {
+          "name": "Player",
+          "type": "PLAYER"
+        }
+      ]
+    },
+    {
+      "intent": "DecreaseVolumeIntent",
+      "slots": [
+        {
+          "name": "Player",
+          "type": "PLAYER"
+        }
+      ]
+    },
+    {
+      "intent": "SetVolumeIntent",
+      "slots": [
+        {
+          "name": "Player",
+          "type": "PLAYER"
+        },
+        {
+          "name": "Volume",
+          "type": "AMAZON.NUMBER"
+        }
+      ]
+    },
+    {
+      "intent": "CurrentlyPlayingIntent",
+      "slots": [
+        {
+          "name": "Player",
+          "type": "PLAYER"
+        }
+      ]
+    },
+    {
+      "intent": "SelectPlayerIntent",
+      "slots": [
+        {
+          "name": "Player",
+          "type": "PLAYER"
+        }
+      ]
+    },
+    {
+      "intent": "AMAZON.HelpIntent"
+    }
+  ]
+}
