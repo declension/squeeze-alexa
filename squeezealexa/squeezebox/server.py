@@ -1,10 +1,9 @@
 from __future__ import print_function
+
 import urllib
 
-import sys
-
 from squeezealexa.settings import CERT_FILE_PATH, SERVER_PORT, CA_FILE_PATH, \
-    SERVER_HOSTNAME
+    SERVER_HOSTNAME, DEFAULT_PLAYER
 from squeezealexa.ssl_wrap import SslCommsMixin
 
 print_d = print_w = print
@@ -77,7 +76,7 @@ class Server(SslCommsMixin):
         if self._debug:
             print_d(">>>> \"%s\"" % line)
         raw_response = self.communicate(line, wait=wait)
-        if not wait:
+        if not wait or not raw_response:
             return
         response = raw_response if raw else urllib.unquote(raw_response)
         if self._debug:
@@ -172,7 +171,10 @@ class Server(SslCommsMixin):
         return float(secs) * 1000.0
 
     def pause(self, player_id=None):
-        self.player_request("pause 1 2", player_id=player_id)
+        self.player_request("pause 1", player_id=player_id)
+
+    def resume(self, player_id=None, fade_in_secs=1):
+        self.player_request("pause 0 %d" % fade_in_secs, player_id=player_id)
 
     def stop(self, player_id=None):
         self.player_request("stop", player_id=player_id)
@@ -183,6 +185,7 @@ class Server(SslCommsMixin):
 
 if __name__ == '__main__':
     server = Server(hostname=SERVER_HOSTNAME, port=SERVER_PORT, debug=True,
+                    cur_player_id=DEFAULT_PLAYER,
                     ca_file=CA_FILE_PATH, cert_file=CERT_FILE_PATH)
     # server.play()
-    server.pause(player_id="40:16:7e:ad:87:07")
+    server.pause()

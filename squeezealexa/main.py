@@ -92,7 +92,7 @@ class SqueezeAlexa(AlexaHandler):
         print_d("Received %s: %s" % (intent_name, intent))
 
         if intent_name == Audio.RESUME:
-            self.get_server().play()
+            self.get_server().resume()
             return build_audio_response("Resumed")
 
         elif intent_name == Audio.PAUSE:
