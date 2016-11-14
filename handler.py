@@ -7,6 +7,8 @@ def lambda_handler(event, context):
     """ Route the incoming request based on type (LaunchRequest, IntentRequest,
     etc.) The JSON body of the request is provided in the event parameter.
     """
+    if 'session' not in event:
+        raise ValueError("Can't process event: " % event)
     session = event['session']
 
     if (APPLICATION_ID and
