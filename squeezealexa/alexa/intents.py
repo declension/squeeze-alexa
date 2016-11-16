@@ -26,3 +26,5 @@ class Custom(object):
     HELP, CANCEL, STOP = ("%sIntent" % s
                           for s in ["Help", "Cancel", "Stop"])
     INC_VOL, DEC_VOL = ("%sVolumeIntent" % s for s in ["Increase", "Decrease"])
+    CURRENT, SELECT_PLAYER = ("%sIntent" % s
+                              for s in ["NowPlaying", "SelectPlayer"])

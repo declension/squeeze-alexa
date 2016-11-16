@@ -57,8 +57,8 @@ class Server(SslCommsMixin):
         self.failures = 0
         self.cur_player_id = cur_player_id
         print_d("Connected to %s! (Player: %s)" % (self, self.cur_player_id))
-        self.players = []
-        self.get_players(refresh=True)
+        self.players = {}
+        self.get_players_full(refresh=True)
 
     def get_library_dir(self):
         return self.config['library_dir']
@@ -88,15 +88,7 @@ class Server(SslCommsMixin):
         """ Returns (and caches) a list of the Squeezebox players available"""
         if self.players and not refresh:
             return self.players
-        pairs = self.__request("players 0 99", True).split(" ")
-
-        def demunge(string):
-            s = urllib.unquote(string)
-            return tuple(s.split(':', 1))
-
-        # Do a meaningful URL-unescaping and tuplification for all values
-        pairs = map(demunge, pairs)
-
+        pairs = self.__pairs_from(self.__request("players 0 99", True))
         # First element is always count
         count = int(pairs.pop(0)[1])
         self.players = []
@@ -113,13 +105,41 @@ class Server(SslCommsMixin):
         assert (count == len(self.players))
         return self.players
 
+    def __pairs_from(self, response):
+        """Split and unescape a response"""
+        def demunge(string):
+            s = urllib.unquote(string)
+            return tuple(s.split(':', 1))
+        return [demunge(s) for s in response.split(' ')]
+
+    def get_players_full(self, refresh=False):
+        """ Returns (and caches) a list of the Squeezebox players available"""
+        if self.players and not refresh:
+            return self.players
+        pairs = self.__pairs_from(self.__request("serverstatus 0 99", True))
+
+        self.players = {}
+        player_id = None
+        for key, val in pairs:
+            if key == "playerid":
+                player_id = val
+                self.players[player_id] = SqueezeboxPlayerSettings()
+            elif player_id:
+                # Don't worry, playerid is *always* the first entry...
+                self.players[player_id][key] = val
+        if self._debug:
+            print_d("Found %d player(s): %s" %
+                    (len(self.players), self.players))
+        assert (int(dict(pairs)['player count']) == len(self.players))
+        return self.players
+
     def player_request(self, line, player_id=None, wait=True):
         if not self.is_connected:
             return
         try:
             player_id = (player_id
                          or self.cur_player_id
-                         or self.players[0]["playerid"])
+                         or list(self.players.values())[0]["playerid"])
             return self.__request("%s %s" % (player_id, line), wait=wait)
         except IndexError:
             return None
@@ -136,6 +156,15 @@ class Server(SslCommsMixin):
         """Returns whether the player is in any sort of non-playing mode"""
         response = self.player_request("mode ?", player_id=player_id)
         return "play" != response
+
+    def get_current(self, player_id=None):
+        return self.player_request("current_title ?\n artist ?\n genre ?", player_id=player_id)
+
+    def get_server_status(self, player_id=None):
+        return self.player_request("serverstatus 0 99", player_id=player_id)
+
+    def get_status(self, player_id=None):
+        return self.player_request("status - 2 tags:", player_id=player_id)
 
     def next(self, player_id=None):
         self.player_request("playlist jump +1", player_id=player_id)
@@ -188,4 +217,7 @@ if __name__ == '__main__':
                     cur_player_id=DEFAULT_PLAYER,
                     ca_file=CA_FILE_PATH, cert_file=CERT_FILE_PATH)
     # server.play()
-    server.pause()
+    #server.pause()
+    server.get_current()
+    server.get_status()
+    server.get_server_status()

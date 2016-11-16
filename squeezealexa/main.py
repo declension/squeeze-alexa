@@ -109,6 +109,12 @@ class SqueezeAlexa(AlexaHandler):
             return build_response(
                 speechlet_fragment("Next", "Yep, pretty lame."))
 
+        elif intent_name == Custom.CURRENT:
+            title = self.get_server().get_current()
+            return build_response(
+                speechlet_fragment("Now playing: \"%s\"" % title,
+                                   "Currently playing \"%s\"" % title))
+
         elif intent_name == Custom.INC_VOL:
             self.get_server().change_volume(+12.5)
             return build_response(

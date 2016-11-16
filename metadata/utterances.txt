@@ -20,12 +20,12 @@ SetVolumeIntent set volume in {Player} to {Volume}
 SetVolumeIntent set volume to {Volume} in {Player}
 SetVolumeIntent set {Player} to {Volume}
 
-CurrentlyPlayingIntent what is playing
-CurrentlyPlayingIntent what's playing
-CurrentlyPlayingIntent what is playing in the {Player}
-CurrentlyPlayingIntent what is playing on the {Player} player
-CurrentlyPlayingIntent what's playing on the {Player} player
-CurrentlyPlayingIntent what are we listening to in the {Player}
+NowPlayingIntent what is playing
+NowPlayingIntent what's playing
+NowPlayingIntent what is playing in the {Player}
+NowPlayingIntent what is playing on the {Player} player
+NowPlayingIntent what's playing on the {Player} player
+NowPlayingIntent what are we listening to in the {Player}
 
 
 SelectPlayerIntent select {Player}

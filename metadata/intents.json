@@ -56,7 +56,7 @@
       ]
     },
     {
-      "intent": "CurrentlyPlayingIntent",
+      "intent": "NowPlayingIntent",
       "slots": [
         {
           "name": "Player",
