@@ -8,7 +8,8 @@ def lambda_handler(event, context):
     etc.) The JSON body of the request is provided in the event parameter.
     """
     if 'session' not in event:
-        raise ValueError("Can't process event: " % event)
+        raise ValueError("Can't process event: %r (context: %r)"
+                         % (event, context))
     session = event['session']
 
     if (APPLICATION_ID and
