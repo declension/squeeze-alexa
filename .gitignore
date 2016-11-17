@@ -71,7 +71,10 @@ ENV/
 # Jetbrains
 .idea/
 *.iml
+
+# Custom
 /bin/
 /include/
 /pip-selfcheck.json
 *.pem
+metadata/audio/
