@@ -7,6 +7,8 @@ from squeezealexa.settings import CERT_FILE_PATH, SERVER_PORT, CA_FILE_PATH, \
 from squeezealexa.ssl_wrap import SslCommsMixin
 
 print_d = print_w = print
+
+
 def _(s):
     return s
 
@@ -48,7 +50,7 @@ class Server(SslCommsMixin):
         self.failures = 0
         self.config = SqueezeboxServerSettings(locals())
         if user:
-            result = self.__request("login %s %s" % (user, password))
+            result = self.__a_request("login %s %s" % (user, password))
             if result != (6 * '*'):
                 raise SqueezeboxException(
                     "Couldn't log in to squeezebox: response was '%s'"
@@ -63,32 +65,49 @@ class Server(SslCommsMixin):
     def get_library_dir(self):
         return self.config['library_dir']
 
-    def __request(self, line, raw=False, wait=True):
-        """
-        Send a request to the server, if connected, and return its response
-        """
-        line = line.strip()
+    def __a_request(self, line, raw=False, wait=True):
+        return self.__request([line], raw=raw, wait=wait)[0]
 
-        if not (self.is_connected or line.split()[0] == 'login'):
-            print_d("Can't do '%s' - not connected" % line.split()[0], self)
+    def __request(self, lines, raw=False, wait=True):
+        """
+        Send multiple pipelined requests to the server, if connected,
+        and return their responses,
+        assuming order is maintained (which seems safe).
+
+        :type lines list[str]
+        :rtype list[str]
+        """
+        if not (lines and len(lines)):
+            return
+        lines = map(str.rstrip, lines)
+
+        first_word = lines[0].split()[0]
+        if not (self.is_connected or first_word == 'login'):
+            print_d("Can't do '%s' - not connected" % first_word, self)
             return
 
         if self._debug:
-            print_d(">>>> \"%s\"" % line)
-        raw_response = self.communicate(line, wait=wait)
+            print_d(">>>> \"%s\"" % "\n".join(lines))
+        raw_response = self.communicate("\n".join(lines) + "\n", wait=wait).rstrip("\n")
         if not wait or not raw_response:
             return
         response = raw_response if raw else urllib.unquote(raw_response)
         if self._debug:
             print_d("<<<< \"%s\"" % (response,))
-        return (response[len(line) - 1:] if line.endswith("?")
-                else response[len(line) + 1:])
+
+        def start_point(text):
+            return len(text) + (-1 if text.endswith('?') else 1)
+
+        if len(lines) != len(response.splitlines()):
+            raise ValueError("%s != %s" % (lines, response))
+        return [resp_line[start_point(line):]
+                for line, resp_line in zip(lines, response.splitlines())]
 
     def get_players(self, refresh=False):
         """ Returns (and caches) a list of the Squeezebox players available"""
         if self.players and not refresh:
             return self.players
-        pairs = self.__pairs_from(self.__request("players 0 99", True))
+        pairs = self.__pairs_from(self.__a_request("players 0 99", True))
         # First element is always count
         count = int(pairs.pop(0)[1])
         self.players = []
@@ -110,13 +129,15 @@ class Server(SslCommsMixin):
         def demunge(string):
             s = urllib.unquote(string)
             return tuple(s.split(':', 1))
-        return [demunge(s) for s in response.split(' ')]
+        return filter(lambda t: len(t) == 2,
+                      map(demunge, response.split(' ')))
 
     def get_players_full(self, refresh=False):
         """ Returns (and caches) a list of the Squeezebox players available"""
         if self.players and not refresh:
             return self.players
-        pairs = self.__pairs_from(self.__request("serverstatus 0 99", True))
+        pairs = self.__pairs_from(
+            self.__a_request("serverstatus 0 99", raw=True))
 
         self.players = {}
         player_id = None
@@ -133,20 +154,17 @@ class Server(SslCommsMixin):
         assert (int(dict(pairs)['player count']) == len(self.players))
         return self.players
 
-    def player_request(self, line, player_id=None, wait=True):
+    def player_request(self, line, player_id=None, raw=False, wait=True):
         if not self.is_connected:
             return
         try:
             player_id = (player_id
                          or self.cur_player_id
                          or list(self.players.values())[0]["playerid"])
-            return self.__request("%s %s" % (player_id, line), wait=wait)
+            return self.__request(["%s %s" % (player_id, line)],
+                                  raw=raw, wait=wait)[0]
         except IndexError:
             return None
-
-    def get_version(self):
-        return (self.__request("version ?") if self.is_connected
-                else "(not connected)")
 
     def play(self, player_id=None):
         """Plays the current song"""
@@ -158,13 +176,20 @@ class Server(SslCommsMixin):
         return "play" != response
 
     def get_current(self, player_id=None):
-        return self.player_request("current_title ?\n artist ?\n genre ?", player_id=player_id)
+        # return self.player_request("current_title ?", player_id=player_id)
+        pairs = self.__pairs_from(self.get_status(player_id))
+        print("Data: %s " % pairs)
+        return pairs
+
+    def get_track_details(self, player_id=None):
+        return (self.__request(["%s %s ?" % (self.cur_player_id, s)
+                for s in ["genre", "artist", "current_title"]]))
 
     def get_server_status(self, player_id=None):
         return self.player_request("serverstatus 0 99", player_id=player_id)
 
     def get_status(self, player_id=None):
-        return self.player_request("status - 2 tags:", player_id=player_id)
+        return self.player_request("status - 2", player_id=player_id, raw=True)
 
     def next(self, player_id=None):
         self.player_request("playlist jump +1", player_id=player_id)
@@ -221,3 +246,4 @@ if __name__ == '__main__':
     server.get_current()
     server.get_status()
     server.get_server_status()
+    print(" >> ".join(server.get_track_details()))

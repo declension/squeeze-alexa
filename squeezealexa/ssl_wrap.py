@@ -33,17 +33,18 @@ class SslCommsMixin(object):
         self._ssl_sock.connect((hostname, port))
         self.is_connected = True
 
-    def communicate(self, line, wait=True):
+    def communicate(self, data, wait=True):
         eof = False
         response = ''
+        num_lines = data.count("\n")
         try:
-            self._ssl_sock.sendall(line + '\n')
+            self._ssl_sock.sendall(data)
             if not wait:
                 return None
             while not eof:
                 response += self._ssl_sock.recv()
-                eof = not response or response[-1] == '\n'
-            return response.rstrip('\r\n')
+                eof = response.count("\n") == num_lines
+            return response
         except socket.error as e:
             print_d("Couldn't communicate with Squeezebox (%s)" % e)
             self.failures += 1
