@@ -17,6 +17,17 @@ class Audio(object):
                                            "ShuffleOn", "ShuffleOff"])
 
 
+class CustomAudio(object):
+    LOOP_ON, LOOP_OFF, SHUFFLE_ON, SHUFFLE_OFF = ("%sIntent" % s for s in
+                                                  ["LoopOn", "LoopOff",
+                                                   "ShuffleOn", "ShuffleOff"])
+
+
+class Power(object):
+    ALL_OFF, ALL_ON = ("%sIntent" % s
+                       for s in ["AllOff", "AllOn"])
+
+
 class General(object):
     HELP, CANCEL, STOP = ("AMAZON.%sIntent" % s
                           for s in ["Help", "Cancel", "Stop"])

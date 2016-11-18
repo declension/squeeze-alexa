@@ -66,9 +66,12 @@ class Server(SslCommsMixin):
         return self.config['library_dir']
 
     def __a_request(self, line, raw=False, wait=True):
-        return self.__request([line], raw=raw, wait=wait)[0]
+        return self._request([line], raw=raw, wait=wait)[0]
 
-    def __request(self, lines, raw=False, wait=True):
+    def _unquote(self, response):
+        return ' '.join(urllib.unquote(s) for s in response.split(' '))
+
+    def _request(self, lines, raw=False, wait=True):
         """
         Send multiple pipelined requests to the server, if connected,
         and return their responses,
@@ -88,15 +91,17 @@ class Server(SslCommsMixin):
 
         if self._debug:
             print_d(">>>> \"%s\"" % "\n".join(lines))
-        raw_response = self.communicate("\n".join(lines) + "\n", wait=wait).rstrip("\n")
+        request = "\n".join(lines) + "\n"
+        raw_response = self.communicate(request, wait=wait).rstrip("\n")
         if not wait or not raw_response:
             return
-        response = raw_response if raw else urllib.unquote(raw_response)
+        response = raw_response if raw else self._unquote(raw_response)
         if self._debug:
             print_d("<<<< \"%s\"" % (response,))
 
         def start_point(text):
-            return len(text) + (-1 if text.endswith('?') else 1)
+            delta = -1 if text.endswith('?') else 1
+            return len(self._unquote(text) if raw else text) + delta
 
         if len(lines) != len(response.splitlines()):
             raise ValueError("%s != %s" % (lines, response))
@@ -161,8 +166,8 @@ class Server(SslCommsMixin):
             player_id = (player_id
                          or self.cur_player_id
                          or list(self.players.values())[0]["playerid"])
-            return self.__request(["%s %s" % (player_id, line)],
-                                  raw=raw, wait=wait)[0]
+            return self._request(["%s %s" % (player_id, line)],
+                                 raw=raw, wait=wait)[0]
         except IndexError:
             return None
 
@@ -177,19 +182,22 @@ class Server(SslCommsMixin):
 
     def get_current(self, player_id=None):
         # return self.player_request("current_title ?", player_id=player_id)
-        pairs = self.__pairs_from(self.get_status(player_id))
-        print("Data: %s " % pairs)
-        return pairs
+        return self.get_status(player_id)
 
     def get_track_details(self, player_id=None):
-        return (self.__request(["%s %s ?" % (self.cur_player_id, s)
-                for s in ["genre", "artist", "current_title"]]))
+        keys = ["genre", "artist", "current_title"]
+        pid = player_id or self.cur_player_id
+        responses = self._request(["%s %s ?" % (pid, s)
+                                   for s in keys])
+        return dict(zip(keys, responses))
 
     def get_server_status(self, player_id=None):
         return self.player_request("serverstatus 0 99", player_id=player_id)
 
     def get_status(self, player_id=None):
-        return self.player_request("status - 2", player_id=player_id, raw=True)
+        response = self.player_request("status - 2", player_id=player_id,
+                                       raw=True)
+        return self.__pairs_from(response)
 
     def next(self, player_id=None):
         self.player_request("playlist jump +1", player_id=player_id)
@@ -233,6 +241,17 @@ class Server(SslCommsMixin):
     def stop(self, player_id=None):
         self.player_request("stop", player_id=player_id)
 
+    def set_shuffle(self, on=True, player_id=None):
+        self.player_request("playlist shuffle %d" % int(bool(on) * 2),
+                            player_id=player_id)
+
+    def set_repeat(self, on=True, player_id=None):
+        self.player_request("playlist repeat %d" % int(bool(on)),
+                            player_id=player_id)
+
+    def set_power(self, on=True, player_id=None):
+        self.player_request("power %d" % int(bool(on)), player_id=player_id)
+
     def __str__(self):
         return str(self.config)
 
@@ -241,9 +260,9 @@ if __name__ == '__main__':
     server = Server(hostname=SERVER_HOSTNAME, port=SERVER_PORT, debug=True,
                     cur_player_id=DEFAULT_PLAYER,
                     ca_file=CA_FILE_PATH, cert_file=CERT_FILE_PATH)
-    # server.play()
-    #server.pause()
-    server.get_current()
-    server.get_status()
+    print(server.get_current())
+    print(server.get_status())
     server.get_server_status()
-    print(" >> ".join(server.get_track_details()))
+    print(" >> ".join(server.get_track_details().values()))
+    server.set_repeat(False)
+    server.set_shuffle(True)

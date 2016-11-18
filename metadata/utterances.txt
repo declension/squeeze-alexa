@@ -31,3 +31,28 @@ NowPlayingIntent what are we listening to in the {Player}
 SelectPlayerIntent select {Player}
 SelectPlayerIntent choose {Player}
 SelectPlayerIntent select player {Player}
+
+ShuffleOnIntent shuffle on
+ShuffleOnIntent turn shuffle on
+ShuffleOnIntent turn random on
+ShuffleOnIntent turn random on
+ShuffleOffIntent shuffle off
+ShuffleOffIntent turn shuffle off
+ShuffleOffIntent turn random off
+
+LoopOnIntent loop on
+LoopOnIntent repeat on
+LoopOnIntent turn repeat on
+LoopOnIntent turn loop on
+LoopOffIntent loop off
+LoopOffIntent turn loop off
+LoopOffIntent repeat off
+LoopOffIntent turn loop off
+
+AllOffIntent shut down
+AllOffIntent turn everything off
+AllOffIntent turn players off
+
+AllOnIntent turn
+AllOnIntent turn everything on
+AllOnIntent turn players on

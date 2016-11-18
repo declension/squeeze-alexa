@@ -74,6 +74,24 @@
       ]
     },
     {
+      "intent": "ShuffleOnIntent"
+    },
+    {
+      "intent": "ShuffleOffIntent"
+    },
+    {
+      "intent": "LoopOnIntent"
+    },
+    {
+      "intent": "LoopOffIntent"
+    },
+    {
+      "intent": "AllOffIntent"
+    },
+    {
+      "intent": "AllOnIntent"
+    },
+    {
       "intent": "AMAZON.HelpIntent"
     }
   ]

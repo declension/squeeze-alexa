@@ -16,7 +16,7 @@ http://amzn.to/1LGWsLG
 
 from __future__ import print_function
 
-from squeezealexa.alexa.intents import Audio, General, Custom
+from squeezealexa.alexa.intents import Audio, General, Custom, Power
 from squeezealexa.alexa.response \
     import speechlet_fragment, build_response, build_audio_response
 from squeezealexa.settings import *
@@ -110,10 +110,12 @@ class SqueezeAlexa(AlexaHandler):
                 speechlet_fragment("Next", "Yep, pretty lame."))
 
         elif intent_name == Custom.CURRENT:
-            title = self.get_server().get_current()
-            return build_response(
-                speechlet_fragment("Now playing: \"%s\"" % title,
-                                   "Currently playing \"%s\"" % title))
+            details = self.get_server().get_track_details()
+            title = details['current_title']
+            artist = details['artist']
+            desc = "Currently playing \"%s\" by %s" % (title, artist)
+            heading = "Now playing: \"%s\"" % title
+            return build_response(speechlet_fragment(heading, desc))
 
         elif intent_name == Custom.INC_VOL:
             self.get_server().change_volume(+12.5)
@@ -124,6 +126,32 @@ class SqueezeAlexa(AlexaHandler):
             self.get_server().change_volume(-12.5)
             return build_response(
                 speechlet_fragment("Decrease Volume", "OK, it's quieter now."))
+
+        elif intent_name == Audio.SHUFFLE_ON:
+            self.get_server().set_shuffle(True)
+            return build_audio_response("Shuffle on")
+
+        elif intent_name == Audio.SHUFFLE_OFF:
+            self.get_server().set_shuffle(False)
+            return build_audio_response("Shuffle off")
+
+        elif intent_name == Audio.LOOP_ON:
+            self.get_server().set_repeat(True)
+            return build_audio_response("Repeat on")
+
+        elif intent_name == Audio.LOOP_OFF:
+            self.get_server().set_repeat(False)
+            return build_audio_response("Repeat off")
+
+        elif intent_name == Power.ALL_OFF:
+            self.get_server().set_power(False)
+            return build_response(
+                speechlet_fragment("Players all off", "Silence."))
+
+        elif intent_name == Power.ALL_ON:
+            self.get_server().set_power(True)
+            return build_response(
+                speechlet_fragment("Players all on", "Ready."))
 
         elif intent_name == General.HELP:
             return self.get_welcome_response()
