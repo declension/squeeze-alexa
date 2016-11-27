@@ -28,6 +28,12 @@ class SqueezeboxServerSettings(dict):
 
 class SqueezeboxPlayerSettings(dict):
     """Encapsulates player settings"""
+
+    def __init__(self, player_id=None):
+        super(SqueezeboxPlayerSettings, self).__init__()
+        if player_id:
+            self['playerid'] = player_id
+
     def __str__(self):
         try:
             return "{name} [{playerid}]".format(**self)
@@ -149,7 +155,7 @@ class Server(SslCommsMixin):
         for key, val in pairs:
             if key == "playerid":
                 player_id = val
-                self.players[player_id] = SqueezeboxPlayerSettings()
+                self.players[player_id] = SqueezeboxPlayerSettings(player_id)
             elif player_id:
                 # Don't worry, playerid is *always* the first entry...
                 self.players[player_id][key] = val
