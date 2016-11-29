@@ -6,7 +6,7 @@
 # published by the Free Software Foundation
 
 def speechlet_fragment(title, text, reprompt_text=None,
-                       should_end_session=True):
+                       end=False):
     output = {
         'outputSpeech': {
             'type': 'PlainText',
@@ -17,7 +17,7 @@ def speechlet_fragment(title, text, reprompt_text=None,
             'title': title,
             'content': text
         },
-        'shouldEndSession': should_end_session
+        'shouldEndSession': end
     }
     if reprompt_text:
         output['reprompt'] = {
@@ -49,9 +49,9 @@ def build_audio_response(text):
     return build_response(output)
 
 
-def build_response(speechlet_response, session_attributes=None):
+def build_response(speechlet_response, store=None):
     return {
         'version': '1.0',
-        'sessionAttributes': session_attributes or {},
+        'sessionAttributes': store or {},
         'response': speechlet_response
     }

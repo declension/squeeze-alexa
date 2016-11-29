@@ -8,6 +8,8 @@
 
 from __future__ import print_function
 
+from fuzzywuzzy import process
+
 from squeezealexa.alexa.handlers import AlexaHandler
 from squeezealexa.alexa.intents import Audio, General, Custom, Power, \
     CustomAudio
@@ -25,7 +27,7 @@ class SqueezeAlexa(AlexaHandler):
     :type Server"""
 
     def on_session_started(self, request, session):
-        print_d("Starting new session sessionId=%s for requestId=%s" %
+        print_d("Starting new session %s for request %s" %
                 (session['sessionId'], request['requestId']))
 
     def on_launch(self, launch_request, session):
@@ -50,6 +52,7 @@ class SqueezeAlexa(AlexaHandler):
                                  debug=True,
                                  ca_file=CA_FILE_PATH,
                                  cert_file=CERT_FILE_PATH)
+            print_d("Created %r" % cls._server)
         else:
             print_d("Reusing cached %r" % cls._server)
         return cls._server
@@ -58,7 +61,7 @@ class SqueezeAlexa(AlexaHandler):
 
         intent = intent_request['intent']
         intent_name = intent['name']
-        print_d("Received %s: %s" % (intent_name, intent))
+        print_d("Received %s: %s (%s)" % (intent_name, intent, session))
 
         if intent_name == Audio.RESUME:
             self.get_server().resume()
@@ -95,6 +98,27 @@ class SqueezeAlexa(AlexaHandler):
             self.get_server().change_volume(-12.5)
             return build_response(
                 speechlet_fragment("Decrease Volume", "OK, it's quieter now."))
+
+        elif intent_name == Custom.SELECT_PLAYER:
+            player_name = intent['slots']['Player']['value']
+            srv = self.get_server()
+            by_name = {s.get("name"): s for s in srv.players.values()}
+            result = process.extractOne(player_name, by_name.keys())
+            print_d("Seems like %s is the best for '%s' from %s"
+                    % (result, player_name, by_name.keys()))
+            if result:
+                best = by_name.get(result[0])
+                srv.cur_player_id = best['playerid']
+                return build_response(
+                    speechlet_fragment("Selected player %s" % best,
+                                       "Selected %s" % best["name"]),
+                    store={"player_id": srv.cur_player_id})
+            else:
+                speech = ("I don't know that one. "
+                          "Try these players: %s" % by_name.keys())
+                return build_response(
+                    speechlet_fragment("Couldn't find \"%s\"" % player_name,
+                                       speech))
 
         elif intent_name in [Audio.SHUFFLE_ON, CustomAudio.SHUFFLE_ON]:
             self.get_server().set_shuffle(True)
@@ -139,4 +163,4 @@ class SqueezeAlexa(AlexaHandler):
         # add cleanup logic here
         speech_output = "Thank you for trying the Squeezebox Skill"
         return build_response(speechlet_fragment(
-            "Session Ended", speech_output, should_end_session=True))
+            "Session Ended", speech_output, end=True))
