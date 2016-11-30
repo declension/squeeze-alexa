@@ -101,7 +101,7 @@ class SqueezeAlexa(AlexaHandler):
             srv = self.get_server()
             srv.refresh_status()
 
-            player = self.player_for(intent)
+            player = self.player_from(intent, defaulting=False)
             if player:
                 srv.cur_player_id = player.id
                 return speech_response(
@@ -136,6 +136,16 @@ class SqueezeAlexa(AlexaHandler):
             self.get_server().set_repeat(False)
             return audio_response("Repeat off")
 
+        elif intent_name == Power.PLAYER_OFF:
+            player = self.player_from(intent)
+            self.get_server().set_power(on=False, player_id=player.playerid)
+            return speech_response("Switched %s off" % player)
+
+        elif intent_name == Power.PLAYER_ON:
+            player = self.player_from(intent)
+            self.get_server().set_power(on=True, player_id=player.playerid)
+            return speech_response("Switched %s on" % player)
+
         elif intent_name == Power.ALL_OFF:
             self.get_server().set_all_power(on=False)
             return speech_response("Players all off", "Silence.")
@@ -155,16 +165,20 @@ class SqueezeAlexa(AlexaHandler):
                 "Confused",
                 "Sorry, I don't know how to process \"%s\"" % intent_name)
 
-    def player_for(self, intent):
+    def player_from(self, intent, defaulting=True):
         srv = self.get_server()
-        player_name = intent['slots']['Player']['value']
-        by_name = {s.name: s for s in srv.players.values()}
-        result = process.extractOne(player_name, by_name.keys())
-        print_d("%s was the best guess for '%s' from %s"
-                % (result, player_name, by_name.keys()))
-        if result and int(result[1]) >= MIN_CONFIDENCE:
-            return by_name.get(result[0])
-        return None
+        try:
+            player_name = intent['slots']['Player']['value']
+        except KeyError:
+            pass
+        else:
+            by_name = {s.name: s for s in srv.players.values()}
+            result = process.extractOne(player_name, by_name.keys())
+            print_d("%s was the best guess for '%s' from %s"
+                    % (result, player_name, by_name.keys()))
+            if result and int(result[1]) >= MIN_CONFIDENCE:
+                return by_name.get(result[0])
+        return srv.players[srv.cur_player_id] if defaulting else None
 
     def on_session_ended(self, session_ended_request, session):
         print_d("on_session_ended requestId=%s, sessionId=%s" %

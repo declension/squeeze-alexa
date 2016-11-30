@@ -74,6 +74,24 @@
       ]
     },
     {
+      "intent": "TurnOnPlayerIntent",
+      "slots": [
+        {
+          "name": "Player",
+          "type": "PLAYER"
+        }
+      ]
+    },
+    {
+      "intent": "TurnOffPlayerIntent",
+      "slots": [
+        {
+          "name": "Player",
+          "type": "PLAYER"
+        }
+      ]
+    },
+    {
       "intent": "ShuffleOnIntent"
     },
     {

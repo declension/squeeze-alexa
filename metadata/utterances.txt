@@ -45,19 +45,33 @@ ShuffleOffIntent turn random off
 
 LoopOnIntent looping on
 LoopOnIntent turn looping on
-LoopOnIntent turn loop on
 LoopOnIntent repeat on
 LoopOnIntent turn repeat on
 
 LoopOffIntent looping off
 LoopOffIntent turn looping off
-LoopOffIntent turn loop off
 LoopOffIntent repeat off
 LoopOffIntent turn repeat off
 
+TurnOffPlayerIntent turn {Player} off
+TurnOffPlayerIntent turn off {Player}
+TurnOffPlayerIntent turn {Player} player off
+TurnOffPlayerIntent switch {Player} off
+TurnOffPlayerIntent switch off {Player}
+TurnOffPlayerIntent switch {Player} player off
+
+
+TurnOnPlayerIntent turn {Player} on
+TurnOnPlayerIntent turn on {Player}
+TurnOnPlayerIntent turn {Player} player on
+TurnOnPlayerIntent switch {Player} on
+TurnOnPlayerIntent switch on {Player}
+TurnOnPlayerIntent switch {Player} player on
+
+
 AllOffIntent shut down
 AllOffIntent turn everything off
-AllOffIntent turn players off
+AllOffIntent turn all players off
 
 AllOnIntent turn everything on
-AllOnIntent turn players on
+AllOnIntent turn all players on
