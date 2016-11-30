@@ -5,8 +5,9 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
-def speechlet_fragment(title, text, reprompt_text=None,
-                       end=False):
+
+def speech_fragment(title, text, reprompt_text=None,
+                    end=False):
     output = {
         'outputSpeech': {
             'type': 'PlainText',

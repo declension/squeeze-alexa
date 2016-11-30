@@ -14,7 +14,7 @@ from squeezealexa.alexa.handlers import AlexaHandler
 from squeezealexa.alexa.intents import Audio, General, Custom, Power, \
     CustomAudio
 from squeezealexa.alexa.response \
-    import speechlet_fragment, build_response, build_audio_response
+    import speech_fragment, build_response, build_audio_response
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server
 
@@ -37,7 +37,7 @@ class SqueezeAlexa(AlexaHandler):
         speech_output = "Squeezebox is online. Please try some commands."
         reprompt_text = "Try resume, pause, next, previous " \
                         "or ask Squeezebox to turn it up or down"
-        return build_response(speechlet_fragment(
+        return build_response(speech_fragment(
             "Welcome", speech_output, reprompt_text))
 
     @classmethod
@@ -74,12 +74,12 @@ class SqueezeAlexa(AlexaHandler):
         elif intent_name == Audio.PREVIOUS:
             self.get_server().previous()
             return build_response(
-                speechlet_fragment("Previous", "Rewind! Selectah!"))
+                speech_fragment("Previous", "Rewind! Selectah!"))
 
         elif intent_name == Audio.NEXT:
             self.get_server().next()
             return build_response(
-                speechlet_fragment("Next", "Yep, pretty lame."))
+                speech_fragment("Next", "Yep, pretty lame."))
 
         elif intent_name == Custom.CURRENT:
             details = self.get_server().get_track_details()
@@ -87,17 +87,17 @@ class SqueezeAlexa(AlexaHandler):
             artist = details['artist']
             desc = "Currently playing: \"%s\", by %s" % (title, artist)
             heading = "Now playing: \"%s\"" % title
-            return build_response(speechlet_fragment(heading, desc))
+            return build_response(speech_fragment(heading, desc))
 
         elif intent_name == Custom.INC_VOL:
             self.get_server().change_volume(+12.5)
             return build_response(
-                speechlet_fragment("Increase Volume", "Pumped it up."))
+                speech_fragment("Increase Volume", "Pumped it up."))
 
         elif intent_name == Custom.DEC_VOL:
             self.get_server().change_volume(-12.5)
             return build_response(
-                speechlet_fragment("Decrease Volume", "OK, it's quieter now."))
+                speech_fragment("Decrease Volume", "OK, it's quieter now."))
 
         elif intent_name == Custom.SELECT_PLAYER:
             player_name = intent['slots']['Player']['value']
@@ -110,15 +110,15 @@ class SqueezeAlexa(AlexaHandler):
                 best = by_name.get(result[0])
                 srv.cur_player_id = best['playerid']
                 return build_response(
-                    speechlet_fragment("Selected player %s" % best,
-                                       "Selected %s" % best["name"]),
+                    speech_fragment("Selected player %s" % best,
+                                    "Selected %s" % best["name"]),
                     store={"player_id": srv.cur_player_id})
             else:
                 speech = ("I don't know that one. "
                           "Try these players: %s" % by_name.keys())
                 return build_response(
-                    speechlet_fragment("Couldn't find \"%s\"" % player_name,
-                                       speech))
+                    speech_fragment("Couldn't find \"%s\"" % player_name,
+                                    speech))
 
         elif intent_name in [Audio.SHUFFLE_ON, CustomAudio.SHUFFLE_ON]:
             self.get_server().set_shuffle(True)
@@ -139,12 +139,12 @@ class SqueezeAlexa(AlexaHandler):
         elif intent_name == Power.ALL_OFF:
             self.get_server().set_power(False)
             return build_response(
-                speechlet_fragment("Players all off", "Silence."))
+                speech_fragment("Players all off", "Silence."))
 
         elif intent_name == Power.ALL_ON:
             self.get_server().set_power(True)
             return build_response(
-                speechlet_fragment("Players all on", "Ready."))
+                speech_fragment("Players all on", "Ready."))
 
         elif intent_name == General.HELP:
             return self.on_launch(intent_request, session)
@@ -153,7 +153,7 @@ class SqueezeAlexa(AlexaHandler):
             return self.on_session_ended(intent_request, session)
 
         else:
-            return build_response(speechlet_fragment(
+            return build_response(speech_fragment(
                 "Confused",
                 "Sorry, I don't know how to process \"%s\"" % intent_name))
 
@@ -162,5 +162,5 @@ class SqueezeAlexa(AlexaHandler):
                 (session_ended_request['requestId'], session['sessionId']))
         # add cleanup logic here
         speech_output = "Thank you for trying the Squeezebox Skill"
-        return build_response(speechlet_fragment(
+        return build_response(speech_fragment(
             "Session Ended", speech_output, end=True))
