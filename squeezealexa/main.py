@@ -118,7 +118,7 @@ class SqueezeAlexa(AlexaHandler):
                     speech_fragment("Selected player %s" % best, text),
                     store={"player_id": srv.cur_player_id})
             else:
-                speech = ("I only found these players: %s."
+                speech = ("I only found these players: %s. "
                           "Could you try again?"
                           % by_name.keys())
                 reprompt = ("You can select a player by saying "

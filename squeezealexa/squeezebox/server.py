@@ -36,7 +36,8 @@ class SqueezeboxPlayerSettings(dict):
 
     def __str__(self):
         try:
-            return "{name} [{playerid}]".format(**self)
+            return "{name} [{short}]".format(short=self['playerid'][-5:],
+                                             **self)
         except KeyError:
             return _("unidentified Squeezebox player: %r" % self)
 
