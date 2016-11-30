@@ -66,7 +66,7 @@ class Server(SslCommsMixin):
         self.cur_player_id = cur_player_id
         print_d("Connected to %s! (Player: %s)" % (self, self.cur_player_id))
         self.players = {}
-        self.get_players_full(refresh=True)
+        self.refresh_status()
 
     def get_library_dir(self):
         return self.config['library_dir']
@@ -114,27 +114,6 @@ class Server(SslCommsMixin):
         return [resp_line[start_point(line):]
                 for line, resp_line in zip(lines, response.splitlines())]
 
-    def get_players(self, refresh=False):
-        """ Returns (and caches) a list of the Squeezebox players available"""
-        if self.players and not refresh:
-            return self.players
-        pairs = self.__pairs_from(self.__a_request("players 0 99", True))
-        # First element is always count
-        count = int(pairs.pop(0)[1])
-        self.players = []
-        for key, val in pairs:
-            if key == "playerindex":
-                player_index = int(val)
-                self.players.append(SqueezeboxPlayerSettings())
-            else:
-                # Don't worry, playerindex is *always* the first entry...
-                self.players[player_index][key] = val
-        if self._debug:
-            print_d("Found %d player(s): %s" %
-                    (len(self.players), self.players))
-        assert (count == len(self.players))
-        return self.players
-
     def __pairs_from(self, response):
         """Split and unescape a response"""
         def demunge(string):
@@ -143,13 +122,12 @@ class Server(SslCommsMixin):
         return filter(lambda t: len(t) == 2,
                       map(demunge, response.split(' ')))
 
-    def get_players_full(self, refresh=False):
-        """ Returns (and caches) a list of the Squeezebox players available"""
-        if self.players and not refresh:
-            return self.players
+    def refresh_status(self):
+        """ Updates the list of the Squeezebox players available and other
+        server metadata."""
+        print_d("Refreshing server and player statuses...")
         pairs = self.__pairs_from(
             self.__a_request("serverstatus 0 99", raw=True))
-
         self.players = {}
         player_id = None
         for key, val in pairs:
@@ -163,7 +141,6 @@ class Server(SslCommsMixin):
             print_d("Found %d player(s): %s" %
                     (len(self.players), self.players))
         assert (int(dict(pairs)['player count']) == len(self.players))
-        return self.players
 
     def player_request(self, line, player_id=None, raw=False, wait=True):
         if not self.is_connected:
