@@ -61,7 +61,7 @@ class SqueezeAlexa(AlexaHandler):
 
         intent = intent_request['intent']
         intent_name = intent['name']
-        print_d("Received %s: %s (%s)" % (intent_name, intent, session))
+        print_d("Received %s: %s" % (intent_name, intent))
 
         if intent_name == Audio.RESUME:
             self.get_server().resume()
@@ -102,6 +102,7 @@ class SqueezeAlexa(AlexaHandler):
         elif intent_name == Custom.SELECT_PLAYER:
             player_name = intent['slots']['Player']['value']
             srv = self.get_server()
+            srv.refresh_status()
             by_name = {s.get("name"): s for s in srv.players.values()}
             result = process.extractOne(player_name, by_name.keys())
             print_d("Seems like %s is the best for '%s' from %s"
