@@ -11,7 +11,7 @@ def lambda_handler(event, context):
     request = event['request']
     req_type = request['type']
     if req_type.startswith('AudioPlayer'):
-        print("Ignoring audio callback: %s" % request)
+        print("Ignoring %s callback" % (request['type'],))
         return
 
     session = _verified_app_session(event)
