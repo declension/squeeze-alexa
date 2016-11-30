@@ -43,7 +43,7 @@ class SqueezeboxPlayerSettings(dict):
 
 
 class Server(SslCommsMixin):
-    """Encapsulates access to a Squeezebox player via a squeezecenter server"""
+    """Encapsulates access to a Squeezebox player via a Squeezecenter server"""
 
     _TIMEOUT = 10
     _MAX_FAILURES = 3
@@ -68,9 +68,6 @@ class Server(SslCommsMixin):
         print_d("Connected to %s! (Player: %s)" % (self, self.cur_player_id))
         self.players = {}
         self.refresh_status()
-
-    def get_library_dir(self):
-        return self.config['library_dir']
 
     def __a_request(self, line, raw=False, wait=True):
         return self._request([line], raw=raw, wait=wait)[0]
@@ -99,9 +96,10 @@ class Server(SslCommsMixin):
         if self._debug:
             print_d(">>>> \"%s\"" % "\n".join(lines))
         request = "\n".join(lines) + "\n"
-        raw_response = self.communicate(request, wait=wait).rstrip("\n")
+        raw_response = self.communicate(request, wait=wait)
         if not wait or not raw_response:
             return
+        raw_response = raw_response.rstrip("\n")
         response = raw_response if raw else self._unquote(raw_response)
         if self._debug:
             print_d("<<<< \"%s\"" % (response,))
@@ -144,6 +142,7 @@ class Server(SslCommsMixin):
         assert (int(dict(pairs)['player count']) == len(self.players))
 
     def player_request(self, line, player_id=None, raw=False, wait=True):
+        """Makes a single request to a particular player (or the current)"""
         if not self.is_connected:
             return
         try:
@@ -235,6 +234,11 @@ class Server(SslCommsMixin):
 
     def set_power(self, on=True, player_id=None):
         self.player_request("power %d" % int(bool(on)), player_id=player_id)
+
+    def set_all_power(self, on=True):
+        value = int(bool(on))
+        self._request(["%s power %d" % (p, value)
+                       for p in self.players.keys()], wait=False)
 
     def __str__(self):
         return str(self.config)

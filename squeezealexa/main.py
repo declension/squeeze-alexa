@@ -103,9 +103,9 @@ class SqueezeAlexa(AlexaHandler):
                 speech_fragment("Decrease Volume", "OK, it's quieter now."))
 
         elif intent_name == Custom.SELECT_PLAYER:
-            player_name = intent['slots']['Player']['value']
             srv = self.get_server()
             srv.refresh_status()
+            player_name = intent['slots']['Player']['value']
             by_name = {s.get("name"): s for s in srv.players.values()}
             result = process.extractOne(player_name, by_name.keys())
             if result and int(result[1]) >= MIN_CONFIDENCE:
@@ -145,14 +145,14 @@ class SqueezeAlexa(AlexaHandler):
             return build_audio_response("Repeat off")
 
         elif intent_name == Power.ALL_OFF:
-            self.get_server().set_power(False)
+            self.get_server().set_all_power(on=False)
             return build_response(
                 speech_fragment("Players all off", "Silence."))
 
         elif intent_name == Power.ALL_ON:
-            self.get_server().set_power(True)
+            self.get_server().set_all_power(on=True)
             return build_response(
-                speech_fragment("Players all on", "Ready."))
+                speech_fragment("Players all on", "All On."))
 
         elif intent_name == General.HELP:
             return self.on_launch(intent_request, session)
