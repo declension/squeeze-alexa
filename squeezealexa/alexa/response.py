@@ -7,7 +7,7 @@
 
 
 def speech_fragment(title, text, reprompt_text=None,
-                    end=False):
+                    end=True):
     output = {
         'outputSpeech': {
             'type': 'PlainText',
