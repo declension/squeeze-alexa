@@ -30,7 +30,7 @@ def speech_fragment(title, text, reprompt_text=None,
     return output
 
 
-def build_audio_response(text):
+def audio_response(text):
     output = {
         "directives": [
             {
@@ -47,10 +47,17 @@ def build_audio_response(text):
         ],
         'shouldEndSession': True
     }
-    return build_response(output)
+    return _build_response(output)
 
 
-def build_response(speechlet_response, store=None):
+def speech_response(title, text=None, reprompt_text=None, end=True,
+                    store=None):
+    return _build_response(
+        speech_fragment(title=title, text=text, reprompt_text=reprompt_text,
+                        end=end), store=store)
+
+
+def _build_response(speechlet_response, store=None):
     return {
         'version': '1.0',
         'sessionAttributes': store or {},

@@ -34,6 +34,13 @@ class SqueezeboxPlayerSettings(dict):
         if player_id:
             self['playerid'] = player_id
 
+    @property
+    def id(self):
+        return self['playerid']
+
+    def __getattr__(self, key):
+        return self.get(key, None)
+
     def __str__(self):
         try:
             return "{name} [{short}]".format(short=self['playerid'][-5:],
@@ -67,6 +74,7 @@ class Server(SslCommsMixin):
         self.cur_player_id = cur_player_id
         print_d("Connected to %s! (Player: %s)" % (self, self.cur_player_id))
         self.players = {}
+        self.player_names = set()
         self.refresh_status()
 
     def __a_request(self, line, raw=False, wait=True):
@@ -128,6 +136,7 @@ class Server(SslCommsMixin):
         pairs = self.__pairs_from(
             self.__a_request("serverstatus 0 99", raw=True))
         self.players = {}
+        self.player_names.clear()
         player_id = None
         for key, val in pairs:
             if key == "playerid":
@@ -136,6 +145,8 @@ class Server(SslCommsMixin):
             elif player_id:
                 # Don't worry, playerid is *always* the first entry...
                 self.players[player_id][key] = val
+                if key == "name":
+                    self.player_names.add(val)
         if self._debug:
             print_d("Found %d player(s): %s" %
                     (len(self.players), self.players))
@@ -238,7 +249,7 @@ class Server(SslCommsMixin):
     def set_all_power(self, on=True):
         value = int(bool(on))
         self._request(["%s power %d" % (p, value)
-                       for p in self.players.keys()], wait=False)
+                       for p in self.players.keys()])
 
     def __str__(self):
         return str(self.config)

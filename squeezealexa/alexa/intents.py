@@ -24,8 +24,10 @@ class CustomAudio(object):
 
 
 class Power(object):
-    ALL_OFF, ALL_ON = ("%sIntent" % s
-                       for s in ["AllOff", "AllOn"])
+    (ALL_OFF, ALL_ON,
+     PLAYER_OFF, PLAYER_ON) = ("%sIntent" % s
+                               for s in ["AllOff", "AllOn",
+                                         "TurnOffPlayer", "TurnOnPlayer"])
 
 
 class General(object):
