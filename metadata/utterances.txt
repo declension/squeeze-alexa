@@ -1,16 +1,15 @@
 
 IncreaseVolumeIntent increase volume
-IncreaseVolumeIntent increase volume {Player}
-IncreaseVolumeIntent increase {Player}
+IncreaseVolumeIntent increase {Player} volume
 IncreaseVolumeIntent increase volume in {Player}
-IncreaseVolumeIntent turn up volume in {Player}
+IncreaseVolumeIntent turn up the volume in {Player}
 IncreaseVolumeIntent turn up {Player}
 IncreaseVolumeIntent turn it up
 
 DecreaseVolumeIntent decrease volume
-DecreaseVolumeIntent decrease volume {Player}
+DecreaseVolumeIntent decrease {Player} volume
 DecreaseVolumeIntent decrease volume in {Player}
-DecreaseVolumeIntent turn down volume in {Player}
+DecreaseVolumeIntent turn down the volume in {Player}
 DecreaseVolumeIntent turn down {Player}
 DecreaseVolumeIntent turn it down
 
@@ -18,7 +17,7 @@ SetVolumeIntent set volume to {Volume}
 SetVolumeIntent set volume {Player} to {Volume}
 SetVolumeIntent set volume in {Player} to {Volume}
 SetVolumeIntent set volume to {Volume} in {Player}
-SetVolumeIntent set {Player} to {Volume}
+SetVolumeIntent set {Player} to {Volume} percent
 
 NowPlayingIntent what is playing
 NowPlayingIntent what's playing
@@ -26,10 +25,14 @@ NowPlayingIntent what is playing in the {Player}
 NowPlayingIntent what is playing on the {Player} player
 NowPlayingIntent what's playing on the {Player} player
 NowPlayingIntent what are we listening to in the {Player}
+NowPlayingIntent what we are listening to in the {Player}
 
 
 SelectPlayerIntent select {Player}
+SelectPlayerIntent select {Player} player
 SelectPlayerIntent choose {Player}
+SelectPlayerIntent choose {Player} player
+SelectPlayerIntent select {Player} player
 SelectPlayerIntent select player {Player}
 
 ShuffleOnIntent shuffle on
