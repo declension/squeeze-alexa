@@ -15,8 +15,11 @@ from squeezealexa.alexa.intents import Audio, General, Custom, Power, \
     CustomAudio
 from squeezealexa.alexa.response \
     import speech_fragment, build_response, build_audio_response
+from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server
+
+MIN_CONFIDENCE = 75
 
 print_d = print_w = print
 
@@ -105,21 +108,25 @@ class SqueezeAlexa(AlexaHandler):
             srv.refresh_status()
             by_name = {s.get("name"): s for s in srv.players.values()}
             result = process.extractOne(player_name, by_name.keys())
-            print_d("Seems like %s is the best for '%s' from %s"
-                    % (result, player_name, by_name.keys()))
-            if result:
+            if result and int(result[1]) >= MIN_CONFIDENCE:
+                print_d("Seems like %s is the best for '%s' from %s"
+                        % (result, player_name, by_name.keys()))
                 best = by_name.get(result[0])
                 srv.cur_player_id = best['playerid']
+                text = ("Selected %s" % (best["name"]))
                 return build_response(
-                    speech_fragment("Selected player %s" % best,
-                                    "Selected %s" % best["name"]),
+                    speech_fragment("Selected player %s" % best, text),
                     store={"player_id": srv.cur_player_id})
             else:
-                speech = ("I don't know that one. "
-                          "Try these players: %s" % by_name.keys())
+                speech = ("I only found these players: %s."
+                          "Could you try again?"
+                          % by_name.keys())
+                reprompt = ("You can select a player by saying "
+                            "\"%s\" and then the player name."
+                            % Utterances.SELECT_PLAYER)
                 return build_response(
-                    speech_fragment("Couldn't find \"%s\"" % player_name,
-                                    speech))
+                    speech_fragment("No player called \"%s\"" % player_name,
+                                    speech, reprompt_text=reprompt, end=False))
 
         elif intent_name in [Audio.SHUFFLE_ON, CustomAudio.SHUFFLE_ON]:
             self.get_server().set_shuffle(True)
