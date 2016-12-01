@@ -263,5 +263,6 @@ if __name__ == '__main__':
     print(server.get_status())
     server.get_server_status()
     print(" >> ".join(server.get_track_details().values()))
-    server.set_repeat(False)
-    server.set_shuffle(True)
+    # server.set_repeat(False)
+    # server.set_shuffle(True)
+    print(server.players[server.cur_player_id].id)

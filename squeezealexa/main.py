@@ -64,21 +64,22 @@ class SqueezeAlexa(AlexaHandler):
         intent = intent_request['intent']
         intent_name = intent['name']
         print_d("Received %s: %s" % (intent_name, intent))
+        pid = self.player_id_from(intent)
 
         if intent_name == Audio.RESUME:
-            self.get_server().resume()
+            self.get_server().resume(player_id=pid)
             return audio_response("Resumed")
 
         elif intent_name == Audio.PAUSE:
-            self.get_server().pause()
+            self.get_server().pause(player_id=pid)
             return audio_response("Paused")
 
         elif intent_name == Audio.PREVIOUS:
-            self.get_server().previous()
+            self.get_server().previous(player_id=pid)
             return speech_response("Previous", "Rewind! Selectah!")
 
         elif intent_name == Audio.NEXT:
-            self.get_server().next()
+            self.get_server().next(player_id=pid)
             return speech_response("Next", "Yep, pretty lame.")
 
         elif intent_name == Custom.CURRENT:
@@ -90,24 +91,26 @@ class SqueezeAlexa(AlexaHandler):
             return speech_response(heading, desc)
 
         elif intent_name == Custom.INC_VOL:
-            self.get_server().change_volume(+12.5)
+            self.get_server().change_volume(+12.5, player_id=pid)
             return speech_response("Increase Volume", "Pumped it up.")
 
         elif intent_name == Custom.DEC_VOL:
-            self.get_server().change_volume(-12.5)
+            self.get_server().change_volume(-12.5, player_id=pid)
             return speech_response("Decrease Volume", "OK, it's quieter now.")
 
         elif intent_name == Custom.SELECT_PLAYER:
             srv = self.get_server()
             srv.refresh_status()
 
-            player = self.player_from(intent, defaulting=False)
-            if player:
-                srv.cur_player_id = player.id
+            # Do it again, yes, but not defaulting this time.
+            pid = self.player_id_from(intent, defaulting=False)
+            if pid:
+                player = srv.players[pid]
+                srv.cur_player_id = player
                 return speech_response(
                     "Selected player %s" % player,
                     "Selected %s" % player.name,
-                    store={"player_id": srv.cur_player_id})
+                    store={"player_id": pid})
             else:
                 speech = ("I only found these players: %s. "
                           "Could you try again?"
@@ -115,36 +118,38 @@ class SqueezeAlexa(AlexaHandler):
                 reprompt = ("You can select a player by saying "
                             "\"%s\" and then the player name."
                             % Utterances.SELECT_PLAYER)
-                player_name = intent['slots']['Player']['value']
-                title = "No player called \"%s\"" % player_name
+                try:
+                    title = ("No player called \"%s\""
+                             % intent['slots']['Player']['value'])
+                except KeyError:
+                    title = "Didn't recognise a player name"
                 return speech_response(title, speech, reprompt_text=reprompt,
                                        end=False)
 
         elif intent_name in [Audio.SHUFFLE_ON, CustomAudio.SHUFFLE_ON]:
-            self.get_server().set_shuffle(True)
+            self.get_server().set_shuffle(True, player_id=pid)
             return audio_response("Shuffle on")
 
         elif intent_name in [Audio.SHUFFLE_OFF, CustomAudio.SHUFFLE_OFF]:
-            self.get_server().set_shuffle(False)
+            self.get_server().set_shuffle(False, player_id=pid)
             return audio_response("Shuffle off")
 
         elif intent_name in [Audio.LOOP_ON, CustomAudio.LOOP_ON]:
-            self.get_server().set_repeat(True)
+            self.get_server().set_repeat(True, player_id=pid)
             return audio_response("Repeat on")
 
         elif intent_name in [Audio.LOOP_OFF, CustomAudio.LOOP_OFF]:
-            self.get_server().set_repeat(False)
+            self.get_server().set_repeat(False, player_id=pid)
             return audio_response("Repeat off")
 
         elif intent_name == Power.PLAYER_OFF:
-            player = self.player_from(intent)
-            self.get_server().set_power(on=False, player_id=player.playerid)
-            return speech_response("Switched %s off" % player)
+            self.get_server().set_power(on=False, player_id=pid)
+            return speech_response("Switched %s off" % pid)
 
         elif intent_name == Power.PLAYER_ON:
-            player = self.player_from(intent)
-            self.get_server().set_power(on=True, player_id=player.playerid)
-            return speech_response("Switched %s on" % player)
+            player = self.player_id_from(intent)
+            self.get_server().set_power(on=True, player_id=player.id)
+            return speech_response("Switched %s on" % pid)
 
         elif intent_name == Power.ALL_OFF:
             self.get_server().set_all_power(on=False)
@@ -165,7 +170,7 @@ class SqueezeAlexa(AlexaHandler):
                 "Confused",
                 "Sorry, I don't know how to process \"%s\"" % intent_name)
 
-    def player_from(self, intent, defaulting=True):
+    def player_id_from(self, intent, defaulting=True):
         srv = self.get_server()
         try:
             player_name = intent['slots']['Player']['value']
@@ -177,8 +182,8 @@ class SqueezeAlexa(AlexaHandler):
             print_d("%s was the best guess for '%s' from %s"
                     % (result, player_name, by_name.keys()))
             if result and int(result[1]) >= MIN_CONFIDENCE:
-                return by_name.get(result[0])
-        return srv.players[srv.cur_player_id] if defaulting else None
+                return by_name.get(result[0]).id
+        return srv.cur_player_id if defaulting else None
 
     def on_session_ended(self, session_ended_request, session):
         print_d("on_session_ended requestId=%s, sessionId=%s" %
