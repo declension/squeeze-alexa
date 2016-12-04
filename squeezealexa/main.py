@@ -106,7 +106,7 @@ class SqueezeAlexa(AlexaHandler):
             pid = self.player_id_from(intent, defaulting=False)
             if pid:
                 player = srv.players[pid]
-                srv.cur_player_id = player
+                srv.cur_player_id = player.id
                 return speech_response(
                     "Selected player %s" % player,
                     "Selected %s" % player.name,
