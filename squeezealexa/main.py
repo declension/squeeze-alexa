@@ -17,6 +17,7 @@ from squeezealexa.alexa.response import audio_response, speech_response
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server
+from squeezealexa.ssl_wrap import SslSocketWrapper
 
 MIN_CONFIDENCE = 75
 
@@ -49,11 +50,15 @@ class SqueezeAlexa(AlexaHandler):
         :rtype Server
         """
         if not cls._server:
-            cls._server = Server(SERVER_HOSTNAME, SERVER_PORT,
+            sslw = SslSocketWrapper(hostname=SERVER_HOSTNAME, port=SERVER_PORT,
+                                    ca_file=CA_FILE_PATH,
+                                    cert_file=CERT_FILE_PATH,
+                                    verify_hostname=VERIFY_SERVER_HOSTNAME)
+            cls._server = Server(sslw,
+                                 user=SERVER_USERNAME,
+                                 password=SERVER_PASSWORD,
                                  cur_player_id=DEFAULT_PLAYER,
-                                 debug=True,
-                                 ca_file=CA_FILE_PATH,
-                                 cert_file=CERT_FILE_PATH)
+                                 debug=True)
             print_d("Created %r" % cls._server)
         else:
             print_d("Reusing cached %r" % cls._server)

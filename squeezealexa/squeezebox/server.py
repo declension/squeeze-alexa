@@ -1,10 +1,16 @@
+# -*- coding: utf-8 -*-
+# Copyright 2016 Nick Boultbee
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License version 2 as
+# published by the Free Software Foundation
+
 from __future__ import print_function
 
 import urllib
 
-from squeezealexa.settings import CERT_FILE_PATH, SERVER_PORT, CA_FILE_PATH, \
-    SERVER_HOSTNAME, DEFAULT_PLAYER
-from squeezealexa.ssl_wrap import SslCommsMixin
+from squeezealexa.settings import *
+from squeezealexa.ssl_wrap import SslSocketWrapper
 
 print_d = print_w = print
 
@@ -15,15 +21,6 @@ def _(s):
 
 class SqueezeboxException(Exception):
     """Errors communicating with the Squeezebox"""
-
-
-class SqueezeboxServerSettings(dict):
-    """Encapsulates Server settings"""
-    def __str__(self):
-        try:
-            return _("Squeezebox server at {hostname}:{port}").format(**self)
-        except KeyError:
-            return _("unidentified Squeezebox server")
 
 
 class SqueezeboxPlayerSettings(dict):
@@ -49,36 +46,37 @@ class SqueezeboxPlayerSettings(dict):
             return _("unidentified Squeezebox player: %r" % self)
 
 
-class Server(SslCommsMixin):
+class Server(object):
     """Encapsulates access to a Squeezebox player via a Squeezecenter server"""
 
     _TIMEOUT = 10
     _MAX_FAILURES = 3
 
-    def __init__(self, hostname="localhost", port=9090, user="", password="",
-                 cur_player_id=None, debug=False,
-                 ca_file=None, cert_file=None):
-        super(Server, self).__init__(hostname=hostname, port=port,
-                                     ca_file=ca_file, cert_file=cert_file)
+    def __init__(self, ssl_wrap, user=None, password=None,
+                 cur_player_id=None, debug=False):
+
+        self.ssl_wrap = ssl_wrap
         self._debug = debug
         self.failures = 0
-        self.config = SqueezeboxServerSettings(locals())
-        if user:
+        if user and password:
             result = self.__a_request("login %s %s" % (user, password))
-            if result != (6 * '*'):
+            if result != "%s ******" % user:
                 raise SqueezeboxException(
                     "Couldn't log in to squeezebox: response was '%s'"
                     % result)
-        self.is_connected = True
         self.failures = 0
-        self.cur_player_id = cur_player_id
-        print_d("Connected to %s! (Player: %s)" % (self, self.cur_player_id))
+        print_d("Connected to %s!" % self)
         self.players = {}
         self.player_names = set()
         self.refresh_status()
+        self.cur_player_id = cur_player_id or self.players.keys()[0]
+        print_d("Default player is now %s " % self.cur_player_id[-5:])
 
     def __a_request(self, line, raw=False, wait=True):
-        return self._request([line], raw=raw, wait=wait)[0]
+        reply = self._request([line], raw=raw, wait=wait)[0]
+        if not reply:
+            raise EnvironmentError("Unprocessable command, or need to log in.")
+        return reply
 
     def _unquote(self, response):
         return ' '.join(urllib.unquote(s) for s in response.split(' '))
@@ -97,14 +95,14 @@ class Server(SslCommsMixin):
         lines = map(str.rstrip, lines)
 
         first_word = lines[0].split()[0]
-        if not (self.is_connected or first_word == 'login'):
+        if not (self.ssl_wrap.is_connected or first_word == 'login'):
             print_d("Can't do '%s' - not connected" % first_word, self)
             return
 
         if self._debug:
             print_d(">>>> \"%s\"" % "\n".join(lines))
         request = "\n".join(lines) + "\n"
-        raw_response = self.communicate(request, wait=wait)
+        raw_response = self.ssl_wrap.communicate(request, wait=wait)
         if not wait or not raw_response:
             return
         raw_response = raw_response.rstrip("\n")
@@ -113,6 +111,8 @@ class Server(SslCommsMixin):
             print_d("<<<< \"%s\"" % (response,))
 
         def start_point(text):
+            if first_word == 'login':
+                return 6
             delta = -1 if text.endswith('?') else 1
             return len(self._unquote(text) if raw else text) + delta
 
@@ -154,7 +154,7 @@ class Server(SslCommsMixin):
 
     def player_request(self, line, player_id=None, raw=False, wait=True):
         """Makes a single request to a particular player (or the current)"""
-        if not self.is_connected:
+        if not self.ssl_wrap.is_connected:
             return
         try:
             player_id = (player_id
@@ -252,13 +252,18 @@ class Server(SslCommsMixin):
                        for p in self.players.keys()])
 
     def __str__(self):
-        return str(self.config)
+        return "Squeezebox server at %s" % self.ssl_wrap
 
 
 if __name__ == '__main__':
-    server = Server(hostname=SERVER_HOSTNAME, port=SERVER_PORT, debug=True,
+    sslw = SslSocketWrapper(hostname=SERVER_HOSTNAME, port=SERVER_PORT,
+                            ca_file=CA_FILE_PATH, cert_file=CERT_FILE_PATH,
+                            verify_hostname=VERIFY_SERVER_HOSTNAME)
+    server = Server(debug=True,
+                    ssl_wrap=sslw,
                     cur_player_id=DEFAULT_PLAYER,
-                    ca_file=CA_FILE_PATH, cert_file=CERT_FILE_PATH)
+                    user=SERVER_USERNAME,
+                    password=SERVER_PASSWORD)
     print(server.get_current())
     print(server.get_status())
     server.get_server_status()
