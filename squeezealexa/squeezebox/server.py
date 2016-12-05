@@ -57,14 +57,10 @@ class Server(object):
 
         self.ssl_wrap = ssl_wrap
         self._debug = debug
-        self.failures = 0
+        self.user = user
+        self.password = password
         if user and password:
-            result = self.__a_request("login %s %s" % (user, password))
-            if result != "%s ******" % user:
-                raise SqueezeboxException(
-                    "Couldn't log in to squeezebox: response was '%s'"
-                    % result)
-        self.failures = 0
+            self.log_in()
         print_d("Connected to %s!" % self)
         self.players = {}
         self.player_names = set()
@@ -72,11 +68,23 @@ class Server(object):
         self.cur_player_id = cur_player_id or self.players.keys()[0]
         print_d("Default player is now %s " % self.cur_player_id[-5:])
 
+    def log_in(self):
+        result = self.__a_request("login %s %s" % (self.user, self.password))
+        if result != "%s ******" % self.user:
+            raise SqueezeboxException(
+                "Couldn't log in to squeezebox: response was '%s'" % result)
+
     def __a_request(self, line, raw=False, wait=True):
         reply = self._request([line], raw=raw, wait=wait)[0]
-        if not reply:
-            raise EnvironmentError("Unprocessable command, or need to log in.")
-        return reply
+        if reply:
+            return reply
+        if self.user and self.password:
+            print_d("Command failed. Trying to re-log in.")
+            self.log_in()
+            reply = self._request([line], raw=raw, wait=wait)[0]
+            if reply:
+                return reply
+        raise SqueezeboxException("Unprocessable command or login error")
 
     def _unquote(self, response):
         return ' '.join(urllib.unquote(s) for s in response.split(' '))
@@ -103,8 +111,11 @@ class Server(object):
             print_d(">>>> \"%s\"" % "\n".join(lines))
         request = "\n".join(lines) + "\n"
         raw_response = self.ssl_wrap.communicate(request, wait=wait)
-        if not wait or not raw_response:
+        if not wait:
             return
+        if not raw_response:
+            raise SqueezeboxException(
+                "No further response from %s. Login problem?" % self)
         raw_response = raw_response.rstrip("\n")
         response = raw_response if raw else self._unquote(raw_response)
         if self._debug:

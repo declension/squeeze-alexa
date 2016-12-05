@@ -5,13 +5,17 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from __future__ import print_function
 import socket
-from pprint import pprint
 
 import ssl
 import _ssl
 
-print_d = print_w = pprint
+print_d = print_w = print
+
+
+class Error(Exception):
+    pass
 
 
 class SslSocketWrapper(object):
@@ -33,6 +37,10 @@ class SslSocketWrapper(object):
                 context.verify_mode = ssl.CERT_REQUIRED
                 context.check_hostname = verify_hostname
                 context.load_cert_chain(cert_file)
+        except ssl.SSLError as e:
+            print_d("Problem with Cert/CA (+key) files (%s). "
+                    "Does it include the private key?" % e)
+            raise e
         except IOError as e:
             print_d("Problem loading Cert/CA files at %s or %s (%s)" %
                     (ca_file, cert_file, e))
@@ -45,6 +53,13 @@ class SslSocketWrapper(object):
         except ssl.SSLError:
             print_w("Couldn't connect to %s with TLS" % (self,))
             raise
+        peer_cert = self._ssl_sock.getpeercert()
+        if peer_cert is None:
+            raise Error("No certificate configured at %s" % self)
+        elif not peer_cert:
+            print_w("Unvalidated server cert at %s" % self)
+        else:
+            print_d("Validated cert for %s" % (peer_cert['subject'],))
         self.is_connected = True
 
     @staticmethod
@@ -68,7 +83,7 @@ class SslSocketWrapper(object):
                 return None
             while not eof:
                 response += self._ssl_sock.recv()
-                eof = response.count("\n") == num_lines
+                eof = response.count("\n") == num_lines or not response
             return response
         except socket.error as e:
             print_d("Couldn't communicate with Squeezebox (%s)" % e)
