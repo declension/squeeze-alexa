@@ -148,12 +148,18 @@ class SqueezeAlexa(AlexaHandler):
             return audio_response("Repeat off")
 
         elif intent_name == Power.PLAYER_OFF:
-            self.get_server().set_power(on=False, player_id=pid)
-            return speech_response("Switched %s off" % pid)
+            server = self.get_server()
+            server.set_power(on=False, player_id=pid)
+            player = server.players[pid]
+            return speech_response("Switched %s off" % (player),
+                                   "%s is now off" % player.name)
 
         elif intent_name == Power.PLAYER_ON:
-            self.get_server().set_power(on=True, player_id=pid)
-            return speech_response("Switched %s on" % pid)
+            server = self.get_server()
+            server.set_power(on=True, player_id=pid)
+            player = server.players[pid]
+            return speech_response("Switched %s on" % player,
+                                   "%s is now on" % player.name)
 
         elif intent_name == Power.ALL_OFF:
             self.get_server().set_all_power(on=False)
