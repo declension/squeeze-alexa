@@ -4,6 +4,7 @@
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
+from pprint import pprint
 
 from squeezealexa.alexa.requests import Request
 from squeezealexa.main import SqueezeAlexa, APPLICATION_ID
@@ -25,6 +26,11 @@ def lambda_handler(event, context):
     sqa = SqueezeAlexa()
     if session['new']:
         sqa.on_session_started(request, session)
+    try:
+        print("Here is the context...")
+        pprint(dir(context))
+    except KeyError:
+        pass
 
     if req_type == Request.LAUNCH:
         return sqa.on_launch(request, session)

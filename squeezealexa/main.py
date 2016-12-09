@@ -152,8 +152,7 @@ class SqueezeAlexa(AlexaHandler):
             return speech_response("Switched %s off" % pid)
 
         elif intent_name == Power.PLAYER_ON:
-            player = self.player_id_from(intent)
-            self.get_server().set_power(on=True, player_id=player.id)
+            self.get_server().set_power(on=True, player_id=pid)
             return speech_response("Switched %s on" % pid)
 
         elif intent_name == Power.ALL_OFF:
