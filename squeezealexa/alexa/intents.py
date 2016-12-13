@@ -17,6 +17,10 @@ class Audio(object):
                                            "ShuffleOn", "ShuffleOff"])
 
 
+class RandomMix(object):
+    PLAY, = ("%sIntent" % s for s in ["PlayRandomMix"])
+
+
 class CustomAudio(object):
     LOOP_ON, LOOP_OFF, SHUFFLE_ON, SHUFFLE_OFF = ("%sIntent" % s for s in
                                                   ["LoopOn", "LoopOff",

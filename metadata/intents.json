@@ -92,6 +92,23 @@
       ]
     },
     {
+      "intent": "PlayRandomMixIntent",
+      "slots": [
+        {
+          "name": "Player",
+          "type": "PLAYER"
+        },
+        {
+          "name": "Genre",
+          "type": "GENRE"
+        },
+        {
+          "name": "SecondaryGenre",
+          "type": "GENRE"
+        }
+      ]
+    },
+    {
       "intent": "ShuffleOnIntent"
     },
     {

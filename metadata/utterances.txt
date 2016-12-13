@@ -75,3 +75,8 @@ AllOffIntent turn all players off
 
 AllOnIntent turn everything on
 AllOnIntent turn all players on
+
+PlayRandomMixIntent play some {Genre}
+PlayRandomMixIntent play some {Genre} and {SecondaryGenre}
+PlayRandomMixIntent play some {Genre} and some {SecondaryGenre}
+PlayRandomMixIntent play a mix of {Genre} and {SecondaryGenre}

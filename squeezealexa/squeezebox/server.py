@@ -67,6 +67,7 @@ class Server(object):
         self.refresh_status()
         self.cur_player_id = cur_player_id or self.players.keys()[0]
         print_d("Default player is now %s " % self.cur_player_id[-5:])
+        self.__genres = []
 
     def log_in(self):
         result = self.__a_request("login %s %s" % (self.user, self.password))
@@ -180,6 +181,15 @@ class Server(object):
         """Plays the current song"""
         self.player_request("play", player_id=player_id)
 
+    def play_random_mix(self, genre_list, player_id=None):
+        gs = genre_list or []
+        commands = ["randomplaygenreselectall 0"]
+        commands += ["randomplaychoosegenre %s 1" % urllib.quote(g)
+                     for g in gs]
+        commands += ["playlist clear", "randomplay tracks"]
+        pid = player_id or self.cur_player_id
+        return self._request(["%s %s" % (pid, com) for com in commands])
+
     def is_stopped(self, player_id=None):
         """Returns whether the player is in any sort of non-playing mode"""
         response = self.player_request("mode ?", player_id=player_id)
@@ -195,6 +205,15 @@ class Server(object):
         responses = self._request(["%s %s ?" % (pid, s)
                                    for s in keys])
         return dict(zip(keys, responses))
+
+    @property
+    def genres(self):
+        if not self.__genres:
+            resp = self.__a_request("genres 0 255", raw=True)
+            self.__genres = [v for k, v in self.__pairs_from(resp)
+                             if k == 'genre']
+            print_d("Loaded %d LMS genres", len(self.__genres))
+        return self.__genres
 
     def get_server_status(self, player_id=None):
         return self.player_request("serverstatus 0 99", player_id=player_id)
@@ -276,9 +295,8 @@ if __name__ == '__main__':
                     user=SERVER_USERNAME,
                     password=SERVER_PASSWORD)
     print(server.get_current())
-    print(server.get_status())
-    server.get_server_status()
+    # print(server.get_status())
+    print(server.genres)
     print(" >> ".join(server.get_track_details().values()))
-    # server.set_repeat(False)
-    # server.set_shuffle(True)
     print(server.players[server.cur_player_id].id)
+    server.play_random_mix(["Rock Ballad", "Latin", "Blues"])

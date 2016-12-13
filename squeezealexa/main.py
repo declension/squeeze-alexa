@@ -12,7 +12,7 @@ from fuzzywuzzy import process
 
 from squeezealexa.alexa.handlers import AlexaHandler
 from squeezealexa.alexa.intents import Audio, General, Custom, Power, \
-    CustomAudio
+    CustomAudio, RandomMix
 from squeezealexa.alexa.response import audio_response, speech_response
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
@@ -168,6 +168,35 @@ class SqueezeAlexa(AlexaHandler):
         elif intent_name == Power.ALL_ON:
             self.get_server().set_all_power(on=True)
             return speech_response("Players all on", "All On.")
+
+        elif intent_name == RandomMix.PLAY:
+            server = self.get_server()
+            try:
+                genres = [v.get('value') for k, v in intent['slots'].items()
+                          if k.endswith('Genre')]
+                print_d("Extracted genres: %s" % genres)
+            except KeyError:
+                print_d("Couldn't process Random Intent: %s" % intent)
+                pass
+            else:
+                def safe(g):
+                    if not g:
+                        return
+                    res = process.extractOne(g, server.genres)
+                    if res and int(res[1]) >= MIN_CONFIDENCE:
+                        return res[0]
+
+                lms_genres = filter(None, map(safe, genres))
+                if genres:
+                    server.play_random_mix(lms_genres)
+                    gs = " and ".join(lms_genres)
+                    return speech_response(
+                        "Playing random mix of %s" % gs,
+                        "Random mix of %s" % gs)
+                else:
+                    return speech_response(
+                        "Don't understand genre '%s'" % genres,
+                        "Can't find genre %s" % genres)
 
         elif intent_name == General.HELP:
             return self.on_launch(intent_request, session)
