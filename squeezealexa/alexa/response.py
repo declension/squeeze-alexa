@@ -5,6 +5,8 @@
 # it under the terms of the GNU General Public License version 2 as
 # published by the Free Software Foundation
 
+from squeezealexa.settings import RESPONSE_AUDIO_FILE_URL
+
 
 def speech_fragment(title, text, reprompt_text=None,
                     end=True):
@@ -39,7 +41,7 @@ def audio_response(text):
                 "audioItem": {
                     "stream": {
                         "token": "beep-50",
-                        "url": "https://s3.amazonaws.com/declension-alexa-media/computerbeep_50.mp3",
+                        "url": RESPONSE_AUDIO_FILE_URL,
                         "offsetInMilliseconds": 0
                     }
                 }
