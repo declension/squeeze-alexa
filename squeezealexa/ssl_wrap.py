@@ -50,7 +50,7 @@ class SslSocketWrapper(object):
                                              server_hostname=hostname)
         try:
             self._ssl_sock.connect((hostname, port))
-        except ssl.SSLError:
+        except (ssl.SSLError, socket.gaierror):
             print_w("Couldn't connect to %s with TLS" % (self,))
             raise
         peer_cert = self._ssl_sock.getpeercert()
