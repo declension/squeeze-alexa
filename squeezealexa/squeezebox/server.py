@@ -217,7 +217,7 @@ class Server(object):
             resp = self.__a_request("genres 0 255", raw=True)
             self.__genres = [v for k, v in self.__pairs_from(resp)
                              if k == 'genre']
-            print_d("Loaded %d LMS genres", len(self.__genres))
+            print_d("Loaded %d LMS genres" % len(self.__genres))
         return self.__genres
 
     def get_server_status(self, player_id=None):
