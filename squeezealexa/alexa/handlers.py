@@ -25,3 +25,22 @@ class AlexaHandler(object):
     def on_intent(self, intent_request, session):
         """Called when the user specifies an intent for this skill"""
         pass
+
+
+class IntentHandler(object):
+
+    def __init__(self):
+        self._handlers = {}
+
+    def for_name(self, name):
+        """Returns the handler for the given intent, or `None`"""
+        return self._handlers.get(name, None)
+
+    def handle(cls, name):
+        """Registers a handler function for the given intent"""
+
+        def _handler(func):
+            cls._handlers[name] = func
+            return func
+
+        return _handler
