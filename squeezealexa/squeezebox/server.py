@@ -104,8 +104,10 @@ class Server(object):
         :type lines list[str]
         :rtype list[str]
         """
+        if not self.ssl_wrap.is_connected:
+            return []
         if not (lines and len(lines)):
-            return
+            return []
         lines = map(str.rstrip, lines)
 
         first_word = lines[0].split()[0]
@@ -118,7 +120,7 @@ class Server(object):
         request = "\n".join(lines) + "\n"
         raw_response = self.ssl_wrap.communicate(request, wait=wait)
         if not wait:
-            return
+            return []
         if not raw_response:
             raise SqueezeboxException(
                 "No further response from %s. Login problem?" % self)
@@ -171,8 +173,6 @@ class Server(object):
 
     def player_request(self, line, player_id=None, raw=False, wait=True):
         """Makes a single request to a particular player (or the current)"""
-        if not self.ssl_wrap.is_connected:
-            return
         try:
             player_id = (player_id
                          or self.cur_player_id

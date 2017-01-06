@@ -105,6 +105,10 @@
         {
           "name": "SecondaryGenre",
           "type": "GENRE"
+        },
+        {
+          "name": "TertiaryGenre",
+          "type": "GENRE"
         }
       ]
     },

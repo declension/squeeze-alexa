@@ -24,7 +24,9 @@ from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.ssl_wrap import SslSocketWrapper
 
-MIN_CONFIDENCE = 75
+MIN_CONFIDENCE = 85
+MIN_MULTI_CONFIDENCE = 90
+MAX_GUESSES_PER_SLOT = 2
 
 print_d = print_w = print
 
@@ -36,8 +38,10 @@ class SqueezeAlexa(AlexaHandler):
     """The server instance
     :type Server"""
 
-    def __init__(self):
+    def __init__(self, server=None):
         super(SqueezeAlexa, self).__init__()
+        if server:
+            SqueezeAlexa._server = server
 
     def on_session_started(self, request, session):
         print_d("Starting new session %s for request %s" %
@@ -209,22 +213,15 @@ class SqueezeAlexa(AlexaHandler):
     def on_random_mix(self, intent, session, pid=None):
         server = self.get_server()
         try:
-            genres = [v.get('value') for k, v in intent['slots'].items()
+            slots = [v.get('value') for k, v in intent['slots'].items()
                       if k.endswith('Genre')]
-            print_d("Extracted genres: %s" % genres)
+            print_d("Extracted genre slots: %s" % slots)
         except KeyError:
-            print_d("Couldn't process Random Intent: %s" % intent)
+            print_d("Couldn't process genres from: %s" % intent)
             pass
         else:
-            def safe(g):
-                if not g:
-                    return
-                res = process.extractOne(g, server.genres)
-                if res and int(res[1]) >= MIN_CONFIDENCE:
-                    return res[0]
-
-            lms_genres = filter(None, map(safe, genres))
-            if genres:
+            lms_genres = self._genres_from_slots(slots, server.genres)
+            if lms_genres:
                 server.play_random_mix(lms_genres)
                 gs = " and ".join(lms_genres)
                 return speech_response(
@@ -232,8 +229,23 @@ class SqueezeAlexa(AlexaHandler):
                     "Random mix of %s" % gs)
             else:
                 return speech_response(
-                    "Don't understand genre '%s'" % genres,
-                    "Can't find genre %s" % genres)
+                    "Don't understand genre '%s'" % slots,
+                    "Can't find genre %s" % slots)
+        raise ValueError("Don't understand intent '%s'" % intent)
+
+    def _genres_from_slots(self, slots, genres):
+        def genres_from(g):
+            if not g:
+                return set()
+            res = process.extract(g, genres)[:MAX_GUESSES_PER_SLOT]
+            print_d("Raw genre results: %s" % res)
+            return {g for g, c in res
+                    if g and int(c) >= MIN_MULTI_CONFIDENCE}
+        # Grr where's my foldl
+        results = set()
+        for slot in slots:
+            results |= genres_from(slot)
+        return results
 
     @handler.handle(General.HELP)
     def on_help(self, intent, session, pid=None):
@@ -262,6 +274,5 @@ class SqueezeAlexa(AlexaHandler):
     def on_session_ended(self, session_ended_request, session):
         print_d("on_session_ended requestId=%s, sessionId=%s" %
                 (session_ended_request['requestId'], session['sessionId']))
-        # add cleanup logic here
-        speech_output = "Thank you for trying the Squeezebox Skill"
+        speech_output = "Hasta la vista. Baby."
         return speech_response("Session Ended", speech_output, end=True)

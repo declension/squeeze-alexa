@@ -80,3 +80,4 @@ PlayRandomMixIntent play some {Genre}
 PlayRandomMixIntent play some {Genre} and {SecondaryGenre}
 PlayRandomMixIntent play some {Genre} and some {SecondaryGenre}
 PlayRandomMixIntent play a mix of {Genre} and {SecondaryGenre}
+PlayRandomMixIntent play a mix of {Genre} {SecondaryGenre} and {TertiaryGenre}
