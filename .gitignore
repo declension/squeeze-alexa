@@ -78,3 +78,7 @@ ENV/
 /pip-selfcheck.json
 *.pem
 metadata/audio/
+
+
+# Amazon
+lambda_function.zip
