@@ -41,7 +41,7 @@ This [blog post](https://zarino.co.uk/post/ds214se-under-the-hood/) details that
 
 Then, it's just `sudo ipkg install stunnel`.
 
-To make it a system service, you can [create Upstart scripts](https://majikshoe.blogspot.co.uk/2014/12/starting-service-on-synology-dsm-5.html)*[]:
+To make it a system service, you can [create Upstart scripts](https://majikshoe.blogspot.co.uk/2014/12/starting-service-on-synology-dsm-5.html).
 Or, here's one you can cut and paste to, say, `/etc/init/stunnel`
 ```
 stunnel
@@ -69,7 +69,7 @@ exec /opt/sbin/stunnel
 
 
 ##### On Netgear ReadyNAS
-I haven't tried, but [https://community.netgear.com/t5/Community-Add-ons/HowTo-Stunnel-on-the-Readynas/td-p/784170](this forum posting) seems helpful.
+I haven't tried, but [this forum posting](https://community.netgear.com/t5/Community-Add-ons/HowTo-Stunnel-on-the-Readynas/td-p/784170) seems helpful.
 
 ##### On other servers
 Some other NAS drives can use `ipkg`, in which case see above. Else, find a way of installing it (you can build from source if you know how)
@@ -88,8 +88,10 @@ You can skip this step if you already have one, of course.
 It's worth reading up on OpenSSL, it's crazily powerful.
 If that's a bit TL;DR then here is a fairly secure setup, inspired largely by [this openssl SO post](https://stackoverflow.com/questions/10175812/how-to-create-a-self-signed-certificate-with-openssl)
 
-    openssl req -x509 -newkey rsa:2048 -sha256 -nodes -keyout key.pem -out cert.pem -subj "/CN=$MY_HOSTNAME" -days 3650
-    cat cert.pem key.pem > squeeze-alexa.pem && rm -f key.pem
+```bash
+openssl req -x509 -newkey rsa:2048 -sha256 -nodes -keyout key.pem -out cert.pem -subj "/CN=$MY_HOSTNAME" -days 3650
+cat cert.pem key.pem > squeeze-alexa.pem && rm -f key.pem
+```
 
 #### Configure stunnel
 
@@ -110,13 +112,17 @@ You'll need something like this at the end of your `stunnel.conf`:
 #### Test server cert
 For `$MY_HOSTNAME` and `$MY_PORT` you can subsitute your home IP / domain name as used above:
 
-    openssl s_client -connect $MY_HOSTNAME:$MY_PORT | openssl -x509
+```bash
+openssl s_client -connect $MY_HOSTNAME:$MY_PORT | openssl -x509
+```
 
 If successful, this should give you a PEM-style certificate block with some info about your domain name (and maybe a few warnings, erm, let's move on though).
 
 For the hardcore amongst you, you can check performance (and that there are no TLS bugs):
 
-    openssl s_time -bugs -connect $MY_HOSTNAME:$MY_PORT -cert squeeze-alexa.pem -verify 4
+```bash
+openssl s_time -bugs -connect $MY_HOSTNAME:$MY_PORT -cert squeeze-alexa.pem -verify 4
+```
 
 #### Optional: Test the tunnel fully
 TODO
