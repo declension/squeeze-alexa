@@ -14,9 +14,9 @@ This is very much **in beta**, so feedback (or help with documenting) welcome! P
 
 ### Things it is not
 
+ * Full coverage of all LMS features, plugins or use cases. It aims to be good at what it does.
  * A multi-user skill. This means: yes, you will need to set up Alexa and AWS developer accounts.
- * A native LMS plugin (at least, not currently)
- * Full coverage of all LMS features, plugins or use cases
+ * A native LMS plugin (at least, not currently). Yes, more server fiddling.
  * Easy to set up :scream:
 
 
@@ -34,6 +34,26 @@ Set up your own
 
 
 ### Tunnel the CLI
+#### Background
+When you open up your LMS to the world, well, you _really_ don't want do that, but for Alexa to work this needs to happen.
+See [Connecting Remotely](http://wiki.slimdevices.com/index.php/Connecting_remotely) on the wiki, but it's more around Web than CLI (which is how `squeeze-alexa` works).
+
+You _could_ use the username / password auth LMS CLI provides, but for these problems:
+
+ * It's in plain text, so everyone can see, log. This is pretty bad.
+ * These aren't rotated, nor do they include a token (à la CSRF) or nonce - so replay attacks are easy too.
+ * There is no rate limiting or banning in LMS, so brute-forcing is easy (though it does hang up IIRC).
+
+By mandating client TLS (aka SSL), `squeeze-alexa` avoids most of these problems.
+
+#### TLS Implementations
+I chose to go with [stunnel](http://stunnel.org/), but some exploration shows that other options could work here (**feedback wanted!**)
+NB: Nginx _doesn't_ seem to support non-HTTP traffic over TLS.
+
+ * [HAProxy](https://www.haproxy.com) _does_ support TLS-wrapping of generic TCP.
+ * Also, there's [ssl_wrapper](https://github.com/cesanta/ssl_wrapper)
+
+
 #### Install `stunnel`
 ##### On Synology
 If you haven't got `ipkg`, you might want that. Makes installing stuff a _lot_ easier.
@@ -134,11 +154,27 @@ TODO
  * Edit `src/settings.py`, filling in the details as commented there.
  * Make sure your `squeeze-alexa.pem` file is moved to the root of the `squeeze-alexa` directory.
 
+#### Add a new ASK Custom Skill in your developer account
+ * Like most useful skills it should be a [Custom Skill](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/overviews/understanding-custom-skills)
+ * Follow one of the guides ideally e.g. [Deploying a Sample Custom Skill To AWS Lambda](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/deploying-a-sample-skill-to-aws-lambda#creating-the-lambda-function-for-the-sample).
+ * Needs to be Python (2.7) runtime
+ * Choose your own Invocation Name. The advantage of not needing certification is you can be "more creative" about your naming...
+ * Select an AWS region close to you
+ * _Recommended_: Select _yes_ for Audio Streaming API
+ * The defaults are generally fine (those in [lambda.json](./lambda.json)).
 
 #### Upload the customised skill
- * Edit `lambda.json` filling in your IAM details etc (TODO: but with what...)
+ * Edit `lambda.json` filling in your IAM / ARN details etc (TODO: but with what...)
  * You can use [lambda-uploader](https://github.com/rackerlabs/lambda-uploader) if you do this lots, then type
    `lambda-uploader --no-virtualenv`
+
+#### Update the Interaction Model
+ * These are kept here in [`metadata/`](metadata/)
+ * In your Amazon Developer portal, configure your new skill:
+ * Copy-paste [the utterances](metadata/utterances.txt) as the sample utterances
+ * Copy-paste [intents.json](metdata/intents.json) into the Intents schema
+ * TODO: Some other stuff...
+
 
 ### TODO: Install your Skill
 ### TODO: Add your skill to your Alexa
