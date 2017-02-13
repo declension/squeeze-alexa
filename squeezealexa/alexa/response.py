@@ -64,9 +64,9 @@ def audio_response(speech=None, text=None):
 
 def speech_response(title, text=None, reprompt_text=None, end=True,
                     store=None):
-    return _build_response(
-        speech_fragment(title=title, text=text, reprompt_text=reprompt_text,
-                        end=end), store=store)
+    speechlet_response = speech_fragment(title=title, text=text,
+                                         reprompt_text=reprompt_text, end=end)
+    return _build_response(speechlet_response, store=store)
 
 
 def _build_response(speechlet_response, store=None):
