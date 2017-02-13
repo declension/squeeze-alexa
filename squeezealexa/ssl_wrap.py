@@ -34,7 +34,7 @@ class SslSocketWrapper(object):
         self.port = port
         self.failures = 0
         context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
-        self.harden_context(context)
+        self.__harden_context(context)
         try:
             if ca_file:
                 context.load_verify_locations(ca_file)
@@ -68,7 +68,7 @@ class SslSocketWrapper(object):
         self.is_connected = True
 
     @staticmethod
-    def harden_context(context):
+    def __harden_context(context):
         # disallow ciphers with known vulnerabilities
         context.set_ciphers(ssl._RESTRICTED_SERVER_CIPHERS)
         # Prefer the server's ciphers by default so that we get stronger

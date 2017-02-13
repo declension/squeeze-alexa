@@ -63,7 +63,7 @@ class Server(object):
         self.password = password
         if user and password:
             self.log_in()
-        print_d("Connected to %s!" % self)
+            print_d("Authenticated with %s!" % self)
         self.players = {}
         self.player_names = set()
         self.refresh_status()
@@ -78,15 +78,15 @@ class Server(object):
                 "Couldn't log in to squeezebox: response was '%s'" % result)
 
     def __a_request(self, line, raw=False, wait=True):
-        reply = self._request([line], raw=raw, wait=wait)[0]
-        if reply:
-            return reply
+        reply = self._request([line], raw=raw, wait=wait)
+        if reply and len(reply):
+            return reply[0]
         if self.user and self.password:
             print_d("Command failed. Trying to re-log in.")
             self.log_in()
-            reply = self._request([line], raw=raw, wait=wait)[0]
-            if reply:
-                return reply
+            reply = self._request([line], raw=raw, wait=wait)
+            if reply and len(reply):
+                return reply[0]
         raise SqueezeboxException("Unprocessable command or login error")
 
     def _unquote(self, response):
@@ -113,7 +113,7 @@ class Server(object):
             return
 
         if self._debug:
-            print_d(">>>> \"%s\"" % "\n".join(lines))
+            print_d(">>>> " + "\n..>> ".join(lines))
         request = "\n".join(lines) + "\n"
         raw_response = self.ssl_wrap.communicate(request, wait=wait)
         if not wait:
@@ -124,7 +124,7 @@ class Server(object):
         raw_response = raw_response.rstrip("\n")
         response = raw_response if raw else self._unquote(raw_response)
         if self._debug:
-            print_d("<<<< \"%s\"" % (response,))
+            print_d("<<<< " + "\n..<< ".join(response.splitlines()))
 
         def start_point(text):
             if first_word == 'login':
@@ -132,10 +132,12 @@ class Server(object):
             delta = -1 if text.endswith('?') else 1
             return len(self._unquote(text) if raw else text) + delta
 
-        if len(lines) != len(response.splitlines()):
-            raise ValueError("%s != %s" % (lines, response))
+        resp_lines = response.splitlines()
+        if len(lines) != len(resp_lines):
+            raise ValueError("Response problem: %s != %s"
+                             % (lines, resp_lines))
         return [resp_line[start_point(line):]
-                for line, resp_line in zip(lines, response.splitlines())]
+                for line, resp_line in zip(lines, resp_lines)]
 
     def __pairs_from(self, response):
         """Split and unescape a response"""
