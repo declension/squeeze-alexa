@@ -94,22 +94,22 @@ class SqueezeAlexa(AlexaHandler):
     @handler.handle(Audio.RESUME)
     def on_resume(self, intent, session, pid=None):
         self.get_server().resume(player_id=pid)
-        return audio_response("Resumed")
+        return audio_response()
 
     @handler.handle(Audio.PAUSE)
     def on_pause(self, intent, session, pid=None):
         self.get_server().pause(player_id=pid)
-        return audio_response("Paused")
+        return audio_response()
 
     @handler.handle(Audio.PREVIOUS)
     def on_previous(self, intent, session, pid=None):
         self.get_server().previous(player_id=pid)
-        return speech_response("Previous", "Rewind!")
+        return audio_response(speech="Rewind!")
 
     @handler.handle(Audio.NEXT)
     def on_next(self, intent, session, pid=None):
         self.get_server().next(player_id=pid)
-        return speech_response("Next", "Yep, pretty lame.")
+        return audio_response(speech="Yep, pretty lame.")
 
     @handler.handle(Custom.CURRENT)
     def on_current(self, intent, session, pid=None):
@@ -163,28 +163,30 @@ class SqueezeAlexa(AlexaHandler):
     @handler.handle(CustomAudio.SHUFFLE_ON)
     def on_shuffle_on(self, intent, session, pid=None):
         self.get_server().set_shuffle(True, player_id=pid)
-        return audio_response("Shuffle on")
+        return audio_response("Shuffle on", text="Shuffle on")
 
     @handler.handle(Audio.SHUFFLE_OFF)
     @handler.handle(CustomAudio.SHUFFLE_OFF)
     def on_shuffle_off(self, intent, session, pid=None):
         self.get_server().set_shuffle(False, player_id=pid)
-        return audio_response("Shuffle off")
+        return audio_response("Shuffle off", text="Shuffle off")
 
     @handler.handle(Audio.LOOP_ON)
     @handler.handle(CustomAudio.LOOP_ON)
     def on_loop_on(self, intent, session, pid=None):
         self.get_server().set_repeat(True, player_id=pid)
-        return audio_response("Repeat on")
+        return audio_response("Repeat on", text="Repeat on")
 
     @handler.handle(Audio.LOOP_OFF)
     @handler.handle(CustomAudio.LOOP_OFF)
     def on_loop_off(self, intent, session, pid=None):
         self.get_server().set_repeat(False, player_id=pid)
-        return audio_response("Repeat off")
+        return audio_response("Repeat off", text="Repeat Off")
 
     @handler.handle(Power.PLAYER_OFF)
     def on_player_off(self, intent, session, pid=None):
+        if not pid:
+            return self.on_all_off(intent, session)
         server = self.get_server()
         server.set_power(on=False, player_id=pid)
         player = server.players[pid]
@@ -193,6 +195,8 @@ class SqueezeAlexa(AlexaHandler):
 
     @handler.handle(Power.PLAYER_ON)
     def on_player_off(self, intent, session, pid=None):
+        if not pid:
+            return self.on_all_on(intent, session)
         server = self.get_server()
         server.set_power(on=True, player_id=pid)
         player = server.players[pid]
@@ -207,14 +211,14 @@ class SqueezeAlexa(AlexaHandler):
     @handler.handle(Power.ALL_ON)
     def on_all_on(self, intent, session, pid=None):
         self.get_server().set_all_power(on=True)
-        return speech_response("Players all on", "All On.")
+        return audio_response(speech="Ready to rock", text="All On.")
 
     @handler.handle(RandomMix.PLAY)
     def on_random_mix(self, intent, session, pid=None):
         server = self.get_server()
         try:
             slots = [v.get('value') for k, v in intent['slots'].items()
-                      if k.endswith('Genre')]
+                     if k.endswith('Genre')]
             print_d("Extracted genre slots: %s" % slots)
         except KeyError:
             print_d("Couldn't process genres from: %s" % intent)

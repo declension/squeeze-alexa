@@ -37,23 +37,28 @@ def speech_fragment(title, text, reprompt_text=None,
     return output
 
 
-def audio_response(text):
+def audio_response(speech=None, text=None):
     output = {
-        "directives": [
+        'directives': [
             {
-                "type": "AudioPlayer.Play",
-                "playBehavior": "REPLACE_ALL",
-                "audioItem": {
-                    "stream": {
-                        "token": "beep-50",
-                        "url": RESPONSE_AUDIO_FILE_URL,
-                        "offsetInMilliseconds": 0
+                'type': 'AudioPlayer.Play',
+                'playBehavior': 'REPLACE_ALL',
+                'audioItem': {
+                    'stream': {
+                        'token': 'beep',
+                        'url': RESPONSE_AUDIO_FILE_URL,
+                        'offsetInMilliseconds': 0
                     }
                 }
             }
         ],
         'shouldEndSession': True
     }
+    if speech:
+        output['outputSpeech'] = {'type': 'PlainText',
+                                  'text': speech}
+    if text:
+        output['card'] = {'type': 'Simple', 'content': text}
     return _build_response(output)
 
 
