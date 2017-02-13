@@ -15,11 +15,14 @@ from os.path import dirname, realpath, join
 from pprint import pprint
 from unittest import TestCase
 
+import time
+
 from squeezealexa.squeezebox.server import Server
 
 SOME_PID = "zz:zz:zz"
 FAKE_ID = "ab:cd:ef:gh"
 ROOT = dirname(dirname(__file__))
+GENRES = open(join(ROOT, 'metadata/slots/genres.txt')).read().splitlines()
 
 sys.path.append(realpath(dirname(dirname(__file__))))
 from squeezealexa.main import SqueezeAlexa
@@ -34,7 +37,8 @@ class FakeSqueeze(Server):
     def __init__(self):
         self.lines = []
         self.cur_player_id = FAKE_ID
-        self._genres = open(join(ROOT, 'metadata/slots/genres.txt')).read().splitlines()
+        self._genres = GENRES
+        self._created_time = time.time()
 
     @property
     def genres(self):

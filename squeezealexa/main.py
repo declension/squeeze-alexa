@@ -63,7 +63,7 @@ class SqueezeAlexa(AlexaHandler):
         :return a Server instance
         :rtype Server
         """
-        if not cls._server:
+        if not cls._server or cls._server.is_stale():
             sslw = SslSocketWrapper(hostname=SERVER_HOSTNAME, port=SERVER_PORT,
                                     ca_file=CA_FILE_PATH,
                                     cert_file=CERT_FILE_PATH,

@@ -14,6 +14,8 @@ from __future__ import print_function
 
 import urllib
 
+import time
+
 print_d = print_w = print
 
 
@@ -53,6 +55,7 @@ class Server(object):
 
     _TIMEOUT = 10
     _MAX_FAILURES = 3
+    _MAX_CACHE_SECS = 600
 
     def __init__(self, ssl_wrap, user=None, password=None,
                  cur_player_id=None, debug=False):
@@ -70,6 +73,10 @@ class Server(object):
         self.cur_player_id = cur_player_id or self.players.keys()[0]
         print_d("Default player is now %s " % self.cur_player_id[-5:])
         self.__genres = []
+        self._created_time = time.time()
+
+    def is_stale(self):
+        return (time.time() - self._created_time) > self._MAX_CACHE_SECS
 
     def log_in(self):
         result = self.__a_request("login %s %s" % (self.user, self.password))
