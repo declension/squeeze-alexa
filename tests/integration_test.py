@@ -75,7 +75,7 @@ class IntegrationTests(TestCase):
                             'secondaryGenre': {'value': 'House'}}}
 
         response = self.alexa.on_random_mix(intent, None)
-        assert self.stub.lines[-1] == resp('randomplay tracks')
+        assert self.stub.lines[-1] == resp('play 2')
         content = response['response']['card']['content']
         assert content.startswith('Playing mix of')
         assert 'Jungle' in content
