@@ -120,7 +120,7 @@ class Server(object):
             return
 
         if self._debug:
-            print_d(">>>> " + "\n..>> ".join(lines))
+            print_d("<<<< " + "\n..<< ".join(lines))
         request = "\n".join(lines) + "\n"
         raw_response = self.ssl_wrap.communicate(request, wait=wait)
         if not wait:
@@ -131,7 +131,7 @@ class Server(object):
         raw_response = raw_response.rstrip("\n")
         response = raw_response if raw else self._unquote(raw_response)
         if self._debug:
-            print_d("<<<< " + "\n..<< ".join(response.splitlines()))
+            print_d(">>>> " + "\n..>> ".join(response.splitlines()))
 
         def start_point(text):
             if first_word == 'login':
@@ -193,11 +193,21 @@ class Server(object):
         self.player_request("play", player_id=player_id)
 
     def play_random_mix(self, genre_list, player_id=None):
+        """Uses the (standard) Random Mix plugin"""
         gs = genre_list or []
         commands = ["randomplaygenreselectall 0"]
         commands += ["randomplaychoosegenre %s 1" % urllib.quote(g)
                      for g in gs]
         commands += ["playlist clear", "randomplay tracks"]
+        pid = player_id or self.cur_player_id
+        return self._request(["%s %s" % (pid, com) for com in commands])
+
+    def play_genres(self, genre_list, player_id=None):
+        gs = genre_list or []
+        commands = (["playlist clear", "playlist shuffle 1"] +
+                    ["playlist addalbum %s * *" % urllib.quote(genre)
+                     for genre in gs] +
+                    ["play 2"])
         pid = player_id or self.cur_player_id
         return self._request(["%s %s" % (pid, com) for com in commands])
 

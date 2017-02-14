@@ -11,9 +11,7 @@ if __name__ == '__main__':
                     cur_player_id=DEFAULT_PLAYER,
                     user=SERVER_USERNAME,
                     password=SERVER_PASSWORD)
-    print(server.get_current())
-    # print(server.get_status())
-    print(server.genres)
+    print(server.get_status())
+    # print(server.genres)
     print(" >> ".join(server.get_track_details().values()))
-    print(server.players[server.cur_player_id].id)
-    server.play_random_mix(["Rock Ballad", "Latin", "Blues"])
+    server.play_genres(["Rock Ballad", "Latin", "Blues"])

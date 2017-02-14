@@ -226,11 +226,11 @@ class SqueezeAlexa(AlexaHandler):
         else:
             lms_genres = self._genres_from_slots(slots, server.genres)
             if lms_genres:
-                server.play_random_mix(lms_genres)
+                server.play_genres(lms_genres)
                 gs = " and ".join(lms_genres)
                 return speech_response(
-                    "Playing random mix of %s" % gs,
-                    "Random mix of %s" % gs)
+                    "Playing mix of %s" % gs,
+                    "Playing mix of %s" % gs)
             else:
                 return speech_response(
                     "Don't understand genre '%s'" % slots,
