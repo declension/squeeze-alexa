@@ -1,1 +1,1 @@
-fuzzywuzzy
+fuzzywuzzy==0.12
