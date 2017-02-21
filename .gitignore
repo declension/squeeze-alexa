@@ -25,6 +25,7 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
+*.whl
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
@@ -73,8 +74,8 @@ ENV/
 *.iml
 
 # Custom
-/bin/
 /include/
+
 /pip-selfcheck.json
 *.pem
 metadata/audio/
