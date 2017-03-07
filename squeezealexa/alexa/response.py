@@ -13,20 +13,20 @@
 from squeezealexa.settings import RESPONSE_AUDIO_FILE_URL
 
 
-def speech_fragment(title, text, reprompt_text=None,
-                    end=True):
+def speech_fragment(text, title=None, reprompt_text=None, end=True):
     output = {
         'outputSpeech': {
             'type': 'PlainText',
             'text': text
         },
-        'card': {
+        'shouldEndSession': end
+    }
+    if title:
+        output['card'] = {
             'type': 'Simple',
             'title': title,
             'content': text
-        },
-        'shouldEndSession': end
-    }
+        }
     if reprompt_text:
         output['reprompt'] = {
             'outputSpeech': {
@@ -62,9 +62,9 @@ def audio_response(speech=None, text=None):
     return _build_response(output)
 
 
-def speech_response(title, text=None, reprompt_text=None, end=True,
+def speech_response(title=None, text=None, reprompt_text=None, end=True,
                     store=None):
-    speechlet_response = speech_fragment(title=title, text=text,
+    speechlet_response = speech_fragment(text=text, title=title,
                                          reprompt_text=reprompt_text, end=end)
     return _build_response(speechlet_response, store=store)
 

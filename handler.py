@@ -22,9 +22,11 @@ def lambda_handler(event, context):
 
     request = event['request']
     req_type = request['type']
+
     if req_type.startswith('AudioPlayer'):
         print_d("Ignoring %s callback %s"
                 % (request['type'], request['requestId']))
+        SqueezeAlexa.touch_audio()
         return _build_response({})
 
     session = _verified_app_session(event)
