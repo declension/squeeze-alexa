@@ -8,4 +8,4 @@ install:
 
 script:
   - PYTHONPATH=. py.test -v tests
-  - pep8 .
+  - pep8 --ignore=E402 .
