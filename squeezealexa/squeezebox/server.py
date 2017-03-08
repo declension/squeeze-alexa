@@ -112,7 +112,7 @@ class Server(object):
             return []
         if not (lines and len(lines)):
             return []
-        lines = map(str.rstrip, lines)
+        lines = [str.rstrip(l) for l in lines]
 
         first_word = lines[0].split()[0]
         if not (self.ssl_wrap.is_connected or first_word == 'login'):
@@ -206,7 +206,7 @@ class Server(object):
         gs = genre_list or []
         commands = (["playlist clear", "playlist shuffle 1"] +
                     ["playlist addalbum %s * *" % urllib.quote(genre)
-                     for genre in gs] +
+                     for genre in gs if genre] +
                     ["play 2"])
         pid = player_id or self.cur_player_id
         return self._request(["%s %s" % (pid, com) for com in commands])
@@ -242,7 +242,7 @@ class Server(object):
     def get_status(self, player_id=None):
         response = self.player_request("status - 2", player_id=player_id,
                                        raw=True)
-        return self.__pairs_from(response)
+        return dict(self.__pairs_from(response))
 
     def next(self, player_id=None):
         self.player_request("playlist jump +1", player_id=player_id)
