@@ -6,10 +6,9 @@ Prerequisites
 -------------
  * A running LMS instance on a Linux-ish server or NAS (and some squeezebox players)
  * An Amazon Echo / Echo Dot
- * An Amazon developer account, and an Alexa one (tip: use the same email, or wish you had)
- * A reasonable router (must support port forwarding, and DDNS of some sort)
- * Some time and a little knowledge of: Linux, networking, AWS (Lambda), SSL
- * Some hair to pull out.
+ * An Amazon developer account, and an Alexa one (tip: use the same email, or you'll wish you had)
+ * A router that supports port forwarding, and ideally DDNS of some sort (nearly all modern routers do).
+ * Some time and a little knowledge of: Linux, networking, AWS / Lambda, SSL
  * _Optional_: a domain name, and a "real" (not self-signed) SSL certificate to match.
 
 
@@ -17,7 +16,7 @@ Prerequisites
 Tunnel the CLI
 --------------
 ### Background
-When you open up your LMS to the world, well, you _really_ don't want do that, but for Alexa to work this needs to happen.
+When you open up your LMS to the world, well, you _really_ don't want do that, but for Alexa to work this generally<sup>*</sup> needs to happen.
 See [Connecting Remotely](http://wiki.slimdevices.com/index.php/Connecting_remotely) on the wiki, but it's more around Web than CLI (which is how `squeeze-alexa` works).
 
 You _could_ use the username / password auth LMS CLI provides, but for these problems:
@@ -26,7 +25,9 @@ You _could_ use the username / password auth LMS CLI provides, but for these pro
  * These aren't rotated, nor do they include a token (à la CSRF) or nonce - so replay attacks are easy too.
  * There is no rate limiting or banning in LMS, so brute-forcing is easy (though it does hang up IIRC).
 
-By mandating client TLS (aka SSL), `squeeze-alexa` avoids most of these problems.
+By mandating client-side TLS (aka SSL) with a private cert, `squeeze-alexa` avoids most of these problems.
+
+<sup>* Though people with fixed servers (i.e. not just using Lambdas) are beginning to try outwards-only tunnels or persistent websocket connections which could show promise here</sup>
 
 ### TLS Implementations
 I chose to go with [stunnel](http://stunnel.org/), but some exploration shows that other options could work here (**feedback wanted!**)
@@ -156,12 +157,14 @@ Set up your Alexa Skill
 
 #### ...or manually
  * Get and extract the dependencies
-      ```
+      ```bash
       pip --isolated download -r requirements.txt
       unzip fuzzywuzzy-*.whl "fuzzywuzzy/*"
       ```
  * Create a zip of all the Lambda code and config needed:
-     `zip upload.zip squeezealexa/* fuzzywuzzy/* *.py *.json *.pem`
+       ```bash
+       zip upload.zip squeezealexa/* fuzzywuzzy/* *.py *.json *.pem
+       ```
  * Upload this `upload.zip` in the AWS Lambda interface ([as described here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function#about-lambda-functions-and-custom-skills))
 
 ### Update the Interaction Model
@@ -209,11 +212,9 @@ openssl s_client -connect $MY_HOSTNAME:$MY_PORT -cert squeeze-alexa.pem | openss
 
 If successful, this should give you a PEM-style certificate block with some info about your cert).
 
-### Resilience / performance testing the SSL connection
+#### Resilience / performance testing the SSL connection
 For the hardcore amongst you, you can check performance (and that there are no TLS bugs / obvious holes):
 
 ```bash
 openssl s_time -bugs -connect $MY_HOSTNAME:$MY_PORT -cert squeeze-alexa.pem -verify 4
 ```
-
-
