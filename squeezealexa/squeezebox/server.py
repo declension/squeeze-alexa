@@ -180,9 +180,9 @@ class Server(object):
     def player_request(self, line, player_id=None, raw=False, wait=True):
         """Makes a single request to a particular player (or the current)"""
         try:
-            player_id = (player_id
-                         or self.cur_player_id
-                         or list(self.players.values())[0]["playerid"])
+            player_id = (player_id or
+                         self.cur_player_id or
+                         list(self.players.values())[0]["playerid"])
             return self._request(["%s %s" % (player_id, line)],
                                  raw=raw, wait=wait)[0]
         except IndexError:

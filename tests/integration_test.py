@@ -82,6 +82,3 @@ class IntegrationTests(TestCase):
         assert 'House' in content
         # 3 = reset genres, clear, play. 4 = 2 + 2
         assert len(self.stub.lines) <= 4 + 3
-
-
-

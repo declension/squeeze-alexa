@@ -28,7 +28,6 @@ class FakeSsl(SslSocketWrapper):
         self.player_id = fake_id
 
     def communicate(self, data, wait=True):
-        #return "\n".join([s + " OK" for s in data.splitlines()]) + "\n"
         if data.startswith('serverstatus'):
             fake_status = (' player%20count:1 playerid:{pid} name:{name}\n'
                            .format(name=self.player_name, pid=self.player_id))

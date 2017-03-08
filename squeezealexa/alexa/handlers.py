@@ -10,6 +10,7 @@
 #
 #   See LICENSE for full license
 
+
 class AlexaHandler(object):
 
     def on_session_ended(self, session_ended_request, session):

@@ -10,6 +10,7 @@
 #
 #   See LICENSE for full license
 
+
 class Audio(object):
     (RESUME, PAUSE,
      NEXT, PREVIOUS,
