@@ -37,7 +37,7 @@ def speech_fragment(text, title=None, reprompt_text=None, end=True):
     return output
 
 
-def audio_response(speech=None, text=None):
+def audio_response(speech=None, text=None, title=None):
     output = {
         'directives': [
             {
@@ -58,7 +58,11 @@ def audio_response(speech=None, text=None):
         output['outputSpeech'] = {'type': 'PlainText',
                                   'text': speech}
     if text:
-        output['card'] = {'type': 'Simple', 'content': text}
+        card = {'type': 'Simple', 'content': text}
+        if title:
+            card['title'] = title
+        output['card'] = card
+
     return _build_response(output)
 
 

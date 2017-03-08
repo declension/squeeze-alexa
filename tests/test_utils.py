@@ -12,12 +12,12 @@
 
 from unittest import TestCase
 
-from squeezealexa.utils import english_join
+from squeezealexa.utils import english_join, sanitise_genre
 
 LOTS = ['foo', 'bar', 'baz', 'quux']
 
 
-class TestEnglish_join(TestCase):
+class TestEnglishJoin(TestCase):
     def test_basics(self):
         assert english_join([]) == ''
         assert english_join(['foo']) == 'foo'
@@ -33,3 +33,20 @@ class TestEnglish_join(TestCase):
 
     def test_skips_falsey(self):
         assert english_join(['foo', None, 'bar', '']) == 'foo and bar'
+
+
+class TestSanitise(TestCase):
+    def test_ands(self):
+        assert sanitise_genre('Drum & Bass') == 'Drum N Bass'
+        assert sanitise_genre('Drum&Bass') == 'Drum N Bass'
+        assert sanitise_genre('R&B') == 'R N B'
+        assert sanitise_genre('Jazz+Funk') == 'Jazz N Funk'
+
+    def test_punctuation(self):
+        assert sanitise_genre('Alt. Rock') == 'Alt Rock'
+        assert sanitise_genre('Alt.Rock') == 'Alt Rock'
+        assert sanitise_genre('Trip-hop') == 'Trip hop'
+        assert sanitise_genre('Pop/Funk') == 'Pop Funk'
+
+    def test_apostrophes(self):
+        assert sanitise_genre("10's pop") == '10s pop'

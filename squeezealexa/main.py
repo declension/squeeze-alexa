@@ -24,8 +24,7 @@ from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.ssl_wrap import SslSocketWrapper
-from squeezealexa.utils import english_join
-
+from squeezealexa.utils import english_join, sanitise_genre
 
 MIN_CONFIDENCE = 85
 MIN_MULTI_CONFIDENCE = 90
@@ -121,8 +120,14 @@ class SqueezeAlexa(AlexaHandler):
         details = self.get_server().get_track_details()
         title = details['current_title']
         artist = details['artist']
-        desc = "Currently playing: \"%s\", by %s" % (title, artist)
-        heading = "Now playing: \"%s\"" % title
+        if title:
+            desc = "Currently playing: \"%s\"" % title
+            if artist:
+                desc += (", by %s" % artist)
+            heading = "Now playing: \"%s\"" % title
+        else:
+            desc = "Nothing playing."
+            heading = None
         return self.smart_response(text=heading, speech=desc)
 
     @handler.handle(Custom.INC_VOL)
@@ -200,7 +205,8 @@ class SqueezeAlexa(AlexaHandler):
         server = self.get_server()
         server.set_power(on=False, player_id=pid)
         player = server.players[pid]
-        return self.smart_response(text="Switched %s off" % (player),
+        return self.smart_response(title="Switched %s off" % player.name,
+                                   text="Switched %s off" % player,
                                    speech="%s is now off" % player.name)
 
     @handler.handle(Power.PLAYER_ON)
@@ -210,7 +216,8 @@ class SqueezeAlexa(AlexaHandler):
         server = self.get_server()
         server.set_power(on=True, player_id=pid)
         player = server.players[pid]
-        return self.smart_response(text="Switched %s on" % player,
+        return self.smart_response(title="Switched %s on" % player.name,
+                                   text="Switched %s on" % player,
                                    speech="%s is now on" % player.name)
 
     @handler.handle(Power.ALL_OFF)
@@ -237,7 +244,7 @@ class SqueezeAlexa(AlexaHandler):
             lms_genres = self._genres_from_slots(slots, server.genres)
             if lms_genres:
                 server.play_genres(lms_genres)
-                gs = english_join(lms_genres)
+                gs = english_join(sanitise_genre(g) for g in lms_genres)
                 return self.smart_response(text="Playing mix of %s" % gs,
                                            speech="Playing mix of %s" % gs)
             else:
@@ -299,7 +306,7 @@ class SqueezeAlexa(AlexaHandler):
     def audio_enabled(self):
         return (time.time() - self._audio_touched) < AUDIO_TIMEOUT_SECS
 
-    def smart_response(self, text=None, speech=None):
+    def smart_response(self, title=None, text=None, speech=None):
         if self.audio_enabled:
-            return speech_response(title=text, text=speech)
-        return audio_response(speech, text)
+            return speech_response(title=title or text, text=speech)
+        return audio_response(speech=speech, text=text, title=title)
