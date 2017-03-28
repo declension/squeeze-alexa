@@ -10,16 +10,18 @@ This is still in beta, so feedback and help with documenting welcome - please ju
 
 ### Aims
 
- * Intuitive voice control over most common audio scenarios.
+ * Intuitive voice control over common music scenarios
  * Low latency (given that it's a cloud service), i.e. fast at reacting to your commands.
  * Decent security (hopefully)
+ * Extensive support for choosing songs by (multiple) genres.
+ * Helpful, conversational responses / interaction.
 
 
 ### Things it is not
 
  * Full coverage of all LMS features, plugins or use cases - but it aims to be good at what it does.
- * A public / multi-user skill. This means **you will need to set up Alexa and AWS developer accounts**.
- * A native LMS (Squeezeserver) plugin. Yes, more server fiddling - but there's no need to touch your LMS.
+ * A public / multi-user skill. This means **you will need Alexa and AWS developer accounts**.
+ * A native LMS (Squeezeserver) plugin. So whilst this would be cool, at least there's no need to touch your LMS.
  * Easy to set up :scream:
 
 ### Try these out
@@ -32,6 +34,7 @@ These should all work (usually):
  * _Alexa, ask Squeezebox what's playing_
  * _Alexa, tell Squeezebox to turn it up in the living room_
  * _Alexa, tell Squeezebox to play some blues and some jazz_
+ * _Alexa, tell Squeezebox to play a mix of Jungle, Dubstep and Hip-Hop_
  * _Alexa, tell Squeezebox to turn shuffle on / off_ (or just _Alexa, Shuffle On/Off_)
  * _Alexa, tell Squeezebox to turn everything off_
 

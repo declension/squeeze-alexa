@@ -11,13 +11,16 @@ Prerequisites
  * Some time and a little knowledge of: Linux, networking, AWS / Lambda, SSL
  * _Optional_: a domain name, and a "real" (not self-signed) SSL certificate to match.
 
+Networking Overview
+-------------------
+![Networking diagram](https://raw.githubusercontent.com/declension/squeeze-alexa/master/metadata/squeeze-alexa-networking.svg)
 
 
 Tunnel the CLI
 --------------
 ### Background
-When you open up your LMS to the world, well, you _really_ don't want do that, but for Alexa to work this generally<sup>*</sup> needs to happen.
-See [Connecting Remotely](http://wiki.slimdevices.com/index.php/Connecting_remotely) on the wiki, but it's more around Web than CLI (which is how `squeeze-alexa` works).
+When you open up your LMS to the world, well, you _don't really_ want do that, but for Alexa to work this generally<sup>*</sup> needs to happen.
+See [connecting remotely](http://wiki.slimdevices.com/index.php/Connecting_remotely) on the wiki, but it's more around Web than CLI (which is how `squeeze-alexa` works).
 
 You _could_ use the username / password auth LMS CLI provides, but for these problems:
 
@@ -79,12 +82,13 @@ I haven't tried, but [this forum posting](https://community.netgear.com/t5/Commu
 Some other NAS drives can use `ipkg`, in which case see above. Else, find a way of installing it (you can build from source if you know how)
 
 ### Configure ports
- * Forward a port on your router to the stunnel / haproxy port on your server.
+ * Generally the connections go `lambda -> router:extport -> server:sslport -> lms:9090` (see diagram above). Generally, `lms` and `server` will be the same host (Synology / ReadyNAS / whatever).
+ * Forward a port on your router to the stunnel / haproxy port (`sslport` above) on your server. For sanity, it's probably easiest to use the same port incoming as outgoing in your firewall rule.
 
 ### Set up DDNS
  * This is recommended if you don't have fixed IP, so that there's a consistent address to reach your home...
  * Try www.dyndns.org or www.noip.com, or better still your NAS drive or router might be pre-configured with its own (Synology has their own dynamic DNS setup, for example).
- * Note down this address (e.g. `bob-the-builder.noip.com`). We'll call it `MY_HOSTNAME` later.
+ * Note down this _external_ (Internet) address (e.g. `bob-the-builder.noip.com`). We'll call it `MY_HOSTNAME` later.
 
 ### Create certificate(s)
 You can skip this step if you already have one, of course, so long as it's the same address used for `MY_HOSTNAME` above.
@@ -97,7 +101,14 @@ openssl req -x509 -newkey rsa:2048 -sha256 -nodes -keyout key.pem -out cert.pem 
 cat cert.pem key.pem > squeeze-alexa.pem && rm -f key.pem
 ```
 
+_TODO: document optional creation of separate server cert for ~~more complicated~~ better(ish) security._
+
 ### Configure stunnel
+
+#### Copy certificate
+Copy the `squeeze-alexa.pem` to somewhere stunnel can see it, e.g. `/opt/etc/stunnel/` on Synology.
+
+#### Edit config
 You'll need something to edit your `stunnel.conf` and add this at the end:
 
     [slim]
@@ -105,13 +116,12 @@ You'll need something to edit your `stunnel.conf` and add this at the end:
     connect = MY-HOSTNAME:9090
 
     verify = 3
-    CAfile = /opt/etc/stunnel/stunnel.pem
-    cert = /opt/etc/stunnel/stunnel.pem
+    CAfile = /opt/etc/stunnel/squeeze-alexa.pem
+    cert = /opt/etc/stunnel/squeeze-alexa.pem
     TIMEOUTclose = 0
 
 As before `MY-PORT` and `MY-HOSTNAME` should be substituted with your own values. Note that here `MY-HOSTNAME` could probably just be blank (i.e. `localhost`), but I like to be sure we're using the DNS.
-
-
+Make sure you don't leave any other services (IMAPS, HTTPS etc) enabled by mistake.
 
 Test your connectivity
 ----------------------
@@ -167,6 +177,10 @@ Set up your Alexa Skill
        ```
  * Upload this `upload.zip` in the AWS Lambda interface ([as described here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function#about-lambda-functions-and-custom-skills))
 
+#### ...or with the AWS CLI
+You can now use the [AWS CLI `update-function-code` call](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html) to upload the zip from the manual step.
+_TODO: expand on this_
+
 ### Update the Interaction Model
  * These are kept here in [`metadata/`](metadata/)
  * In your Amazon Developer portal, configure your new skill:
@@ -201,16 +215,21 @@ If you think it's the speech, try using the test input page on the Amazon dev ac
 
 If all else fails, raise an issue here...
 
-### Testing the server and client certs directly
-For `$MY_HOSTNAME` and `$MY_PORT` you can substitute your home IP / domain name (as used above):
+### Debugging SSL / certificate problems directly
+For `$MY_HOSTNAME` and `$MY_PORT` you can substitute your home IP / domain name (as used above). It also assumes your client cert is called `squeeze-alexa.pem`:
 
 ```bash
 openssl s_client -connect $MY_HOSTNAME:$MY_PORT -cert squeeze-alexa.pem | openssl x509
 ```
-
-(It also assumes your client cert is called `squeeze-alexa.pem`)
-
+Type <kbd>Ctrl</kbd><kbd>d</kbd> to exit.
 If successful, this should give you a PEM-style certificate block with some info about your cert).
+
+For much more detail:
+```bash
+openssl s_client -connect $MY_HOSTNAME:$MY_PORT -cert squeeze-alexa.pem
+```
+Type `status`, and if a successful end-to-end connection is made you should see some gibberish that looks a bit like:
+`...status   player_name%3AUpstairs...player_connected%3A1 player_ip%3A192.168.1...`
 
 #### Resilience / performance testing the SSL connection
 For the hardcore amongst you, you can check performance (and that there are no TLS bugs / obvious holes):
