@@ -64,7 +64,12 @@ class SslSocketWrapper(object):
         elif not peer_cert:
             print_w("Unvalidated server cert at %s" % self)
         else:
-            print_d("Validated cert for %s" % (peer_cert['subject'],))
+            subject_data = peer_cert['subject']
+            try:
+                data = {k: v for d in subject_data for k, v in d}
+            except Exception:
+                data = subject_data
+            print_d("Validated cert for %s" % (data, ))
         self.is_connected = True
 
     @staticmethod

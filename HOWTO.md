@@ -135,7 +135,9 @@ This assumes you have `python2`. You can run this more explicitly (e.g. on Windo
 
     python bin/local_test.py
 
-If you get some stuff about what's playing and next, we're good to go! If you get an exception - try to see what the message is.
+If you get some stuff about what's playing and next, we're good to go!
+
+**Update**: `local_test.py` can now diagnose _some_ common connection problems :smile:
 
 
 
@@ -224,9 +226,9 @@ openssl s_client -connect $MY_HOSTNAME:$MY_PORT -cert squeeze-alexa.pem | openss
 Type <kbd>Ctrl</kbd><kbd>d</kbd> to exit.
 If successful, this should give you a PEM-style certificate block with some info about your cert).
 
-For much more detail:
+For more debugging:
 ```bash
-openssl s_client -connect $MY_HOSTNAME:$MY_PORT -cert squeeze-alexa.pem
+openssl s_client -connect $MY_HOSTNAME:$MY_PORT -quiet -cert squeeze-alexa.pem
 ```
 Type `status`, and if a successful end-to-end connection is made you should see some gibberish that looks a bit like:
 `...status   player_name%3AUpstairs...player_connected%3A1 player_ip%3A192.168.1...`
