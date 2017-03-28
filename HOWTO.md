@@ -13,7 +13,7 @@ Prerequisites
 
 Networking Overview
 -------------------
-![Networking diagram](metadata/squeeze-alexa-networking.svg)
+![Networking diagram](metadata/squeeze-alexa-networking.png)
 
 
 Tunnel the CLI
