@@ -68,6 +68,8 @@ if __name__ == '__main__':
         if 'Connection refused' in e.strerror:
             die("nothing listening on port %s:%s. Check settings."
                 % (SERVER_HOSTNAME, SERVER_PORT))
-        die('wrong path to certificate in settings?')
+        elif 'Connection reset by peer' in e.strerror:
+            die("server doesn't like you. Check the SSL tunnel logs")
+        die('wrong CERT_NAME (or CERT_PATH really) in settings?')
     except Exception as e:
         die()
