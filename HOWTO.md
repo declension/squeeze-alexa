@@ -92,6 +92,7 @@ Some other NAS drives can use `ipkg`, in which case see above. Else, find a way 
 
 ### Create certificate(s)
 You can skip this step if you already have one, of course, so long as it's the same address used for `MY_HOSTNAME` above.
+This should be working on your _local_ network as well, i.e. make sure your server knows that it's the address at `MY_HOSTNAME`.
 
 It's worth reading up on OpenSSL, it's crazily powerful.
 If that's a bit TL;DR then here is a fairly secure setup, inspired largely by [this openssl SO post](https://stackoverflow.com/questions/10175812/how-to-create-a-self-signed-certificate-with-openssl)
@@ -109,7 +110,7 @@ _TODO: document optional creation of separate server cert for ~~more complicated
 Copy the `squeeze-alexa.pem` to somewhere stunnel can see it, e.g. `/opt/etc/stunnel/` on Synology.
 
 #### Edit config
-You'll need something to edit your `stunnel.conf` and add this at the end:
+You'll need something to edit your `stunnel.conf` (e.g. `vim` or `nano`) and add this at the end, referring to the cert path you just used above:
 
     [slim]
     accept =  MY-PORT
@@ -118,10 +119,19 @@ You'll need something to edit your `stunnel.conf` and add this at the end:
     verify = 3
     CAfile = /opt/etc/stunnel/squeeze-alexa.pem
     cert = /opt/etc/stunnel/squeeze-alexa.pem
-    TIMEOUTclose = 0
 
-As before `MY-PORT` and `MY-HOSTNAME` should be substituted with your own values. Note that here `MY-HOSTNAME` could probably just be blank (i.e. `localhost`), but I like to be sure we're using the DNS.
-Make sure you don't leave any other services (IMAPS, HTTPS etc) enabled by mistake.
+As before `MY-PORT` and `MY-HOSTNAME` should be substituted with your own values.Note that here `MY-HOSTNAME` here is referring to the LMS address as seen from the proxy, i.e. internally. This could usually just be blank (==`localhost`), but I like to be _sure_ we're using the DNS setup and that routing works internally, so...
+
+#### Check routing
+
+From your server, check this works (substitute `MY-SERVER` as before)
+```bash
+$ ping -c 4 localhost
+$ ping -c 4 MY-SERVER
+```
+If the latter fails, try using `localhost`, but it's better to set up your DNS to work internally, e.g. add this to your `/etc/hosts`:
+
+    127.0.0.1   localhost MY-SERVER
 
 Test your connectivity
 ----------------------
