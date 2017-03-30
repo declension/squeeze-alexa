@@ -41,7 +41,7 @@ def run_diagnostics(sslw):
                                        status.get('artist', 'Unknown artist')))
 
 
-def die(help="No idea, sorry."):
+def die(help="no idea, sorry."):
     print_exc()
     print("\n>>>> Failed with %s - %s <<<<" % (type(e).__name__, help))
     sys.exit(2)
@@ -66,10 +66,14 @@ if __name__ == '__main__':
         die()
     except IOError as e:
         if 'Connection refused' in e.strerror:
-            die("nothing listening on port %s:%s. Check settings."
+            die("nothing listening on %s:%s. "
+                "Check settings, or (re)start server."
                 % (SERVER_HOSTNAME, SERVER_PORT))
         elif 'Connection reset by peer' in e.strerror:
-            die("server doesn't like you. Check the SSL tunnel logs")
-        die('wrong CERT_NAME (or CERT_PATH really) in settings?')
+            die("server killed the connection - handshake error? "
+                "Check the SSL tunnel logs")
+        elif 'No such file or directory' in e.strerror:
+            die('wrong CERT_NAME (or CERT_PATH) in settings probably')
+        die("Connection problem (%s)" % e.strerror)
     except Exception as e:
-        die()
+        die("no idea (%s)" % str(e))
