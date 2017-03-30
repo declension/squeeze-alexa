@@ -15,6 +15,7 @@ Networking Overview
 -------------------
 ![Networking diagram](metadata/squeeze-alexa-networking.png)
 
+Note how the _arbitrary_ ports are not labelled - see [setting up ports](#Configure ports).
 
 Tunnel the CLI
 --------------
@@ -82,13 +83,18 @@ I haven't tried, but [this forum posting](https://community.netgear.com/t5/Commu
 Some other NAS drives can use `ipkg`, in which case see above. Else, find a way of installing it (you can build from source if you know how)
 
 ### Configure ports
- * Generally the connections go `lambda -> router:extport -> server:sslport -> lms:9090` (see diagram above). Generally, `lms` and `server` will be the same host (Synology / ReadyNAS / whatever).
- * Forward a port on your router to the stunnel / haproxy port (`sslport` above) on your server. For sanity, it's probably easiest to use the same port incoming as outgoing in your firewall rule.
+ * Generally the connections go `lambda -> router:extport -> server:sslport -> lms:9090` (see diagram above). Most people will have `lms` and `server` on the same host (Synology / ReadyNAS / whatever).
+ * Choose some values for `extport` and `sslport` e.g. `19090`. For sanity, it's probably easiest to use the same port externally as internally, i.e. `extport == sslport`
+ * On your router, forward `extport` to the stunnel / haproxy port (`sslport`) on that server.
 
 ### Set up DDNS
  * This is recommended if you don't have fixed IP, so that there's a consistent address to reach your home...
  * Try www.dyndns.org or www.noip.com, or better still your NAS drive or router might be pre-configured with its own (Synology has their own dynamic DNS setup, for example).
  * Note down this _external_ (Internet) address (e.g. `bob-the-builder.noip.com`). We'll call it `MY_HOSTNAME` later.
+
+### Optional: use your own domain
+ * If you have your own domain name (e.g. `house.example.com`) available, I strongly suggest using the DDNS to forward to this (with `CNAME`) especially if on dynamic IP. Why? Because DNS takes too long to refresh, but DDNS is near immediate.
+ * This will also allow you to create better-looking certificates against a meaningful _subject_ (domain name). It's then _this_ that will be your `MY_HOSTNAME` later.
 
 ### Create certificate(s)
 You can skip this step if you already have one, of course, so long as it's the same address used for `MY_HOSTNAME` above.
