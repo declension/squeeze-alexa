@@ -14,7 +14,7 @@ Prerequisites
 About this guide
 ----------------
  * This is still a work in progress but getting better all the time.
- * If you've followed this guide and are getting stuck, see [TROUBLESHOOTING](docs/TROUBLESHOOTING.md).
+ * If you've followed this guide and are getting stuck, see [TROUBLESHOOTING](TROUBLESHOOTING.md).
  * If you want to add some helpful detail to make it easier for others, that's great - please raise an issue first!
 
 Networking Overview
