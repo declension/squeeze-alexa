@@ -43,4 +43,4 @@ Most commands can take a player name, or will remember the default / last player
 
 I want!
 -------
-See the [HOWTO](HOWTO.md) for the full details of installing and configuring your own squeeze-alexa instance.
+See the [HOWTO](docs/HOWTO.md) for the full details of installing and configuring your own squeeze-alexa instance, or [TROUBLESHOOTING](docs/TROUBLESHOOTING.md) if you're getting stuck.
