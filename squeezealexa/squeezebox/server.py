@@ -273,6 +273,9 @@ class Server(object):
         cmd = "mixer volume %s%.1f" % ('+' if delta > 0 else '', float(delta))
         self.player_request(cmd, player_id=player_id)
 
+    def get_info_total(self, name):
+        return self.__a_request("info total %s ?" % name) or 0
+
     def get_milliseconds(self):
         secs = self.player_request("time ?") or 0
         return float(secs) * 1000.0

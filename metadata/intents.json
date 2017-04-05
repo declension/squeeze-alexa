@@ -131,6 +131,18 @@
       "intent": "AllOnIntent"
     },
     {
+      "intent": "AlbumInfoIntent"
+    },
+    {
+      "intent": "ArtistInfoIntent"
+    },
+    {
+      "intent": "GenreInfoIntent"
+    },
+    {
+      "intent": "SongInfoIntent"
+    },
+    {
       "intent": "AMAZON.HelpIntent"
     }
   ]

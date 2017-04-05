@@ -50,3 +50,9 @@ class Custom(object):
     INC_VOL, DEC_VOL = ("%sVolumeIntent" % s for s in ["Increase", "Decrease"])
     CURRENT, SELECT_PLAYER = ("%sIntent" % s
                               for s in ["NowPlaying", "SelectPlayer"])
+
+
+class Info(object):
+    (ALBUM, ARTIST, GENRE, SONG) = ("%sInfoIntent" % s
+                                    for s in ["Album", "Artist",
+                                              "Genre", "Song"])

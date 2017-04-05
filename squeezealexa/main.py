@@ -18,7 +18,7 @@ from fuzzywuzzy import process
 
 from squeezealexa.alexa.handlers import AlexaHandler, IntentHandler
 from squeezealexa.alexa.intents import Audio, General, Custom, Power, \
-    CustomAudio, RandomMix
+    CustomAudio, RandomMix, Info
 from squeezealexa.alexa.response import audio_response, speech_response
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
@@ -94,6 +94,33 @@ class SqueezeAlexa(AlexaHandler):
         return self.smart_response(
             speech="Sorry, I don't know how to process \"%s\"" % intent_name,
             text="Unknown intent: '%s'" % intent_name)
+
+    def on_info(self, name):
+        details = self.get_server().get_info_total(name)
+        if details:
+            desc = "There are %s %s" % (details, name)
+            heading = "Number of %s" % name
+        else:
+            desc = "There are no %s." % name
+            heading = None
+
+        return self.smart_response(text=heading, speech=desc)
+
+    @handler.handle(Info.ALBUM)
+    def on_album(self, intent, session, pid=None):
+        return self.on_info("albums")
+
+    @handler.handle(Info.ARTIST)
+    def on_artist(self, intent, session, pid=None):
+        return self.on_info("artists")
+
+    @handler.handle(Info.GENRE)
+    def on_genre(self, intent, session, pid=None):
+        return self.on_info("genres")
+
+    @handler.handle(Info.SONG)
+    def on_song(self, intent, session, pid=None):
+        return self.on_info("songs")
 
     @handler.handle(Audio.RESUME)
     def on_resume(self, intent, session, pid=None):
