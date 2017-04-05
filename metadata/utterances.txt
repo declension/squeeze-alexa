@@ -20,6 +20,8 @@ SetVolumeIntent set volume to {Volume} in {Player}
 SetVolumeIntent set {Player} to {Volume} percent
 
 NowPlayingIntent what song is this
+NowPlayingIntent what is this song
+NowPlayingIntent what's this song
 NowPlayingIntent what is playing
 NowPlayingIntent what's playing
 NowPlayingIntent what is playing in the {Player}
@@ -27,7 +29,6 @@ NowPlayingIntent what is playing on the {Player} player
 NowPlayingIntent what's playing on the {Player} player
 NowPlayingIntent what are we listening to in the {Player}
 NowPlayingIntent what we are listening to in the {Player}
-
 
 SelectPlayerIntent select {Player}
 SelectPlayerIntent select {Player} player
@@ -61,14 +62,12 @@ TurnOffPlayerIntent switch {Player} off
 TurnOffPlayerIntent switch off {Player}
 TurnOffPlayerIntent switch {Player} player off
 
-
 TurnOnPlayerIntent turn {Player} on
 TurnOnPlayerIntent turn on {Player}
 TurnOnPlayerIntent turn {Player} player on
 TurnOnPlayerIntent switch {Player} on
 TurnOnPlayerIntent switch on {Player}
 TurnOnPlayerIntent switch {Player} player on
-
 
 AllOffIntent shut down
 AllOffIntent turn everything off
@@ -83,3 +82,16 @@ PlayRandomMixIntent play some {Genre} and some {SecondaryGenre}
 PlayRandomMixIntent play some {Genre} some {SecondaryGenre} and some {TertiaryGenre}
 PlayRandomMixIntent play a mix of {Genre} and {SecondaryGenre}
 PlayRandomMixIntent play a mix of {Genre} {SecondaryGenre} and {TertiaryGenre}
+
+AlbumInfoIntent how many albums
+AlbumInfoIntent how many albums are there
+AlbumInfoIntent how many albums do i have
+
+ArtistInfoIntent how many artists
+ArtistInfoIntent how many artists are there
+
+GenreInfoIntent how many genres
+GenreInfoIntent how many genres are there
+
+SongInfoIntent how many songs
+SongInfoIntent how many songs are there
