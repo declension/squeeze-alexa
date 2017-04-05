@@ -18,7 +18,7 @@ from fuzzywuzzy import process
 
 from squeezealexa.alexa.handlers import AlexaHandler, IntentHandler
 from squeezealexa.alexa.intents import Audio, General, Custom, Power, \
-    CustomAudio, RandomMix
+    CustomAudio, RandomMix, Info
 from squeezealexa.alexa.response import audio_response, speech_response
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
