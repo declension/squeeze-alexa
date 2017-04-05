@@ -100,23 +100,24 @@ class SqueezeAlexa(AlexaHandler):
         if details:
             desc = "There are %s %s" % (details, name)
             heading = "Number of %s" % name
-    else:
-        desc = "There are no %s." % name
+        else:
+            desc = "There are no %s." % name
             heading = None
+
         return self.smart_response(text=heading, speech=desc)
 
     @handler.handle(Info.ALBUM)
     def on_album(self, intent, session, pid=None):
         return self.on_info("albums")
-    
+
     @handler.handle(Info.ARTIST)
     def on_artist(self, intent, session, pid=None):
         return self.on_info("artists")
-    
+
     @handler.handle(Info.GENRE)
     def on_genre(self, intent, session, pid=None):
         return self.on_info("genres")
-    
+
     @handler.handle(Info.SONG)
     def on_song(self, intent, session, pid=None):
         return self.on_info("songs")
