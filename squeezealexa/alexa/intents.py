@@ -54,4 +54,5 @@ class Custom(object):
 
 class Info(object):
     (ALBUM, ARTIST, GENRE, SONG) = ("%sInfoIntent" % s
-                                    for s in ["Album", "Artist", "Genre", "Song"])
+                                    for s in ["Album", "Artist",
+                                              "Genre", "Song"])
