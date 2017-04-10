@@ -49,7 +49,7 @@ def die(help="no idea, sorry."):
 
 if __name__ == '__main__':
     try:
-        sslw = SslSocketWrapper(hostname=SERVER_HOSTNAME, port=SERVER_PORT,
+        sslw = SslSocketWrapper(hostname=SERVER_HOSTNAME, port=SERVER_SSL_PORT,
                                 ca_file=CA_FILE_PATH, cert_file=CERT_FILE_PATH,
                                 verify_hostname=VERIFY_SERVER_HOSTNAME)
         run_diagnostics(sslw)
@@ -68,7 +68,7 @@ if __name__ == '__main__':
         if 'Connection refused' in e.strerror:
             die("nothing listening on %s:%s. "
                 "Check settings, or (re)start server."
-                % (SERVER_HOSTNAME, SERVER_PORT))
+                % (SERVER_HOSTNAME, SERVER_SSL_PORT))
         elif 'Connection reset by peer' in e.strerror:
             die("server killed the connection - handshake error? "
                 "Check the SSL tunnel logs")

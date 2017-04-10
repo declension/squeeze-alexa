@@ -14,7 +14,7 @@ from os.path import dirname, join
 
 """
 This file contains settings with everything set to the defaults
-At the very least you need to set SERVER_HOSTNAME, SERVER_PORT and CERT_FILE.
+At the very least you need to set SERVER_HOSTNAME, SERVER_SSL_PORT.
 """
 
 
@@ -34,8 +34,9 @@ RESPONSE_AUDIO_FILE_URL = \
 SERVER_HOSTNAME = 'my-squeezebox-cli-proxy.example.com'
 """The public hostname / IP of your Squeezebox server CLI proxy"""
 
-SERVER_PORT = 9090
-"""The above server's port"""
+SERVER_SSL_PORT = 19090
+"""The above proxy server's listening port (that accepts TLS connections).
+For stunnel, this will be the same as `accept = ...`"""
 
 SERVER_USERNAME = None
 """A string containing the Squeezebox CLI username, or None if not required."""
