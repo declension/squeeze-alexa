@@ -141,7 +141,7 @@ class SqueezeAlexa(AlexaHandler):
     def on_dec_vol(self, intent, session, pid=None):
         self.get_server().change_volume(-12.5, player_id=pid)
         return self.smart_response(text="Decrease Volume",
-                                   speech="OK, it's quieter now.")
+                                   speech="OK, quieter now.")
 
     @handler.handle(Custom.SELECT_PLAYER)
     def on_select_player(self, intent, session, pid=None):
@@ -211,15 +211,19 @@ class SqueezeAlexa(AlexaHandler):
                                    speech="%s is now off" % player.name)
 
     @handler.handle(Power.PLAYER_ON)
-    def on_player_off(self, intent, session, pid=None):
+    def on_player_on(self, intent, session, pid=None):
         if not pid:
             return self.on_all_on(intent, session)
         server = self.get_server()
         server.set_power(on=True, player_id=pid)
         player = server.players[pid]
+        speech = "%s is now on" % player.name
+        if server.cur_player_id != pid:
+            speech += ", and is selected."
+        server.cur_player_id = pid
         return self.smart_response(title="Switched %s on" % player.name,
                                    text="Switched %s on" % player,
-                                   speech="%s is now on" % player.name)
+                                   speech=speech)
 
     @handler.handle(Power.ALL_OFF)
     def on_all_off(self, intent, session, pid=None):
