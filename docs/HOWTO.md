@@ -210,8 +210,9 @@ _TODO: expand on this_
  * In your Amazon Developer portal, configure your new skill:
  * Copy-paste [the utterances](metadata/utterances.txt) as the sample utterances
  * Copy-paste [intents.json](metdata/intents.json) into the Intents schema
- * Optional: Add a new slot type for `Genre`, and make sure to copy [genres.txt](metadata/slots/genres.txt) in there, adding if necessary. It's debateable how much this helps.
- * Optional: Add a new slot type for `Player`, and make sure to copy [genres.txt](metadata/slots/players.txt) in there, adding your player names if necessary.
+ * Optional: Add a new slot type for `Player`, and make sure to copy [players.txt](metadata/slots/players.txt) in there, adding your player names if it helps.
+ * Optional: Add a new slot type for `Genre`, and make sure to copy [genres.txt](metadata/slots/genres.txt) in there, extending if really necessary (there are all the standards, and quite a few more already)
+ * Optional: Add a new slot type for `Playlist`, and make sure to copy [playlists.txt](metadata/slots/players.txt) in there, adding your own for better results (avoiding short words helps, I find)
 
 ### Install your Skill on your Echo
  * Make sure you've enabled the testing checkbox for this skill in the developer portal

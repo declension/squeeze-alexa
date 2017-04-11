@@ -4,33 +4,42 @@ Downstairs
 Upstairs Music
 Downstairs Music
 
-Kitchen
-Kitchen Music
-
 Kitchenette
-Study
-Study Music
 Hall
 Hallway
 Alley
-Bedroom
-Bedroom Music
 Master Bedroom
 Spare Bedroom
 Spare Room
-Living Room
-Living Room Music
-Sitting Room
-Sitting Room Music
-Lounge
-Lounge Music
-Bathroom
-Bathroom Music
 Master Bathroom
 Guest Bathroom
+
+Bedroom
+Bedroom Music
+
+Kitchen
+Kitchen Music
+
+Study
+Study Music
+
+Living Room
+Living Room Music
+
+Sitting Room
+Sitting Room Music
+
+Lounge
+Lounge Music
+
+Bathroom
+Bathroom Music
+
 Attic
-Basement
-Cellar
 Attic Music
+
+Basement
 Basement Music
+
+Cellar
 Cellar Music

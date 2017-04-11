@@ -9,7 +9,7 @@
 #   (at your option) any later version.
 #
 #   See LICENSE for full license
-
+import random
 import re
 import unicodedata
 import sys
@@ -23,21 +23,35 @@ def english_join(items, final="and"):
     return sep.join(filter(None, [most] + items[-1:]))
 
 
-_spacifies = {i: u' ' for i in range(sys.maxunicode)
+_SPACIFIES = {i: u' ' for i in range(sys.maxunicode)
               if unicodedata.category(unichr(i)).startswith('P')}
 
-_removals = {ord(i): None for i in ['\'', '!']}
+_REMOVALS = {ord(i): None for i in ['\'', '!']}
+
+_SANITISE = {'&': ' N ',
+             '+': ' N ',
+             '$': 's'}
 
 
 def remove_punctuation(text):
     if not isinstance(text, unicode):
         text = text.decode('utf-8')
-    return text.translate(_removals).translate(_spacifies)
+    return text.translate(_REMOVALS).translate(_SPACIFIES)
 
 
-def sanitise_genre(genre):
-    if not genre:
+def sanitise_text(text):
+    """Makes a genre / playlist / artist name safer for Alexa output"""
+    if not text:
         return ""
-    no_amps = genre.replace('&', ' N ').replace('+', ' N ')
-    no_punc = remove_punctuation(no_amps)
+    safer = text
+    for (bad, good) in _SANITISE.items():
+        safer = safer.replace(bad, good)
+    no_punc = remove_punctuation(safer)
     return re.sub(r'\s{2,}', ' ', no_punc)
+
+
+def with_example(template, lst):
+    msg = template % len(lst)
+    if lst:
+        msg += " (e.g. \"%s\")" % random.choice(lst)
+    return msg

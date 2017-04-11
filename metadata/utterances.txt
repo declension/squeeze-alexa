@@ -83,3 +83,11 @@ PlayRandomMixIntent play some {Genre} and some {SecondaryGenre}
 PlayRandomMixIntent play some {Genre} some {SecondaryGenre} and some {TertiaryGenre}
 PlayRandomMixIntent play a mix of {Genre} and {SecondaryGenre}
 PlayRandomMixIntent play a mix of {Genre} {SecondaryGenre} and {TertiaryGenre}
+
+PlayPlaylistIntent play my {Playlist} playlist
+PlayPlaylistIntent play my {Playlist} playlist on {Player}
+PlayPlaylistIntent play my {Playlist} playlist in {Player}
+
+PlayPlaylistIntent play the {Playlist} playlist
+PlayPlaylistIntent play the {Playlist} playlist on {Player}
+PlayPlaylistIntent play the {Playlist} playlist in {Player}

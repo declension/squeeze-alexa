@@ -113,6 +113,19 @@
       ]
     },
     {
+      "intent": "PlayPlaylistIntent",
+      "slots": [
+        {
+          "name": "Player",
+          "type": "PLAYER"
+        },
+        {
+          "name": "Playlist",
+          "type": "PLAYLIST"
+        }
+      ]
+    },
+    {
       "intent": "ShuffleOnIntent"
     },
     {

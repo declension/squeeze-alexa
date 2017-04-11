@@ -13,7 +13,7 @@ This is still in beta, so feedback and help with documenting welcome - please ju
  * Intuitive voice control over common music scenarios
  * Low latency (given that it's a cloud service), i.e. fast at reacting to your commands.
  * Decent security (hopefully)
- * Extensive support for choosing songs by (multiple) genres.
+ * Extensive support for choosing songs by (multiple) genres, and now playlists (BETA)
  * Helpful, conversational responses / interaction.
 
 
@@ -24,19 +24,30 @@ This is still in beta, so feedback and help with documenting welcome - please ju
  * A native LMS (Squeezeserver) plugin. So whilst this would be cool, at least there's no need to touch your LMS.
  * Easy to set up :scream:
 
-### Try these out
+### Controlling your music
 
-These should all work (usually):
+These should all work (usually) in the current version:
 
+#### Playback
  * _Alexa, tell Squeezebox to play / pause_ (or just _Alexa, play / pause!_)
  * _Alexa, tell Squeezebox next / previous_ (or just _Alexa, next / previous!_)
- * _Alexa, tell Squeezebox to select Bedroom Player_
- * _Alexa, ask Squeezebox what's playing_
- * _Alexa, tell Squeezebox to turn it up in the living room_
- * _Alexa, tell Squeezebox to play some blues and some jazz_
- * _Alexa, tell Squeezebox to play a mix of Jungle, Dubstep and Hip-Hop_
  * _Alexa, tell Squeezebox to turn shuffle on / off_ (or just _Alexa, Shuffle On/Off_)
+
+#### Control
+ * _Alexa, tell Squeezebox to select the Bedroom player_
+ * _Alexa, tell Squeezebox to turn it down in the Living Room_
+ * _Alexa, ask Squeezebox to pump it up!_ (defaults to selected)
  * _Alexa, tell Squeezebox to turn everything off_
+
+
+#### Selecting Music
+ * _Alexa, tell Squeezebox to play some Blues and some Jazz_
+ * _Alexa, tell Squeezebox to play a mix of Jungle, Dubstep and Hip-Hop_
+ * _Alexa, ask Squeezebox to play my Sunday Morning playlist_
+ * _Alexa, tell Squeezebox to play the Bad-Ass Metal playlist!_
+
+#### Feedback
+ * _Alexa, ask Squeezebox what's playing \[in the Kitchen\]_
 
 Most commands can take a player name, or will remember the default / last player if not specified.
 

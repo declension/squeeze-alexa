@@ -12,7 +12,7 @@
 
 from unittest import TestCase
 
-from squeezealexa.utils import english_join, sanitise_genre
+from squeezealexa.utils import english_join, sanitise_text
 
 LOTS = ['foo', 'bar', 'baz', 'quux']
 
@@ -37,16 +37,19 @@ class TestEnglishJoin(TestCase):
 
 class TestSanitise(TestCase):
     def test_ands(self):
-        assert sanitise_genre('Drum & Bass') == 'Drum N Bass'
-        assert sanitise_genre('Drum&Bass') == 'Drum N Bass'
-        assert sanitise_genre('R&B') == 'R N B'
-        assert sanitise_genre('Jazz+Funk') == 'Jazz N Funk'
+        assert sanitise_text('Drum & Bass') == 'Drum N Bass'
+        assert sanitise_text('Drum&Bass') == 'Drum N Bass'
+        assert sanitise_text('R&B') == 'R N B'
+        assert sanitise_text('Jazz+Funk') == 'Jazz N Funk'
 
     def test_punctuation(self):
-        assert sanitise_genre('Alt. Rock') == 'Alt Rock'
-        assert sanitise_genre('Alt.Rock') == 'Alt Rock'
-        assert sanitise_genre('Trip-hop') == 'Trip hop'
-        assert sanitise_genre('Pop/Funk') == 'Pop Funk'
+        assert sanitise_text('Alt. Rock') == 'Alt Rock'
+        assert sanitise_text('Alt.Rock') == 'Alt Rock'
+        assert sanitise_text('Trip-hop') == 'Trip hop'
+        assert sanitise_text('Pop/Funk') == 'Pop Funk'
 
     def test_apostrophes(self):
-        assert sanitise_genre("10's pop") == '10s pop'
+        assert sanitise_text("10's pop") == '10s pop'
+
+    def test_playlists(self):
+        assert sanitise_text("My bad-a$$ playlist") == 'My bad ass playlist'

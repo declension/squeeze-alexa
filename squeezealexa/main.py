@@ -13,21 +13,27 @@
 
 from __future__ import print_function
 
+import random
 import time
 from fuzzywuzzy import process
 
 from squeezealexa.alexa.handlers import AlexaHandler, IntentHandler
 from squeezealexa.alexa.intents import Audio, General, Custom, Power, \
-    CustomAudio, RandomMix
+    CustomAudio, Play
 from squeezealexa.alexa.response import audio_response, speech_response
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.ssl_wrap import SslSocketWrapper
-from squeezealexa.utils import english_join, sanitise_genre
+from squeezealexa.utils import english_join, sanitise_text
 
-MIN_CONFIDENCE = 85
-MIN_MULTI_CONFIDENCE = 90
+
+class MinConfidences(object):
+    PLAYER = 85
+    GENRE = 85
+    MULTI_GENRE = 90
+    PLAYLIST = 60
+
 MAX_GUESSES_PER_SLOT = 2
 AUDIO_TIMEOUT_SECS = 60 * 15
 
@@ -86,8 +92,8 @@ class SqueezeAlexa(AlexaHandler):
     def on_intent(self, intent_request, session):
         intent = intent_request['intent']
         intent_name = intent['name']
-        print_d("Received %s: %s" % (intent_name, intent))
         pid = self.player_id_from(intent)
+        print_d("Received %s: %s (for player %s)" % (intent_name, intent, pid))
 
         intent_handler = handler.for_name(intent_name)
         if intent_handler:
@@ -118,7 +124,7 @@ class SqueezeAlexa(AlexaHandler):
 
     @handler.handle(Custom.CURRENT)
     def on_current(self, intent, session, pid=None):
-        details = self.get_server().get_track_details()
+        details = self.get_server().get_track_details(player_id=pid)
         title = details['current_title']
         artist = details['artist']
         if title:
@@ -235,8 +241,38 @@ class SqueezeAlexa(AlexaHandler):
         self.get_server().set_all_power(on=True)
         return self.smart_response(text="All On.", speech="Ready to rock")
 
-    @handler.handle(RandomMix.PLAY)
-    def on_random_mix(self, intent, session, pid=None):
+    @handler.handle(Play.PLAYLIST)
+    def on_play_playlist(self, intent, session, pid=None):
+        server = self.get_server()
+        try:
+            slot = intent['slots']['Playlist']['value']
+            print_d("Extracted playlist slot: %s" % slot)
+        except KeyError:
+            print_d("Couldn't process playlist from: %s" % intent)
+            if not server.playlists:
+                return speech_response(text="There are no playlists")
+            return speech_response(
+                text="Didn't hear a playlist there."
+                     "You could try the \"%s\" playlist?"
+                     % (random.choice(server.playlists)))
+        else:
+            result = process.extractOne(slot, server.playlists)
+            print_d("%s was the best guess for '%s' from %s"
+                    % (result, slot, server.playlists))
+            if result and int(result[1]) >= MinConfidences.PLAYLIST:
+                pl = result[0]
+                server.playlist_play(pl, player_id=pid)
+                name = sanitise_text(pl)
+                return self.smart_response(
+                    speech="Playing \"%s\" playlist" % name,
+                    text="Playing \"%s\" playlist" % name)
+            return speech_response(
+                text="Couldn't find a playlist matching \"%s\"."
+                     "How about the \"%s\" playlist?"
+                % (slot, random.choice(server.playlists)))
+
+    @handler.handle(Play.RANDOM_MIX)
+    def on_play_random_mix(self, intent, session, pid=None):
         server = self.get_server()
         try:
             slots = [v.get('value') for k, v in intent['slots'].items()
@@ -249,7 +285,7 @@ class SqueezeAlexa(AlexaHandler):
             lms_genres = self._genres_from_slots(slots, server.genres)
             if lms_genres:
                 server.play_genres(lms_genres)
-                gs = english_join(sanitise_genre(g) for g in lms_genres)
+                gs = english_join(sanitise_text(g) for g in lms_genres)
                 return self.smart_response(text="Playing mix of %s" % gs,
                                            speech="Playing mix of %s" % gs)
             else:
@@ -266,7 +302,7 @@ class SqueezeAlexa(AlexaHandler):
             res = process.extract(g, genres)[:MAX_GUESSES_PER_SLOT]
             print_d("Raw genre results: %s" % res)
             return {g for g, c in res
-                    if g and int(c) >= MIN_MULTI_CONFIDENCE}
+                    if g and int(c) >= MinConfidences.MULTI_GENRE}
         # Grr where's my foldl
         results = set()
         for slot in slots:
@@ -293,7 +329,7 @@ class SqueezeAlexa(AlexaHandler):
             result = process.extractOne(player_name, by_name.keys())
             print_d("%s was the best guess for '%s' from %s"
                     % (result, player_name, by_name.keys()))
-            if result and int(result[1]) >= MIN_CONFIDENCE:
+            if result and int(result[1]) >= MinConfidences.PLAYER:
                 return by_name.get(result[0]).id
         return srv.cur_player_id if defaulting else None
 

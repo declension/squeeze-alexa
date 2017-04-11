@@ -16,6 +16,8 @@ import urllib
 
 import time
 
+from squeezealexa.utils import with_example
+
 print_d = print_w = print
 
 
@@ -73,6 +75,7 @@ class Server(object):
         self.cur_player_id = cur_player_id or self.players.keys()[0]
         print_d("Default player is now %s " % self.cur_player_id[-5:])
         self.__genres = []
+        self.__playlists = []
         self._created_time = time.time()
 
     def is_stale(self):
@@ -233,8 +236,17 @@ class Server(object):
             resp = self.__a_request("genres 0 255", raw=True)
             self.__genres = [v for k, v in self.__pairs_from(resp)
                              if k == 'genre']
-            print_d("Loaded %d LMS genres" % len(self.__genres))
+            print_d(with_example("Loaded %d LMS genres", self.__genres))
         return self.__genres
+
+    @property
+    def playlists(self):
+        if not self.__playlists:
+            resp = self.__a_request("playlists 0 255", raw=True)
+            self.__playlists = [v for k, v in self.__pairs_from(resp)
+                                if k == 'playlist']
+            print_d(with_example("Loaded %d LMS playlists", self.__playlists))
+        return self.__playlists
 
     def get_server_status(self, player_id=None):
         return self.player_request("serverstatus 0 99", player_id=player_id)
@@ -250,9 +262,10 @@ class Server(object):
     def previous(self, player_id=None):
         self.player_request("playlist jump -1", player_id=player_id)
 
-    def playlist_play(self, path):
-        """Play song immediately"""
-        self.player_request("playlist play %s" % (urllib.quote(path)))
+    def playlist_play(self, path, player_id=None):
+        """Play song / playlist immediately"""
+        self.player_request("playlist play %s" % (urllib.quote(path)),
+                            player_id=player_id)
 
     def playlist_clear(self):
         self.player_request("playlist clear", wait=False)

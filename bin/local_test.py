@@ -31,9 +31,14 @@ def run_diagnostics(sslw):
                     cur_player_id=DEFAULT_PLAYER,
                     user=SERVER_USERNAME,
                     password=SERVER_PASSWORD)
-    print("Found %d LMS genres!" % len(server.genres))
-    print("Currently playing: %s" %
-          " >> ".join(server.get_track_details().values()))
+    assert server.genres
+    assert server.playlists
+    cur_play_details = server.get_track_details().values()
+    if cur_play_details:
+        print("Currently playing: %s" %
+              " >> ".join(cur_play_details))
+    else:
+        print("Nothing currently in playlist")
 
     status = server.get_status()
     print("Up next: %s >> %s >> %s" % (status.get('genre', "Unknown genre"),
