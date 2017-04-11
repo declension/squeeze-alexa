@@ -83,7 +83,7 @@ class SqueezeAlexa(AlexaHandler):
                                  user=SERVER_USERNAME,
                                  password=SERVER_PASSWORD,
                                  cur_player_id=DEFAULT_PLAYER,
-                                 debug=True)
+                                 debug=DEBUG_LMS)
             print_d("Created %r" % cls._server)
         else:
             print_d("Reusing cached %r" % cls._server)

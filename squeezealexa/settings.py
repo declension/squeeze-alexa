@@ -47,6 +47,8 @@ SERVER_PASSWORD = None
 DEFAULT_PLAYER = None
 """The default Squeezebox player ID (long MAC-like string) to use"""
 
+DEBUG_LMS = False
+"""Dump LMS CLI communication to log if True"""
 
 # ------------------------- TLS (SSL) Configuration ---------------------------
 

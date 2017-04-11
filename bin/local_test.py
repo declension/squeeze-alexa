@@ -26,7 +26,7 @@ TEST_GENRES = ["Rock", "Latin", "Blues"]
 
 
 def run_diagnostics(sslw):
-    server = Server(debug=False,
+    server = Server(debug=DEBUG_LMS,
                     ssl_wrap=sslw,
                     cur_player_id=DEFAULT_PLAYER,
                     user=SERVER_USERNAME,
