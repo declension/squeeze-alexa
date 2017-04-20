@@ -252,10 +252,12 @@ class SqueezeAlexa(AlexaHandler):
             if not server.playlists:
                 return speech_response(text="There are no playlists")
             return speech_response(
-                text="Didn't hear a playlist there."
+                text="Didn't hear a playlist there. "
                      "You could try the \"%s\" playlist?"
                      % (random.choice(server.playlists)))
         else:
+            if not server.playlists:
+                return speech_response(text="No Squeezebox playlists found")
             result = process.extractOne(slot, server.playlists)
             print_d("%s was the best guess for '%s' from %s"
                     % (result, slot, server.playlists))

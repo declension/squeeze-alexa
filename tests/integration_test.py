@@ -23,6 +23,7 @@ SOME_PID = "zz:zz:zz"
 FAKE_ID = "ab:cd:ef:gh"
 ROOT = dirname(dirname(__file__))
 GENRES = open(join(ROOT, 'metadata/slots/genres.txt')).read().splitlines()
+A_PLAYLIST = 'Moody Bluez'
 
 sys.path.append(realpath(dirname(dirname(__file__))))
 from squeezealexa.main import SqueezeAlexa
@@ -37,12 +38,17 @@ class FakeSqueeze(Server):
     def __init__(self):
         self.lines = []
         self.cur_player_id = FAKE_ID
-        self._genres = GENRES
+        self._genres = []
+        self._playlists = []
         self._created_time = time.time()
 
     @property
     def genres(self):
         return self._genres
+
+    @property
+    def playlists(self):
+        return self._playlists
 
     def _request(self, lines, raw=False, wait=True):
         pprint(lines)
@@ -71,6 +77,7 @@ class IntegrationTests(TestCase):
                                    resp('pause 0 1', pid=SOME_PID)]
 
     def test_on_random_mix_trickier(self):
+        self.stub._genres = GENRES
         intent = {'slots': {'primaryGenre': {'value': 'Jungle band Blues'},
                             'secondaryGenre': {'value': 'House'}}}
 
@@ -81,4 +88,23 @@ class IntegrationTests(TestCase):
         assert 'Jungle' in content
         assert 'House' in content
         # 3 = reset genres, clear, play. 4 = 2 + 2
+        assert len(self.stub.lines) <= 4 + 3
+
+    def test_on_playlist_play_without_playlists(self):
+        intent = {'slots': {'Playlist': {'name': 'Playlist',
+                                         'value': 'Moody Blues'}}}
+        response = self.alexa.on_play_playlist(intent, FAKE_ID)
+        speech = response['response']['outputSpeech']['text']
+        assert "No Squeezebox playlists" in speech
+
+    def test_on_playlist_play(self):
+        self.stub._playlists = ['Black Friday', A_PLAYLIST, 'Happy Mondays']
+        intent = {'slots': {'Playlist': {'name': 'Playlist',
+                                         'value': 'Mood Blues'}}}
+
+        response = self.alexa.on_play_playlist(intent, FAKE_ID)
+        assert self.stub.lines[-1] == resp('playlist play %s'
+                                           % A_PLAYLIST.replace(' ', '%20'))
+        content = response['response']['card']['content']
+        assert content.startswith('Playing "%s" playlist' % A_PLAYLIST)
         assert len(self.stub.lines) <= 4 + 3
