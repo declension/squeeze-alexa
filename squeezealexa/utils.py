@@ -9,10 +9,15 @@
 #   (at your option) any later version.
 #
 #   See LICENSE for full license
+
 import random
 import re
 import unicodedata
 import sys
+
+PY2 = sys.version_info[0] == 2
+Char = unichr if PY2 else chr
+Unicode = unicode if PY2 else str
 
 
 def english_join(items, final="and"):
@@ -24,7 +29,7 @@ def english_join(items, final="and"):
 
 
 _SPACIFIES = {i: u' ' for i in range(sys.maxunicode)
-              if unicodedata.category(unichr(i)).startswith('P')}
+              if unicodedata.category(Char(i)).startswith('P')}
 
 _REMOVALS = {ord(i): None for i in ['\'', '!']}
 
@@ -34,7 +39,7 @@ _SANITISE = {'&': ' N ',
 
 
 def remove_punctuation(text):
-    if not isinstance(text, unicode):
+    if not isinstance(text, Unicode):
         text = text.decode('utf-8')
     return text.translate(_REMOVALS).translate(_SPACIFIES)
 

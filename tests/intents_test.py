@@ -28,11 +28,12 @@ class FakeSsl(SslSocketWrapper):
         self.player_id = fake_id
 
     def communicate(self, data, wait=True):
+        stripped = data.rstrip('\n')
         if data.startswith('serverstatus'):
-            fake_status = (' player%20count:1 playerid:{pid} name:{name}\n'
-                           .format(name=self.player_name, pid=self.player_id))
-            return data.rstrip("\n") + fake_status
-        return data.rstrip('\n') + ' OK\n'
+            return ('{orig} player%20count:1 playerid:{pid} name:{name}\n'
+                    .format(orig=stripped, name=self.player_name,
+                            pid=self.player_id))
+        return stripped + ' OK\n'
 
 
 class AllIntentHandlingTest(TestCase):

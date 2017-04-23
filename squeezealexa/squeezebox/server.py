@@ -12,11 +12,13 @@
 
 from __future__ import print_function
 
-import urllib
-
 import time
 
-from squeezealexa.utils import with_example
+from squeezealexa.utils import with_example, PY2
+if PY2:
+    import urllib
+else:
+    import urllib.request as urllib
 
 print_d = print_w = print
 
@@ -72,7 +74,7 @@ class Server(object):
         self.players = {}
         self.player_names = set()
         self.refresh_status()
-        self.cur_player_id = cur_player_id or self.players.keys()[0]
+        self.cur_player_id = cur_player_id or list(self.players)[0]
         print_d("Default player is now %s " % self.cur_player_id[-5:])
         self.__genres = []
         self.__playlists = []
@@ -154,8 +156,8 @@ class Server(object):
         def demunge(string):
             s = urllib.unquote(string)
             return tuple(s.split(':', 1))
-        return filter(lambda t: len(t) == 2,
-                      map(demunge, response.split(' ')))
+        demunged = map(demunge, response.split(' '))
+        return [d for d in demunged if len(d) == 2]
 
     def refresh_status(self):
         """ Updates the list of the Squeezebox players available and other
@@ -178,7 +180,11 @@ class Server(object):
         if self._debug:
             print_d("Found %d player(s): %s" %
                     (len(self.players), self.players))
-        assert (int(dict(pairs)['player count']) == len(self.players))
+        try:
+            assert (int(dict(pairs)['player count']) == len(self.players))
+        except Exception as e:
+            raise SqueezeboxException("Player count broken (%r). Data: %s"
+                                      % (e, pairs))
 
     def player_request(self, line, player_id=None, raw=False, wait=True):
         """Makes a single request to a particular player (or the current)"""

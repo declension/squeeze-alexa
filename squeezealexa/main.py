@@ -34,6 +34,7 @@ class MinConfidences(object):
     MULTI_GENRE = 90
     PLAYLIST = 60
 
+
 MAX_GUESSES_PER_SLOT = 2
 AUDIO_TIMEOUT_SECS = 60 * 15
 
