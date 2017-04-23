@@ -1,11 +1,9 @@
 language: python
+
 python:
   - "2.7"
+  - "3.6"
 
-install:
-  - pip install -r requirements.txt
-  - pip install pep8
+install: pip install tox-travis
 
-script:
-  - PYTHONPATH=. py.test -v tests
-  - pep8 --ignore=E402 .
+script: tox
