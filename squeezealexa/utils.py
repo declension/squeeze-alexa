@@ -10,6 +10,7 @@
 #
 #   See LICENSE for full license
 
+from __future__ import print_function
 import random
 import re
 import unicodedata
@@ -18,6 +19,8 @@ import sys
 PY2 = sys.version_info[0] == 2
 Char = unichr if PY2 else chr
 Unicode = unicode if PY2 else str
+
+print_d = print_w = print
 
 
 def english_join(items, final="and"):

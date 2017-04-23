@@ -10,13 +10,12 @@
 #
 #   See LICENSE for full license
 
-from __future__ import print_function
 import socket
 
 import ssl
 import _ssl
 
-print_d = print_w = print
+from squeezealexa.utils import print_d, print_w
 
 
 class Error(Exception):
