@@ -23,10 +23,6 @@ else:
 print_d = print_w = print
 
 
-def _(s):
-    return s
-
-
 class SqueezeboxException(Exception):
     """Errors communicating with the Squeezebox"""
 
@@ -51,7 +47,7 @@ class SqueezeboxPlayerSettings(dict):
             return "{name} [{short}]".format(short=self['playerid'][-5:],
                                              **self)
         except KeyError:
-            return _("unidentified Squeezebox player: %r" % self)
+            return "Unidentified Squeezebox player: %r" % self
 
 
 class Server(object):
