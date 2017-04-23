@@ -18,9 +18,10 @@ import time
 from fuzzywuzzy import process
 
 from squeezealexa.alexa.handlers import AlexaHandler, IntentHandler
-from squeezealexa.alexa.intents import Audio, General, Custom, Power, \
-    CustomAudio, Play
-from squeezealexa.alexa.response import audio_response, speech_response
+from squeezealexa.alexa.intents import *
+from squeezealexa.alexa.requests import Request
+from squeezealexa.alexa.response import audio_response, speech_response, \
+    _build_response
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server
@@ -53,6 +54,44 @@ class SqueezeAlexa(AlexaHandler):
         super(SqueezeAlexa, self).__init__()
         if server:
             SqueezeAlexa._server = server
+
+    def handle(self, event, context):
+        """The main entrypoint for Alexa requests"""
+        request = event['request']
+        req_type = request['type']
+
+        if req_type.startswith('AudioPlayer'):
+            print_d("Ignoring %s callback %s"
+                    % (request['type'], request['requestId']))
+            SqueezeAlexa.touch_audio()
+            return _build_response({})
+
+        session = self._verified_app_session(event)
+
+        if session and session['new']:
+            self.on_session_started(request, session)
+
+        if req_type == Request.LAUNCH:
+            return self.on_launch(request, session)
+        elif req_type == Request.INTENT:
+            return self.on_intent(request, session)
+        elif req_type == Request.SESSION_ENDED:
+            return self.on_session_ended(request, session)
+        elif req_type == Request.EXCEPTION:
+            print_w("ERROR callback received (\"%s\"). Full event: %s"
+                    % (request['error'].get('message', "?"), event))
+        else:
+            raise ValueError("Unknown request type %s" % req_type)
+
+    def _verified_app_session(self, event):
+        if 'session' not in event:
+            # Probably an exception message
+            return None
+        session = event['session']
+        app = session['application']
+        if APPLICATION_ID and app['applicationId'] != APPLICATION_ID:
+            raise ValueError("Invalid application (%s)" % app)
+        return session
 
     def on_session_started(self, request, session):
         print_d("Starting new session %s for request %s" %
