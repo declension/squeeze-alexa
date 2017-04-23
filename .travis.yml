@@ -9,10 +9,13 @@ matrix:
     - python: 2.7
       env: TOXENV=style
 
-install: pip install tox
+install: pip install tox coveralls
 
 script: tox
 
 cache:
   directories:
   - $HOME/.cache/pip
+
+after_success:
+  - coveralls

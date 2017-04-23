@@ -3,6 +3,7 @@ squeeze-alexa
 
 [![Join the chat at https://gitter.im/squeeze-alexa/Lobby](https://badges.gitter.im/squeeze-alexa/Lobby.svg)](https://gitter.im/squeeze-alexa/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Build Status](https://travis-ci.org/declension/squeeze-alexa.svg?branch=master)](https://travis-ci.org/declension/squeeze-alexa)
+[![Coverage Status](https://coveralls.io/repos/github/declension/squeeze-alexa/badge.svg?branch=master)](https://coveralls.io/github/declension/squeeze-alexa?branch=master)
 
 `squeeze-alexa` is an Amazon Alexa Skill integrating with the Logitech Media Server ("squeezebox"). See the original [announcement blog post](http://declension.net/posts/2016-11-30-alexa-meets-squeezebox/), and the [follow-up with videos](http://declension.net/posts/2017-01-03-squeeze-alexa-demos/).
 

@@ -175,7 +175,7 @@ Set up your Alexa Skill
 ### Add a new ASK Custom Skill in your developer account
  * Like most useful skills it should be a [Custom Skill](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/overviews/understanding-custom-skills)
  * Follow one of the guides ideally e.g. [Deploying a Sample Custom Skill To AWS Lambda](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/deploying-a-sample-skill-to-aws-lambda#creating-the-lambda-function-for-the-sample).
- * Needs to be Python (2.7) runtime
+ * Needs to be Python (2.7) runtime. **UPDATE:** Python 3.6 is now supported too, though untested.
  * Choose your own Invocation Name. The advantage of not needing certification is you can be "more creative" about your naming...
  * Select an AWS region close to you
  * _Recommended_: Select _yes_ for Audio Streaming API
