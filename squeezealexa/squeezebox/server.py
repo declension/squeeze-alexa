@@ -14,13 +14,12 @@ from __future__ import print_function
 
 import time
 
-from squeezealexa.utils import with_example, PY2
+from squeezealexa.utils import with_example, PY2, print_d
+
 if PY2:
     import urllib
 else:
     import urllib.request as urllib
-
-print_d = print_w = print
 
 
 class SqueezeboxException(Exception):
@@ -68,13 +67,16 @@ class Server(object):
             self.log_in()
             print_d("Authenticated with %s!" % self)
         self.players = {}
-        self.player_names = set()
         self.refresh_status()
         self.cur_player_id = cur_player_id or list(self.players)[0]
         print_d("Default player is now %s " % self.cur_player_id[-5:])
         self.__genres = []
         self.__playlists = []
         self._created_time = time.time()
+
+    @property
+    def player_names(self):
+        return {p.get("name", "unknown") for p in self.players.values()}
 
     def is_stale(self):
         return (time.time() - self._created_time) > self._MAX_CACHE_SECS
@@ -162,7 +164,6 @@ class Server(object):
         pairs = self.__pairs_from(
             self.__a_request("serverstatus 0 99", raw=True))
         self.players = {}
-        self.player_names.clear()
         player_id = None
         for key, val in pairs:
             if key == "playerid":
@@ -171,8 +172,6 @@ class Server(object):
             elif player_id:
                 # Don't worry, playerid is *always* the first entry...
                 self.players[player_id][key] = val
-                if key == "name":
-                    self.player_names.add(val)
         if self._debug:
             print_d("Found %d player(s): %s" %
                     (len(self.players), self.players))
@@ -249,9 +248,6 @@ class Server(object):
                                 if k == 'playlist']
             print_d(with_example("Loaded %d LMS playlists", self.__playlists))
         return self.__playlists
-
-    def get_server_status(self, player_id=None):
-        return self.player_request("serverstatus 0 99", player_id=player_id)
 
     def get_status(self, player_id=None):
         response = self.player_request("status - 2", player_id=player_id,
