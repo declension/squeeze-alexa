@@ -15,6 +15,7 @@ from unittest import TestCase
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.ssl_wrap import SslSocketWrapper
 from squeezealexa.main import handler, SqueezeAlexa
+from squeezealexa.utils import print_d
 
 
 class FakeSsl(SslSocketWrapper):
@@ -28,6 +29,7 @@ class FakeSsl(SslSocketWrapper):
         self.player_id = fake_id
 
     def communicate(self, data, wait=True):
+        print_d("Faking server status...")
         stripped = data.rstrip('\n')
         if data.startswith('serverstatus'):
             return ('{orig} player%20count:1 playerid:{pid} name:{name}\n'
@@ -42,8 +44,9 @@ class AllIntentHandlingTest(TestCase):
     def test_all_handler(self):
         fake_output = FakeSsl()
         server = Server(ssl_wrap=fake_output)
-        alexa = SqueezeAlexa(server)
+        alexa = SqueezeAlexa(server=server)
         for name, func in handler._handlers.items():
+            print_d(">>> Testing %s() <<<" % func.__name__)
             session = {'sessionId': None}
             intent = {'requestId': 'abcd', 'slots': {}}
             raw = func(alexa, intent, session, None)

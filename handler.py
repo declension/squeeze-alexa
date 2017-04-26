@@ -11,11 +11,12 @@
 #   See LICENSE for full license
 
 from squeezealexa.main import SqueezeAlexa
+from squeezealexa.settings import APPLICATION_ID
 
 
 def lambda_handler(event, context):
     """ Route the incoming request based on type (LaunchRequest, IntentRequest,
     etc.) The JSON body of the request is provided in the event parameter.
     """
-    sqa = SqueezeAlexa()
+    sqa = SqueezeAlexa(app_id=APPLICATION_ID)
     return sqa.handle(event, context)

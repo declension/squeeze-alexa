@@ -10,8 +10,14 @@
 #
 #   See LICENSE for full license
 
+from squeezealexa.alexa.requests import Request
+from squeezealexa.utils import print_w
+
 
 class AlexaHandler(object):
+
+    def __init__(self, app_id=None):
+        self.app_id = app_id
 
     def on_session_ended(self, session_ended_request, session):
         """ Called when the user ends the session.
@@ -30,6 +36,37 @@ class AlexaHandler(object):
     def on_intent(self, intent_request, session):
         """Called when the user specifies an intent for this skill"""
         pass
+
+    def handle(self, event, context):
+        """The main entry point for Alexa requests"""
+        request = event['request']
+        req_type = request['type']
+        session = self._verified_app_session(event)
+
+        if session and session['new']:
+            self.on_session_started(request, session)
+
+        if req_type == Request.LAUNCH:
+            return self.on_launch(request, session)
+        elif req_type == Request.INTENT:
+            return self.on_intent(request, session)
+        elif req_type == Request.SESSION_ENDED:
+            return self.on_session_ended(request, session)
+        elif req_type == Request.EXCEPTION:
+            print_w("ERROR callback received (\"%s\"). Full event: %s"
+                    % (request['error'].get('message', "?"), event))
+        else:
+            raise ValueError("Unknown request type %s" % req_type)
+
+    def _verified_app_session(self, event):
+        if 'session' not in event:
+            # Probably an exception message
+            return None
+        session = event['session']
+        app = session['application']
+        if self.app_id and app['applicationId'] != self.app_id:
+            raise ValueError("Invalid application (%s)" % app)
+        return session
 
 
 class IntentHandler(object):

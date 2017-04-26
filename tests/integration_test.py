@@ -10,23 +10,20 @@
 #
 #   See LICENSE for full license
 
-import sys
-from os.path import dirname, realpath, join
+from os.path import dirname, join
 from pprint import pprint
 from unittest import TestCase
 
 import time
 
 from squeezealexa.squeezebox.server import Server
+from squeezealexa.main import SqueezeAlexa
 
 SOME_PID = "zz:zz:zz"
 FAKE_ID = "ab:cd:ef:gh"
 ROOT = dirname(dirname(__file__))
 GENRES = open(join(ROOT, 'metadata/slots/genres.txt')).read().splitlines()
 A_PLAYLIST = 'Moody Bluez'
-
-sys.path.append(realpath(dirname(dirname(__file__))))
-from squeezealexa.main import SqueezeAlexa
 
 
 def resp(text, pid=FAKE_ID):
@@ -37,6 +34,8 @@ class FakeSqueeze(Server):
 
     def __init__(self):
         self.lines = []
+        self.players = {}
+        self._debug = False
         self.cur_player_id = FAKE_ID
         self._genres = []
         self._playlists = []
@@ -51,7 +50,8 @@ class FakeSqueeze(Server):
         return self._playlists
 
     def _request(self, lines, raw=False, wait=True):
-        pprint(lines)
+        if self._debug:
+            pprint(lines)
         self.lines += lines
         return lines
 
