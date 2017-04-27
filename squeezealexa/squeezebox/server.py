@@ -115,7 +115,7 @@ class Server(object):
             return []
         if not (lines and len(lines)):
             return []
-        lines = [str.rstrip(l) for l in lines]
+        lines = [l.rstrip() for l in lines]
 
         first_word = lines[0].split()[0]
         if not (self.ssl_wrap.is_connected or first_word == 'login'):
