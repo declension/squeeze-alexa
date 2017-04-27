@@ -11,8 +11,8 @@ matrix:
       env: TOXENV=style
 
 before_install:
- - sudo add-apt-repository ppa:0k53d-karl-f830m/openssl
- - sudo apt-get update && sudo apt-get upgrade openssl
+ - sudo add-apt-repository -y ppa:0k53d-karl-f830m/openssl
+ - sudo apt-get -y update && sudo apt-get -y upgrade openssl
 install: pip install tox coveralls
 
 script: tox
