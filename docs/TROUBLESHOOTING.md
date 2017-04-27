@@ -1,10 +1,19 @@
 Troubleshooting
 ===============
 
+Using the diagnostic tool
+-------------------------
+From your `squeezealexa` directory,
+```bash
+bin/local_test.py
+```
+This should connect with your settings as per `settings.py`. The latest diagnostics can help you find the root cause of many common connection / certificat problems (but not 100% accurate).
+Some examples of how this can happen are included in the [tests](..tests/).
+
 The skill is installed, but erroring when invoked
 -------------------------------------------------
 
-If everything is installed and the connectivity working, but your Echo is saying "there was a problem with your skill" or similary, try checking the [Cloudwatch logs](https://console.aws.amazon.com/cloudwatch/) (note there's a delay in getting the latest logs).
+If everything is installed and the connectivity working, but your Echo is saying "there was a problem with your skill" or similar, try checking the [Cloudwatch logs](https://console.aws.amazon.com/cloudwatch/) (note there's a delay in getting the latest logs).
 The squeeze-alexa logs are designed to be quite readable, and should help track down the problem.
 
 If you think it's the speech, try using the test input page on the Amazon dev account portal.

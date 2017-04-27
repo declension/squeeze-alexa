@@ -11,13 +11,11 @@
 #   See LICENSE for full license
 
 import sys
-from _socket import gaierror
 from os.path import dirname
 from traceback import print_exc
 
 sys.path.append(dirname(dirname(__file__)))
 
-import ssl
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.ssl_wrap import SslSocketWrapper
@@ -46,9 +44,9 @@ def run_diagnostics(sslw):
                                        status.get('artist', 'Unknown artist')))
 
 
-def die(help="no idea, sorry."):
+def die(e):
     print_exc()
-    print("\n>>>> Failed with %s - %s <<<<" % (type(e).__name__, help))
+    print("\n>>>> Failed with %s: %s <<<<" % (type(e).__name__, e))
     sys.exit(2)
 
 
@@ -60,25 +58,5 @@ if __name__ == '__main__':
         run_diagnostics(sslw)
         print("\n>>>> Looks good! <<<<")
         sys.exit(0)
-    except ssl.SSLError as e:
-        if 'WRONG_VERSION_NUMBER' in e.strerror:
-            die('probably not SSL - wrong SERVER_PORT maybe?')
-        die("could be mismatched certificate files, or wrong hostname in cert."
-            "Check CERT_FILE and certs on server too.")
-    except gaierror as e:
-        if "Name or service not know" in e.strerror:
-            die("unknown host (%s) - check SERVER_HOSTNAME" % SERVER_HOSTNAME)
-        die()
-    except IOError as e:
-        if 'Connection refused' in e.strerror:
-            die("nothing listening on %s:%s. "
-                "Check settings, or (re)start server."
-                % (SERVER_HOSTNAME, SERVER_SSL_PORT))
-        elif 'Connection reset by peer' in e.strerror:
-            die("server killed the connection - handshake error? "
-                "Check the SSL tunnel logs")
-        elif 'No such file or directory' in e.strerror:
-            die('wrong CERT_NAME (or CERT_PATH) in settings probably')
-        die("Connection problem (%s)" % e.strerror)
     except Exception as e:
-        die("no idea (%s)" % str(e))
+        die(e)

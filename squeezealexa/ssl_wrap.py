@@ -19,7 +19,11 @@ from squeezealexa.utils import print_d, print_w
 
 
 class Error(Exception):
-    pass
+
+    def __init__(self, msg, e):
+        super(Error, self).__init__(msg)
+        self.message = msg
+        self.__cause__ = e
 
 
 class SslSocketWrapper(object):
@@ -42,24 +46,47 @@ class SslSocketWrapper(object):
                 context.check_hostname = verify_hostname
                 context.load_cert_chain(cert_file)
         except ssl.SSLError as e:
-            print_d("Problem with Cert/CA (+key) files (%s). "
-                    "Does it include the private key?" % e)
-            raise e
+            raise Error("Problem with Cert / CA (+key) files (%s / %s). "
+                        "Does it include the private key?"
+                        % (cert_file, ca_file), e)
         except IOError as e:
-            print_d("Problem loading Cert/CA files at %s or %s (%s)" %
-                    (ca_file, cert_file, e))
-            raise e
+            if 'No such file or directory' in e.strerror:
+                self._die("Can't find '%s'. "
+                          "Check CERT_NAME / CERT_PATH in settings" % ca_file)
+            self._die("could be mismatched certificate files, "
+                      "or wrong hostname in cert."
+                      "Check CERT_FILE and certs on server too.", e)
 
         self._ssl_sock = context.wrap_socket(socket.socket(),
                                              server_hostname=hostname)
         try:
             self._ssl_sock.connect((hostname, port))
-        except (ssl.SSLError, socket.gaierror):
-            print_w("Couldn't connect to %s with TLS" % (self,))
-            raise
+        except socket.gaierror as e:
+            if "Name or service not know" in e.strerror:
+                self._die("unknown host (%s) - check SERVER_HOSTNAME"
+                          % hostname, e)
+            self._die("Couldn't connect to %s with TLS" % (self,), e)
+        except IOError as e:
+            if 'Connection refused' in e.strerror:
+                self._die("nothing listening on %s"
+                          "Check settings, or (re)start server." % self)
+            elif 'WRONG_VERSION_NUMBER' in e.strerror:
+                self._die('probably not TLS on port %d - '
+                          'wrong SERVER_PORT maybe?' % port,
+                          e)
+            elif 'Connection reset by peer' in e.strerror:
+                self._die("server killed the connection - handshake error? "
+                          "Check the SSL tunnel logs")
+            elif 'CERTIFICATE_VERIFY_FAILED' in e.strerror:
+                self._die("Cert not trusted by server. "
+                          "Is your CA correct? "
+                          "Is the cert for the right hostname (%s)?"
+                          % hostname, e)
+            self._die("Connection problem (%s)" % e.strerror)
+
         peer_cert = self._ssl_sock.getpeercert()
         if peer_cert is None:
-            raise Error("No certificate configured at %s" % self)
+            self._die("No certificate configured at %s" % self)
         elif not peer_cert:
             print_w("Unvalidated server cert at %s" % self)
         else:
@@ -70,6 +97,9 @@ class SslSocketWrapper(object):
                 data = subject_data
             print_d("Validated cert for %s" % (data, ))
         self.is_connected = True
+
+    def _die(self, msg, e=None):
+        raise Error(msg, e)
 
     @staticmethod
     def __harden_context(context):
