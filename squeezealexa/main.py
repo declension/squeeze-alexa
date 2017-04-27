@@ -273,7 +273,7 @@ class SqueezeAlexa(AlexaHandler):
                     % (result, slot, server.playlists))
             if result and int(result[1]) >= MinConfidences.PLAYLIST:
                 pl = result[0]
-                server.playlist_play(pl, player_id=pid)
+                server.playlist_resume(pl, player_id=pid)
                 name = sanitise_text(pl)
                 return self.smart_response(
                     speech="Playing \"%s\" playlist" % name,

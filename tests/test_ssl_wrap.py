@@ -42,7 +42,10 @@ def response_for(request):
 
 class FakeRequestHandler(BaseRequestHandler):
     def handle(self):
-        data = self.request.recv(1024).decode('utf-8')
+        try:
+            data = self.request.recv(1024).decode('utf-8')
+        except UnicodeDecodeError:
+            data = "(invalid)"
         response = response_for(data)
         print_d("> \"%s\"\n%s" % (data.strip(), response))
         self.request.sendall(response.encode('utf-8'))
@@ -58,10 +61,30 @@ class TestSslWrap(TestCase):
             response = sslw.communicate('HELLO\n')
             assert response == response_for("HELLO")
 
+    def test_no_ca(self):
+        with ServerResource() as server:
+            with pytest.raises(ssl_wrap.Error) as exc:
+                SslSocketWrapper('', port=server.port,
+                                 cert_file=CertFiles.CERT_AND_KEY)
+            assert 'cert not trusted by server' in exc.value.message.lower()
+
     def test_cert_no_key(self):
         with pytest.raises(ssl_wrap.Error) as exc:
             SslSocketWrapper('', port=0, cert_file=CertFiles.CERT_ONLY)
         assert 'include the private key' in exc.value.message.lower()
+
+    def test_missing_cert(self):
+        with pytest.raises(ssl_wrap.Error) as exc:
+            SslSocketWrapper('', port=0, cert_file="not.there",
+                             ca_file='ca.not.there')
+        assert "can't find 'ca.not.there'" in exc.value.message.lower()
+
+    def test_bad_hostname(self):
+        with pytest.raises(ssl_wrap.Error) as exc:
+            SslSocketWrapper('zzz.qqq', port=0)
+        msg = exc.value.message.lower()
+        assert "unknown host" in msg
+        assert "zzz.qqq" in msg
 
     def test_cert_bad_hostname(self):
         with ServerResource() as server:
@@ -69,6 +92,13 @@ class TestSslWrap(TestCase):
                 SslSocketWrapper('', port=server.port,
                                  cert_file=CertFiles.BAD_HOSTNAME)
             assert 'right hostname' in exc.value.message.lower()
+
+    def test_wrong_port(self):
+        with ServerResource(tls=False) as server:
+            with pytest.raises(ssl_wrap.Error) as exc:
+                SslSocketWrapper('', port=server.port)
+            msg = exc.value.message.lower()
+            assert ('not tls on port %d' % server.port) in msg
 
     def test_bad_port(self):
         with pytest.raises(ssl_wrap.Error) as exc:
@@ -81,11 +111,14 @@ class TestSslWrap(TestCase):
 
 class ServerResource(TCPServer, object):
 
-    def __init__(self):
+    def __init__(self, tls=True):
         super(ServerResource, self).__init__(('', 0), FakeRequestHandler)
-        self.socket = ssl.wrap_socket(self.socket,
-                                      certfile=CertFiles.CERT_AND_KEY,
-                                      server_side=True)
+        if tls:
+            self.socket = ssl.wrap_socket(self.socket,
+                                          cert_reqs=ssl.CERT_REQUIRED,
+                                          certfile=CertFiles.CERT_AND_KEY,
+                                          ca_certs=CertFiles.CERT_AND_KEY,
+                                          server_side=True)
         self.socket.settimeout(1)
 
     @property
@@ -93,9 +126,6 @@ class ServerResource(TCPServer, object):
         return self.socket.getsockname()[1]
 
     def __enter__(self):
-        self.socket = ssl.wrap_socket(
-            self.socket, certfile=CertFiles.CERT_AND_KEY,
-            server_side=True)
         self.socket.settimeout(1)
         print_d("Creating test TCP server")
         self.thread = threading.Thread(target=self.serve_forever)

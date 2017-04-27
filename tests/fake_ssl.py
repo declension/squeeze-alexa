@@ -13,6 +13,26 @@
 from squeezealexa.ssl_wrap import SslSocketWrapper
 from squeezealexa.utils import print_d
 
+A_REAL_STATUS = """
+ player_name%3AStudy player_connected%3A1 player_ip%3A'
+ 192.168.1.35%3A51196 power%3A1 signalstrength%3A0 mode%3Aplay
+ time%3A23.9624403781891 rate%3A1 duration%3A358.852 can_seek%3A1
+ sync_master%3A00%3A04%3A20%3A17%3A5c%3A94
+ mixer%20volume%3A98 playlist%20repeat%3A0
+ playlist%20shuffle%3A1 playlist%20mode%3Aoff
+ seq_no%3A0 playlist_cur_index%3A20
+ playlist_timestamp%3A1493318044.34369 playlist_tracks%3A62
+ digital_volume_control%3A1 playlist%20index%3A20 id%3A134146
+ title%3AConcerto%20No.%2023%20in%20A%20Major%2C%20K.%20488%3A%20Adagio
+ genre%3AJazz artist%3AJacques%20Loussier%20Trio
+ album%3AMozart%20Piano%20Concertos%2020%2F23
+ duration%3A358.852 playlist%20index%3A21 id%3A134174
+ title%3AI%20Think%2C%20I%20Love genre%3AJazz
+ artist%3AJamie%20Cullum album%3AThe%20Pursuit duration%3A255.906
+""".lstrip().replace('\n', '')
+
+FAKE_LENGTH = 358.852
+
 
 class FakeSsl(SslSocketWrapper):
 
@@ -25,10 +45,17 @@ class FakeSsl(SslSocketWrapper):
         self.player_id = fake_id
 
     def communicate(self, data, wait=True):
-        print_d("Faking server status...")
         stripped = data.rstrip('\n')
         if data.startswith('serverstatus'):
+            print_d("Faking server status...")
             return ('{orig} player%20count:1 playerid:{pid} name:{name}\n'
                     .format(orig=stripped, name=self.player_name,
                             pid=self.player_id))
+        elif ' status ' in stripped:
+            print_d("Faking player status...")
+            return stripped + A_REAL_STATUS
+        elif 'login ' in stripped:
+            return 'login %s ******' % stripped.split()[1].replace(' ', '%20')
+        elif ' time ' in data:
+            return '%s %.3f' % (stripped.rstrip('?'), FAKE_LENGTH)
         return stripped + ' OK\n'

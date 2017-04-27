@@ -103,8 +103,9 @@ class IntegrationTests(TestCase):
                                          'value': 'Mood Blues'}}}
 
         response = self.alexa.on_play_playlist(intent, FAKE_ID)
-        assert self.stub.lines[-1] == resp('playlist play %s'
-                                           % A_PLAYLIST.replace(' ', '%20'))
+        last_cmd = self.stub.lines[-1]
+        assert last_cmd.startswith(resp('playlist resume %s'
+                                   % A_PLAYLIST.replace(' ', '%20')))
         content = response['response']['card']['content']
         assert content.startswith('Playing "%s" playlist' % A_PLAYLIST)
         assert len(self.stub.lines) <= 4 + 3

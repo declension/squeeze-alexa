@@ -12,7 +12,7 @@
 
 from unittest import TestCase
 
-from squeezealexa.utils import english_join, sanitise_text
+from squeezealexa.utils import english_join, sanitise_text, with_example
 
 LOTS = ['foo', 'bar', 'baz', 'quux']
 
@@ -36,6 +36,9 @@ class TestEnglishJoin(TestCase):
 
 
 class TestSanitise(TestCase):
+    def test_nothing(self):
+        assert sanitise_text("") == ""
+
     def test_ands(self):
         assert sanitise_text('Drum & Bass') == 'Drum N Bass'
         assert sanitise_text('Drum&Bass') == 'Drum N Bass'
@@ -53,3 +56,11 @@ class TestSanitise(TestCase):
 
     def test_playlists(self):
         assert sanitise_text("My bad-a$$ playlist") == 'My bad ass playlist'
+
+
+class TestWithExample(TestCase):
+    def test_with_example_zero(self):
+        assert with_example("%d words", []) == "0 words"
+
+    def test_with_example(self):
+        assert with_example("%d words", ['one']) == '1 words (e.g. "one")'

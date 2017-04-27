@@ -192,10 +192,6 @@ class Server(object):
         except IndexError:
             return None
 
-    def play(self, player_id=None):
-        """Plays the current song"""
-        self.player_request("play", player_id=player_id)
-
     def play_genres(self, genre_list, player_id=None):
         """Adds then plays a random mix of albums of specified genres"""
         gs = genre_list or []
@@ -205,10 +201,6 @@ class Server(object):
                     ["play 2"])
         pid = player_id or self.cur_player_id
         return self._request(["%s %s" % (pid, com) for com in commands])
-
-    def get_current(self, player_id=None):
-        # return self.player_request("current_title ?", player_id=player_id)
-        return self.get_status(player_id)
 
     def get_track_details(self, player_id=None):
         keys = ["genre", "artist", "current_title"]
@@ -251,18 +243,10 @@ class Server(object):
         self.player_request("playlist play %s" % (urllib.quote(path)),
                             player_id=player_id)
 
-    def playlist_clear(self):
-        self.player_request("playlist clear", wait=False)
-
-    def playlist_resume(self, name, resume, wipe=False):
+    def playlist_resume(self, name, resume=True, wipe=False, player_id=None):
         cmd = ("playlist resume %s noplay:%d wipePlaylist:%d"
                % (urllib.quote(name), int(not resume), int(wipe)))
-        self.player_request(cmd, wait=False)
-
-    def change_song(self, path):
-        """Queue up a song"""
-        self.player_request("playlist clear")
-        self.player_request("playlist insert %s" % (urllib.quote(path)))
+        self.player_request(cmd, wait=False, player_id=player_id)
 
     def change_volume(self, delta, player_id=None):
         if not delta:
