@@ -196,6 +196,16 @@ class Server(object):
         """Plays the current song"""
         self.player_request("play", player_id=player_id)
 
+    def play_genres(self, genre_list, player_id=None):
+        """Adds then plays a random mix of albums of specified genres"""
+        gs = genre_list or []
+        commands = (["playlist clear", "playlist shuffle 1"] +
+                    ["playlist addalbum %s * *" % urllib.quote(genre)
+                     for genre in gs if genre] +
+                    ["play 2"])
+        pid = player_id or self.cur_player_id
+        return self._request(["%s %s" % (pid, com) for com in commands])
+
     def get_current(self, player_id=None):
         # return self.player_request("current_title ?", player_id=player_id)
         return self.get_status(player_id)
