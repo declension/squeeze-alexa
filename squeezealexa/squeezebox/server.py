@@ -196,30 +196,6 @@ class Server(object):
         """Plays the current song"""
         self.player_request("play", player_id=player_id)
 
-    def play_random_mix(self, genre_list, player_id=None):
-        """Uses the (standard) Random Mix plugin"""
-        gs = genre_list or []
-        commands = ["randomplaygenreselectall 0"]
-        commands += ["randomplaychoosegenre %s 1" % urllib.quote(g)
-                     for g in gs]
-        commands += ["playlist clear", "randomplay tracks"]
-        pid = player_id or self.cur_player_id
-        return self._request(["%s %s" % (pid, com) for com in commands])
-
-    def play_genres(self, genre_list, player_id=None):
-        gs = genre_list or []
-        commands = (["playlist clear", "playlist shuffle 1"] +
-                    ["playlist addalbum %s * *" % urllib.quote(genre)
-                     for genre in gs if genre] +
-                    ["play 2"])
-        pid = player_id or self.cur_player_id
-        return self._request(["%s %s" % (pid, com) for com in commands])
-
-    def is_stopped(self, player_id=None):
-        """Returns whether the player is in any sort of non-playing mode"""
-        response = self.player_request("mode ?", player_id=player_id)
-        return "play" != response
-
     def get_current(self, player_id=None):
         # return self.player_request("current_title ?", player_id=player_id)
         return self.get_status(player_id)
@@ -293,9 +269,6 @@ class Server(object):
 
     def resume(self, player_id=None, fade_in_secs=1):
         self.player_request("pause 0 %d" % fade_in_secs, player_id=player_id)
-
-    def stop(self, player_id=None):
-        self.player_request("stop", player_id=player_id)
 
     def set_shuffle(self, on=True, player_id=None):
         self.player_request("playlist shuffle %d" % int(bool(on) * 2),
