@@ -77,7 +77,7 @@ ENV/
 /include/
 
 /pip-selfcheck.json
-*.pem
+/*.pem
 metadata/audio/
 
 
