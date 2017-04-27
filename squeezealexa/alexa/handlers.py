@@ -23,11 +23,9 @@ class AlexaHandler(object):
         """ Called when the user ends the session.
         Is not called when the skill returns should_end_session=true
         """
-        pass
 
     def on_session_started(self, request, session):
         """Called when the session starts """
-        pass
 
     def on_launch(self, launch_request, session):
         """Called when the user launches the skill
@@ -35,9 +33,8 @@ class AlexaHandler(object):
 
     def on_intent(self, intent_request, session):
         """Called when the user specifies an intent for this skill"""
-        pass
 
-    def handle(self, event, context):
+    def handle(self, event, context=None):
         """The main entry point for Alexa requests"""
         request = event['request']
         req_type = request['type']

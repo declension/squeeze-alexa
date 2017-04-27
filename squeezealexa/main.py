@@ -53,7 +53,7 @@ class SqueezeAlexa(AlexaHandler):
             print_d("Overriding class server for testing")
             SqueezeAlexa._server = server
 
-    def handle(self, event, context):
+    def handle(self, event, context=None):
         request = event['request']
         req_type = request['type']
         if req_type.startswith('AudioPlayer'):
@@ -345,9 +345,8 @@ class SqueezeAlexa(AlexaHandler):
                 return by_name.get(result[0]).id
         return srv.cur_player_id if defaulting else None
 
-    def on_session_ended(self, session_ended_request, session):
-        print_d("on_session_ended requestId=%s, sessionId=%s" %
-                (session_ended_request['requestId'], session['sessionId']))
+    def on_session_ended(self, intent, session):
+        print_d("Session %s ended" % session['sessionId'])
         speech_output = "Hasta la vista. Baby."
         return speech_response("Session Ended", speech_output, end=True)
 
