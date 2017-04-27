@@ -10,6 +10,9 @@ matrix:
     - python: 2.7
       env: TOXENV=style
 
+before_install:
+ - add-apt-repository ppa:0k53d-karl-f830m/openssl
+ - apt-get update && apt-get upgrade openssl
 install: pip install tox coveralls
 
 script: tox
