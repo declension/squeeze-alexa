@@ -20,6 +20,7 @@ SetVolumeIntent set volume to {Volume} in {Player}
 SetVolumeIntent set {Player} to {Volume} percent
 
 NowPlayingIntent what song is this
+NowPlayingIntent what song this is
 NowPlayingIntent what is playing
 NowPlayingIntent what's playing
 NowPlayingIntent what is playing in the {Player}

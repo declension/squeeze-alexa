@@ -27,11 +27,12 @@ This is still in beta, so feedback and help with documenting welcome - please ju
 
 ### Controlling your music
 
-These should all work (usually) in the current version:
+These should all work (usually) in the current version. Most commands can accept a player name at the end.
 
 #### Playback
  * _Alexa, tell Squeezebox to play / pause_ (or just _Alexa, play / pause!_)
  * _Alexa, tell Squeezebox next / previous_ (or just _Alexa, next / previous!_)
+ * _Alexa, tell Squeezebox to skip_ (or just _Alexa, skip!_)
  * _Alexa, tell Squeezebox to turn shuffle on / off_ (or just _Alexa, Shuffle On/Off_)
 
 #### Control
