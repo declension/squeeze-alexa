@@ -49,13 +49,25 @@ I chose to go with [stunnel](http://stunnel.org/), but some exploration shows th
 
 ### Install `stunnel`
 #### On Synology
-If you haven't got `ipkg`, you might want that. Makes installing stuff a _lot_ easier.
-This [blog post](https://zarino.co.uk/post/ds214se-under-the-hood/) details that process
+##### Using Entware and `opkg`
+Follow [this excellent Synology forum post](https://forum.synology.com/enu/viewtopic.php?f=40&t=95346) to install Entware if you don't have it.
+```bash
+opkg install stunnel
+```
+Your config will live at `/Apps/opt/etc/stunnel/stunnel.conf`.
 
-Then, it's just `sudo ipkg install stunnel`.
+##### ~~Using Optware and `ipkg`~~ (deprecated)
+2017 note: **Optware is now abandonware**. It still works, but you won't get any updates (pretty crucial for OpenSSL...).**
 
+This [blog post](https://zarino.co.uk/post/ds214se-under-the-hood/) details that process. Then, it's just `sudo ipkg install stunnel`.
+Your config will typically live at  `/opt/etc/stunnel/stunnel.conf`
+
+#### Auto-starting stunnel
+There are various ways of getting a script to start up automatically on Synology.
+
+##### Using Upstart
 To make it a system service, you can [create Upstart scripts](https://majikshoe.blogspot.co.uk/2014/12/starting-service-on-synology-dsm-5.html).
-Or, here's one you can cut and paste to, say, `/etc/init/stunnel`
+Or, here's one you can cut and paste to, say, `/etc/init/stunnel` (mine is actually now at `/opt/etc/init.d/S68stunnel`)
 ```
 stunnel
 
@@ -80,13 +92,42 @@ exec /opt/sbin/stunnel
 # vim:ft=upstart
 ```
 
-Your config will typically live at `/opt/etc/stunnel/stunnel.conf`
+##### Or using Optware (but don't)
+Drop the script:
+```bash
+#!/bin/sh
+
+if [ -n "`/opt/bin/pidof stunnel`" ] ;then
+        /opt/bin/killall stunnel 2>/dev/null
+fi
+
+/opt/sbin/stunnel
+```
+
+to `/opt/etc/init.dS20stunnel`.
+
+##### Or using Entware
+
+Drop the script:
+```bash
+#!/bin/sh
+
+if [ -n "`/pidof stunnel`" ] ;then
+        killall stunnel 2>/dev/null
+fi
+/Apps/opt/bin/stunnel
+```
+
+to `/opt/etc/init.dS20stunnel`.
+
+##### Scheduled tasks
+You could set up either of the simple scripts above to run as scheduled tasks in your Synology DSM GUI.
 
 #### On Netgear ReadyNAS
 I haven't tried, but [this forum posting](https://community.netgear.com/t5/Community-Add-ons/HowTo-Stunnel-on-the-Readynas/td-p/784170) seems helpful.
 
 #### On other servers
-Some other NAS drives can use `ipkg`, in which case see above. Else, find a way of installing it (you can build from source if you know how)
+Some other NAS drives can use `ipkg` / `opkg`, in which case see above. Else, find a way of installing it (you can build from source if you know how)
 
 ### Configure ports
  * Generally the connections go `lambda -> router:extport -> server:sslport -> lms:9090` (see diagram above). Most people will have `lms` and `server` on the same host (Synology / ReadyNAS / whatever).
@@ -119,20 +160,21 @@ _TODO: document optional creation of separate server cert for ~~more complicated
 ### Configure stunnel
 
 #### Copy certificate
-Copy the `squeeze-alexa.pem` to somewhere stunnel can see it, e.g. `/opt/etc/stunnel/` on Synology.
+Copy the `squeeze-alexa.pem` to somewhere stunnel can see it, e.g. the same location as `stunnel.conf` (see above).
 
 #### Edit config
-You'll need something to edit your `stunnel.conf` (e.g. `vim` or `nano`) and add this at the end, referring to the cert path you just used above:
+You'll need something to edit your `stunnel.conf` (e.g. `vim` or `nano`) and add this at the end, referring to the cert path you just used above e.g. (for Entware):
 
     [slim]
     accept =  MY-PORT
     connect = MY-HOSTNAME:9090
 
     verify = 3
-    CAfile = /opt/etc/stunnel/squeeze-alexa.pem
-    cert = /opt/etc/stunnel/squeeze-alexa.pem
+    CAfile = /Apps/opt/etc/stunnel/squeeze-alexa.pem
+    cert = /Apps/opt/etc/stunnel/squeeze-alexa.pem
 
-As before `MY-PORT` and `MY-HOSTNAME` should be substituted with your own values.Note that here `MY-HOSTNAME` here is referring to the LMS address as seen from the proxy, i.e. internally. This could usually just be blank (==`localhost`), but I like to be _sure_ we're using the DNS setup and that routing works internally, so...
+As before `MY-PORT` and `MY-HOSTNAME` should be substituted with your own values.
+Note that here `MY-HOSTNAME` here is referring to the LMS address as seen from the proxy, i.e. internally. This could usually just be blank (==`localhost`), but I like to be _sure_ we're using the DNS setup and that routing works internally, so...
 
 #### Check routing
 
@@ -209,7 +251,7 @@ _TODO: expand on this_
  * These are kept here in [`metadata/`](metadata/)
  * In your Amazon Developer portal, configure your new skill:
  * Copy-paste [the utterances](metadata/utterances.txt) as the sample utterances
- * Copy-paste [intents.json](metdata/intents.json) into the Intents schema
+ * Copy-paste [intents.json](metadata/intents.json) into the Intents schema
  * Optional: Add a new slot type for `Player`, and make sure to copy [players.txt](metadata/slots/players.txt) in there, adding your player names if it helps.
  * Optional: Add a new slot type for `Genre`, and make sure to copy [genres.txt](metadata/slots/genres.txt) in there, extending if really necessary (there are all the standards, and quite a few more already)
  * Optional: Add a new slot type for `Playlist`, and make sure to copy [playlists.txt](metadata/slots/players.txt) in there, adding your own for better results (avoiding short words helps, I find)
