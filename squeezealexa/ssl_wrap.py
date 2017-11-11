@@ -78,8 +78,8 @@ class SslSocketWrapper(object):
                 self._die("server killed the connection - handshake error? "
                           "Check the SSL tunnel logs")
             elif 'CERTIFICATE_VERIFY_FAILED' in e.strerror:
-                self._die("Cert not trusted by server. "
-                          "Is your CA correct? "
+                self._die("Cert not trusted by / from server. "
+                          "Is your CA correct? Is the cert expired? "
                           "Is the cert for the right hostname (%s)?"
                           % hostname, e)
             self._die("Connection problem (%s)" % e.strerror)
