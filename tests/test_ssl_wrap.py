@@ -66,7 +66,7 @@ class TestSslWrap(TestCase):
             with pytest.raises(ssl_wrap.Error) as exc:
                 SslSocketWrapper('', port=server.port,
                                  cert_file=CertFiles.CERT_AND_KEY)
-            assert 'cert not trusted by server' in exc.value.message.lower()
+            assert 'cert not trusted' in exc.value.message.lower()
 
     def test_cert_no_key(self):
         with pytest.raises(ssl_wrap.Error) as exc:
