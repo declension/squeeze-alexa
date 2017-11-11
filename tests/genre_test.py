@@ -51,3 +51,5 @@ class GenreTest(TestCase):
     def test_exact(self):
         results = self.get_results('dub')
         assert results == {'Dub'}
+        results = self.get_results('House')
+        assert results == {'House'}
