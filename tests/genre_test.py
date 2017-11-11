@@ -47,3 +47,7 @@ class GenreTest(TestCase):
     def test_hyphenation(self):
         results = self.get_results('hip-hop')
         assert results == {'Hip Hop'}
+
+    def test_exact(self):
+        results = self.get_results('dub')
+        assert results == {'Dub'}

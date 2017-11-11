@@ -33,6 +33,7 @@ class MinConfidences(object):
     GENRE = 85
     MULTI_GENRE = 90
     PLAYLIST = 60
+    SINGLE_GENRE = 98
 
 
 MAX_GUESSES_PER_SLOT = 2
@@ -296,7 +297,7 @@ class SqueezeAlexa(AlexaHandler):
         else:
             lms_genres = self._genres_from_slots(slots, server.genres)
             if lms_genres:
-                server.play_genres(lms_genres)
+                server.play_genres(lms_genres, player_id=pid)
                 gs = english_join(sanitise_text(g) for g in lms_genres)
                 return self.smart_response(text="Playing mix of %s" % gs,
                                            speech="Playing mix of %s" % gs)
@@ -313,6 +314,10 @@ class SqueezeAlexa(AlexaHandler):
                 return set()
             res = process.extract(g, genres)[:MAX_GUESSES_PER_SLOT]
             print_d("Raw genre results: %s" % res)
+            for g, c in res:
+                # Exact(ish) matches shouldn't allow other genres
+                if c > MinConfidences.SINGLE_GENRE:
+                    return {g}
             return {g for g, c in res
                     if g and int(c) >= MinConfidences.MULTI_GENRE}
         # Grr where's my foldl
