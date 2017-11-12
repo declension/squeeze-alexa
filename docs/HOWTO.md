@@ -66,31 +66,7 @@ Your config will typically live at  `/opt/etc/stunnel/stunnel.conf`
 There are various ways of getting a script to start up automatically on Synology.
 
 ##### Using Upstart
-To make it a system service, you can [create Upstart scripts](https://majikshoe.blogspot.co.uk/2014/12/starting-service-on-synology-dsm-5.html).
-Or, here's one you can cut and paste to, say, `/etc/init/stunnel` (mine is actually now at `/opt/etc/init.d/S68stunnel`)
-```
-stunnel
-
-description "Stunnel"
-
-author "Nick B"
-
-start on syno.network.ready
-stop on runlevel [06]
-
-respawn
-respawn limit 3 10
-
-console log
-
-pre-start script
-    date
-end script
-
-exec /opt/sbin/stunnel
-
-# vim:ft=upstart
-```
+If you want, you could "do this properly" and make it a system service, you can [create Upstart scripts](https://majikshoe.blogspot.co.uk/2014/12/starting-service-on-synology-dsm-5.html).
 
 ##### Or using Optware (but don't)
 Drop the script:
@@ -104,21 +80,25 @@ fi
 /opt/sbin/stunnel
 ```
 
-to `/opt/etc/init.dS20stunnel`.
+to `/opt/etc/init.d/S20stunnel`, making sure it's exectuable.
 
-##### Or using Entware
-
-Drop the script:
+##### Or using Entware (recommended)
+Just drop the script:
 ```bash
 #!/bin/sh
 
-if [ -n "`/pidof stunnel`" ] ;then
+if [ -n "`pidof stunnel`" ] ;then
         killall stunnel 2>/dev/null
 fi
 /Apps/opt/bin/stunnel
 ```
 
-to `/opt/etc/init.dS20stunnel`.
+to `/Apps/opt/etc/init.d/S20stunnel`. Make sure it's excutable:
+
+```bash
+chmod +x /Apps/opt/etc/init.d/S20stunnel
+```
+You should try running it and checking the process is a live and logging where you expect (as per your `stunnel.conf`).
 
 ##### Scheduled tasks
 You could set up either of the simple scripts above to run as scheduled tasks in your Synology DSM GUI.
