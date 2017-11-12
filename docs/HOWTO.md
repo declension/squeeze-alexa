@@ -194,14 +194,67 @@ Set up your Alexa Skill
  * Edit `src/settings.py`, filling in the details as commented there.
  * Make sure your `squeeze-alexa.pem` file is moved to the root of the `squeeze-alexa` directory.
 
-### Add a new ASK Custom Skill in your developer account
+### AWS overview
+AWS can be daunting for newcomers and pros alike. The console and range of services is ever increasing, and they love changing things too.
+The first thing to remember is there are **two** interesting dashboards:
+
+ 1. Your [Amazon developer dashboard](https://developer.amazon.com/home.html) for developing and testing Amazon-related products including [your Alexa skills](https://developer.amazon.com/edw/home.html#/skills)...
+ 2. The [AWS Console](console.aws.amazon.com/), for administering all things AWS (notably Lambdas)
+
+### Create an ASK Custom Skill in your developer account
+#### Overview
  * Like most useful skills it should be a [Custom Skill](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/overviews/understanding-custom-skills)
  * Follow one of the guides ideally e.g. [Deploying a Sample Custom Skill To AWS Lambda](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/deploying-a-sample-skill-to-aws-lambda#creating-the-lambda-function-for-the-sample).
- * Needs to be Python (2.7) runtime. **UPDATE:** Python 3.6 is now supported too, though untested.
- * Choose your own Invocation Name. The advantage of not needing certification is you can be "more creative" about your naming...
- * Select an AWS region close to you
- * _Recommended_: Select _yes_ for Audio Streaming API
+ * Python (2.7) runtime is recommended currently, though Python 3.6 is now supported too (a bit untested).
+ * Select an AWS region close to you (for better performance).
  * The defaults are generally fine (those in [lambda.json](./lambda.json)).
+
+After clicking through to the ASK section of the site, add a new Alexa Skill, then continue here
+
+#### Skill Information
+ * Use the _Custom Interaction Model_
+ * Choose a language. I've tested in English UK, though it definitely works in US English too. If you want to help translate, please [submit an issue](https://github.com/declension/squeeze-alexa/issues/new) / PR!
+ * Choose your own Name (a reference really) and Invocation Name (what you use to talk to Alexa with).
+   The advantage of not needing Amazon certification is you can be "more creative" about your naming...
+ * Select **yes** for _Audio Streaming API_, **no** for _Video App_ and _Render Template_ options.
+
+As a picture is worth a thousand words, here's roughly what your Lambda function view should look like
+![Lambda console screenshot](amazon-developer-alexa-screenshot-2017-11.png)
+
+
+#### Update the Interaction Model
+The interaction model is the guts of how Alexa skills are invoked before they even get to your own code.
+Getting this right has been a lot of the _magic_ of building a skill like SqueezeAlexa, so hang tight.
+**Recommended**: do **not** use the Beta Skills Builder GUI. It looks promising but I couldn't get it to work just now (2017-11). It also [needs a new schema](https://github.com/declension/squeeze-alexa/issues/23).
+
+ * These are kept here in [`metadata/`](metadata/)
+ * In your Amazon Developer portal, configure your new skill:
+ * Copy-paste [the utterances](metadata/utterances.txt) as the sample utterances
+ * Copy-paste [intents.json](metadata/intents.json) into the Intents schema
+
+#### Add Slots
+In theory these are optional, but you'll have to edit the interaction model if you opt out. Better just do to this:
+
+ * Add a new slot type `PLAYER`, and make sure to copy [players.txt](metadata/slots/players.txt) in there, adding your player names if it helps.
+ * Add a new slot type `GENRE`, and make sure to copy [genres.txt](metadata/slots/genres.txt) in there, extending if really necessary (there are all the standards, and quite a few more already)
+ * Add a new slot type `PLAYLIST`, and make sure to copy [playlists.txt](metadata/slots/players.txt) in there, adding your own for better results (avoiding short words helps, I find)
+
+Here's another thousand words on roughly what you're aiming for:
+![Slots screenshot](amazon-developer-slots-screenshot-2017-11.png)
+
+
+##### Configuration
+ * Use the AWS ARN for your new AWS Lambda function. This is where the linkage between the AWS Console world and this Amazon Developer account becomes important.
+ You'll have to [read some Alexa + Lambda docs](https://developer.amazon.com/docs/custom-skills/host-a-custom-skill-as-an-aws-lambda-function.html) for full details.
+ * You don't want account linking. One day SqueezeAlexa may implement this and build a server, but probably not.
+ * The new features (since 2016) are all unnecessary for SqueezeAlexa, so no permissions necessary
+
+
+
+#### Lambda setup
+From your AWS console, select Lambda. Again, best to refer to the official the guides ideally e.g. [Deploying a Sample Custom Skill To AWS Lambda](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/deploying-a-sample-skill-to-aws-lambda#creating-the-lambda-function-for-the-sample).
+Here's what your Lambda function view should look like
+![Lambda console screenshot](lambda-management-screenshot-2017-11.png)
 
 ### Upload the customised skill
 
@@ -210,6 +263,10 @@ Set up your Alexa Skill
  * One off: edit `lambda.json` filling in your IAM / ARN details etc (TODO: but with what...)
  * Once installed just type
    `lambda-uploader --no-virtualenv`
+
+#### ...or with the AWS CLI
+You can now use the [AWS CLI `update-function-code` call](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html) to upload the zip from the manual step.
+_TODO: expand on this_
 
 #### ...or manually
  * Get and extract the dependencies
@@ -223,23 +280,11 @@ Set up your Alexa Skill
        ```
  * Upload this `upload.zip` in the AWS Lambda interface ([as described here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function#about-lambda-functions-and-custom-skills))
 
-#### ...or with the AWS CLI
-You can now use the [AWS CLI `update-function-code` call](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html) to upload the zip from the manual step.
-_TODO: expand on this_
-
-### Update the Interaction Model
- * These are kept here in [`metadata/`](metadata/)
- * In your Amazon Developer portal, configure your new skill:
- * Copy-paste [the utterances](metadata/utterances.txt) as the sample utterances
- * Copy-paste [intents.json](metadata/intents.json) into the Intents schema
- * Optional: Add a new slot type for `Player`, and make sure to copy [players.txt](metadata/slots/players.txt) in there, adding your player names if it helps.
- * Optional: Add a new slot type for `Genre`, and make sure to copy [genres.txt](metadata/slots/genres.txt) in there, extending if really necessary (there are all the standards, and quite a few more already)
- * Optional: Add a new slot type for `Playlist`, and make sure to copy [playlists.txt](metadata/slots/players.txt) in there, adding your own for better results (avoiding short words helps, I find)
 
 ### Install your Skill on your Echo
  * Make sure you've enabled the testing checkbox for this skill in the developer portal
  * In the [Alexa app](http://alexa.amazon.com), you should see your Squeeze Alexa skill listed under _Skills_ -> _My Skills_
-
+ * **Do not submit the skill for certification**. As the author of this software I am not allowing this under the license (or indemnifying any consequences of doing so), but more to the point _it won't pass anyway_.
 
 
 Have fun with squeeze-alexa
