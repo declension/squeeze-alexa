@@ -21,7 +21,7 @@ Networking Overview
 -------------------
 ![Networking diagram](squeeze-alexa-networking.png)
 
-Note how the _arbitrary_ ports are not labelled - see [setting up ports](#Configure ports).
+Note how the _arbitrary_ ports are not labelled - see [setting up ports](#configure-ports).
 
 Tunnel the CLI
 --------------
@@ -207,7 +207,7 @@ The first thing to remember is there are **two** interesting dashboards:
  * Follow one of the guides ideally e.g. [Deploying a Sample Custom Skill To AWS Lambda](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/deploying-a-sample-skill-to-aws-lambda#creating-the-lambda-function-for-the-sample).
  * Python (2.7) runtime is recommended currently, though Python 3.6 is now supported too (a bit untested).
  * Select an AWS region close to you (for better performance).
- * The defaults are generally fine (those in [lambda.json](./lambda.json)).
+ * The defaults are generally fine (those in [lambda.json](../lambda.json)).
 
 After clicking through to the ASK section of the site, add a new Alexa Skill, then continue here
 
@@ -227,17 +227,17 @@ The interaction model is the guts of how Alexa skills are invoked before they ev
 Getting this right has been a lot of the _magic_ of building a skill like SqueezeAlexa, so hang tight.
 **Recommended**: do **not** use the Beta Skills Builder GUI. It looks promising but I couldn't get it to work just now (2017-11). It also [needs a new schema](https://github.com/declension/squeeze-alexa/issues/23).
 
- * These are kept here in [`metadata/`](metadata/)
+ * These are kept here in [`metadata/`](../metadata/)
  * In your Amazon Developer portal, configure your new skill:
- * Copy-paste [the utterances](metadata/utterances.txt) as the sample utterances
- * Copy-paste [intents.json](metadata/intents.json) into the Intents schema
+ * Copy-paste [the utterances](../metadata/utterances.txt) as the sample utterances
+ * Copy-paste [intents.json](../metadata/intents.json) into the Intents schema
 
 #### Add Slots
 In theory these are optional, but you'll have to edit the interaction model if you opt out. Better just do to this:
 
- * Add a new slot type `PLAYER`, and make sure to copy [players.txt](metadata/slots/players.txt) in there, adding your player names if it helps.
- * Add a new slot type `GENRE`, and make sure to copy [genres.txt](metadata/slots/genres.txt) in there, extending if really necessary (there are all the standards, and quite a few more already)
- * Add a new slot type `PLAYLIST`, and make sure to copy [playlists.txt](metadata/slots/players.txt) in there, adding your own for better results (avoiding short words helps, I find)
+ * Add a new slot type `PLAYER`, and make sure to copy [players.txt](../metadata/slots/players.txt) in there, adding your player names if it helps.
+ * Add a new slot type `GENRE`, and make sure to copy [genres.txt](../metadata/slots/genres.txt) in there, extending if really necessary (there are all the standards, and quite a few more already)
+ * Add a new slot type `PLAYLIST`, and make sure to copy [playlists.txt](../metadata/slots/players.txt) in there, adding your own for better results (avoiding short words helps, I find)
 
 Here's another thousand words on roughly what you're aiming for:
 ![Slots screenshot](amazon-developer-slots-screenshot-2017-11.png)
@@ -248,7 +248,6 @@ Here's another thousand words on roughly what you're aiming for:
  You'll have to [read some Alexa + Lambda docs](https://developer.amazon.com/docs/custom-skills/host-a-custom-skill-as-an-aws-lambda-function.html) for full details.
  * You don't want account linking. One day SqueezeAlexa may implement this and build a server, but probably not.
  * The new features (since 2016) are all unnecessary for SqueezeAlexa, so no permissions necessary
-
 
 
 #### Lambda setup
