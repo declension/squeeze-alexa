@@ -13,8 +13,8 @@ This is still in beta, so feedback and help with documenting welcome - please ju
 
  * Intuitive voice control over common music scenarios
  * Low latency (given that it's a cloud service), i.e. fast at reacting to your commands.
- * Decent security (hopefully)
- * Extensive support for choosing songs by (multiple) genres, and now playlists (BETA)
+ * Decent security, remaining under your own control
+ * Extensive support for choosing songs by (multiple) genres, and playlists
  * Helpful, conversational responses / interaction.
 
 
@@ -27,7 +27,8 @@ This is still in beta, so feedback and help with documenting welcome - please ju
 
 ### Controlling your music
 
-These should all work (usually) in the current version. Most commands can accept a player name at the end.
+These should all work (usually) in the current version.
+Most commands can take a player name, or will remember the default / last player if not specified.
 
 #### Playback
  * _Alexa, tell Squeezebox to play / pause_ (or just _Alexa, play / pause!_)
@@ -38,7 +39,7 @@ These should all work (usually) in the current version. Most commands can accept
 #### Control
  * _Alexa, tell Squeezebox to select the Bedroom player_
  * _Alexa, tell Squeezebox to turn it down in the Living Room_
- * _Alexa, ask Squeezebox to pump it up!_ (defaults to selected)
+ * _Alexa, ask Squeezebox to pump it up!_
  * _Alexa, tell Squeezebox to turn everything off_
 
 
@@ -50,8 +51,6 @@ These should all work (usually) in the current version. Most commands can accept
 
 #### Feedback
  * _Alexa, ask Squeezebox what's playing \[in the Kitchen\]_
-
-Most commands can take a player name, or will remember the default / last player if not specified.
 
 
 I want!

@@ -93,7 +93,7 @@ fi
 /Apps/opt/bin/stunnel
 ```
 
-to `/Apps/opt/etc/init.d/S20stunnel`. Make sure it's excutable:
+to `/Apps/opt/etc/init.d/S20stunnel`. Make sure it's executable:
 
 ```bash
 chmod +x /Apps/opt/etc/init.d/S20stunnel
@@ -224,7 +224,7 @@ As a picture is worth a thousand words, here's roughly what your Lambda function
 
 #### Update the Interaction Model
 The interaction model is the guts of how Alexa skills are invoked before they even get to your own code.
-Getting this right has been a lot of the _magic_ of building a skill like SqueezeAlexa, so hang tight.
+Getting this right has been a lot of the _magic_ of building a skill like squeeze-alexa, so hang tight.
 **Recommended**: do **not** use the Beta Skills Builder GUI. It looks promising but I couldn't get it to work just now (2017-11). It also [needs a new schema](https://github.com/declension/squeeze-alexa/issues/23).
 
  * These are kept here in [`metadata/`](../metadata/)
@@ -246,8 +246,8 @@ Here's another thousand words on roughly what you're aiming for:
 ##### Configuration
  * Use the AWS ARN for your new AWS Lambda function. This is where the linkage between the AWS Console world and this Amazon Developer account becomes important.
  You'll have to [read some Alexa + Lambda docs](https://developer.amazon.com/docs/custom-skills/host-a-custom-skill-as-an-aws-lambda-function.html) for full details.
- * You don't want account linking. One day SqueezeAlexa may implement this and build a server, but probably not.
- * The new features (since 2016) are all unnecessary for SqueezeAlexa, so no permissions necessary
+ * You don't want account linking. One day squeeze-alexa may implement this and build a server, but probably not.
+ * The new features (since 2016) are all unnecessary for squeeze-alexa, so no permissions necessary
 
 
 #### Lambda setup
