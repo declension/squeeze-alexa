@@ -8,7 +8,7 @@ From your `squeezealexa` directory,
 bin/local_test.py
 ```
 This should connect with your settings as per `settings.py`. The latest diagnostics can help you find the root cause of many common connection / certificate problems (but not 100% accurate).
-Some examples of how this can happen are included in the [tests](..tests/).
+Some examples of how this can happen are included in the [tests](../tests/).
 
 The skill is installed, but erroring when invoked
 -------------------------------------------------
