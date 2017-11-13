@@ -257,28 +257,32 @@ Here's what your Lambda function view should look like
 
 ### Upload the customised skill
 
-#### Using lambda-uploader (recommended)
+#### Using lambda-uploader
  * You can use [lambda-uploader](https://github.com/rackerlabs/lambda-uploader) to do this - much easier long term.
- * One off: edit `lambda.json` filling in your IAM / ARN details etc (TODO: but with what...)
- * Once installed just type
-   `lambda-uploader --no-virtualenv`
+ * First run `pip install lambda-uploader` to install this.
+ * Edit `lambda.json` filling in your role details etc (as set up earlier)
+ * Once installed just run (from your Git project root)
+ ```bash
+ lambda-uploader --no-virtualenv
+ ```
 
-#### ...or with the AWS CLI
-You can now use the [AWS CLI `update-function-code` call](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html) to upload the zip from the manual step.
-_TODO: expand on this_
-
-#### ...or manually
- * Get and extract the dependencies
+#### ...or with the included script
+ * Get and extract the dependencies ~~the hard way~~.
+   **NEW**: Try the helpful [`create_zip.sh`](../bin/create_zip.sh) script.
       ```bash
-      pip --isolated download -r requirements.txt
-      unzip fuzzywuzzy-*.whl "fuzzywuzzy/*"
+      bin/create_zip.sh
       ```
- * Create a zip of all the Lambda code and config needed:
-       ```bash
-       zip upload.zip squeezealexa/* fuzzywuzzy/* *.py *.json *.pem
-       ```
- * Upload this `upload.zip` in the AWS Lambda interface ([as described here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function#about-lambda-functions-and-custom-skills))
+##### Upload with the GUI
+    * Upload the created `upload.zip` in the AWS Lambda interface ([as described here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function#about-lambda-functions-and-custom-skills))
 
+##### ...or with the AWS CLI
+ * You can now use the [AWS CLI `update-function-code` call](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html) to upload the zip from the manual step.
+ * Make sure you have the [AWS CLI installed](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) (e.g. `pip install awscli`).
+ * Then
+```bash
+aws lambda update-function-code --zipfile upload.zip --function-name squeezebox
+```
+(adjusting for your own function name, of course)
 
 ### Install your Skill on your Echo
  * Make sure you've enabled the testing checkbox for this skill in the developer portal
