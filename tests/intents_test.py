@@ -21,6 +21,8 @@ from squeezealexa.squeezebox.server import Server
 from squeezealexa.utils import print_d
 from tests.fake_ssl import FakeSsl
 
+THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+
 
 class AllIntentHandlingTest(TestCase):
     """Makes sure all registered handlers are behaving at least vaguely well"""
@@ -39,6 +41,6 @@ class AllIntentHandlingTest(TestCase):
             assert 'shouldEndSession' in response
 
     def test_intents_json(self):
-        with open(os.path.realpath('../metadata/intents.json')) as f:
+        with open(os.path.join(THIS_DIR, '../metadata/intents.json')) as f:
             j = json.load(f)
             assert j["intents"]
