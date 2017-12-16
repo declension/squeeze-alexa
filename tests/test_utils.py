@@ -12,7 +12,8 @@
 
 from unittest import TestCase
 
-from squeezealexa.utils import english_join, sanitise_text, with_example
+from squeezealexa.utils import english_join, sanitise_text, with_example, \
+    stronger
 
 LOTS = ['foo', 'bar', 'baz', 'quux']
 
@@ -64,3 +65,15 @@ class TestWithExample(TestCase):
 
     def test_with_example(self):
         assert with_example("%d words", ['one']) == '1 words (e.g. "one")'
+
+    def test_with_example_dict(self):
+        assert with_example("%d words", {1: 'one'}) == '1 words (e.g. "1")'
+
+
+class TestStrong(TestCase):
+    def test_full(self):
+        for (k, v), exp in [(('canpoweroff', '1'), True),
+                            (('hasitems', '0'), False),
+                            (('duration', '0.0'), 0.0),
+                            (('foo', 'bar'), 'bar')]:
+            assert stronger(k, v) == exp

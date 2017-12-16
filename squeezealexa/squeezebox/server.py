@@ -14,7 +14,7 @@ from __future__ import print_function
 
 import time
 
-from squeezealexa.utils import with_example, PY2, print_d
+from squeezealexa.utils import with_example, PY2, print_d, stronger
 
 if PY2:
     import urllib
@@ -28,11 +28,6 @@ class SqueezeboxException(Exception):
 
 class SqueezeboxPlayerSettings(dict):
     """Encapsulates player settings"""
-
-    def __init__(self, player_id=None):
-        super(SqueezeboxPlayerSettings, self).__init__()
-        if player_id:
-            self['playerid'] = player_id
 
     @property
     def id(self):
@@ -68,10 +63,11 @@ class Server(object):
             print_d("Authenticated with %s!" % self)
         self.players = {}
         self.refresh_status()
-        self.cur_player_id = cur_player_id or list(self.players)[0]
-        print_d("Default player is now %s " % self.cur_player_id[-5:])
+        self.cur_player_id = pid = cur_player_id or list(self.players)[0]
+        print_d("Default player is now %s" % (self.players[pid],))
         self.__genres = []
         self.__playlists = []
+        self.__favorites = []
         self._created_time = time.time()
 
     @property
@@ -157,29 +153,36 @@ class Server(object):
         demunged = map(demunge, response.split(' '))
         return [d for d in demunged if len(d) == 2]
 
+    def _groups(self, response, start=None, extra_bools=None):
+        """Returns a group of dicts from `response`.
+        If `start` is specified, items prior to this will be discarded,
+        and each group will be starting with this.
+        `extra_bools` allows custom keys to be booleaned"""
+        group = []
+        for k, v in self.__pairs_from(response):
+            if k == start:
+                if group:
+                    yield dict(group)
+                group = [(k, stronger(k, v, extra_bools))]
+            else:
+                if group or not start:
+                    group.append((k, stronger(k, v, extra_bools)))
+        yield dict(group)
+
     def refresh_status(self):
         """ Updates the list of the Squeezebox players available and other
         server metadata."""
         print_d("Refreshing server and player statuses...")
-        pairs = self.__pairs_from(
-            self.__a_request("serverstatus 0 99", raw=True))
+        response = self.__a_request("serverstatus 0 99", raw=True)
         self.players = {}
-        player_id = None
-        for key, val in pairs:
-            if key == "playerid":
-                player_id = val
-                self.players[player_id] = SqueezeboxPlayerSettings(player_id)
-            elif player_id:
-                # Don't worry, playerid is *always* the first entry...
-                self.players[player_id][key] = val
+        for data in self._groups(response, 'playerid',
+                                 extra_bools=['power', 'connected']):
+            self.players[data['playerid']] = SqueezeboxPlayerSettings(data)
+        print_d("Found %d player(s): %s"
+                % (len(self.players),
+                   [p['name'] for p in self.players.values()]))
         if self._debug:
-            print_d("Found %d player(s): %s" %
-                    (len(self.players), self.players))
-        try:
-            assert (int(dict(pairs)['player count']) == len(self.players))
-        except Exception as e:
-            raise SqueezeboxException("Player count broken (%r). Data: %s"
-                                      % (e, pairs))
+            print_d("Player(s): %s" % (self.players.values(),))
 
     def player_request(self, line, player_id=None, raw=False, wait=True):
         """Makes a single request to a particular player (or the current)"""
@@ -226,6 +229,17 @@ class Server(object):
                                 if k == 'playlist']
             print_d(with_example("Loaded %d LMS playlists", self.__playlists))
         return self.__playlists
+
+    @property
+    def favorites(self):
+        if not self.__favorites:
+            resp = self.__a_request("favorites items 0 255 want_url:1",
+                                    raw=True)
+            self.__favorites = {d['name']: d
+                                for d in self._groups(resp, 'name')
+                                if d['isaudio']}
+            print_d(with_example("Loaded %d LMS faves", self.__favorites))
+        return self.__favorites
 
     def get_status(self, player_id=None):
         response = self.player_request("status - 2", player_id=player_id,

@@ -13,6 +13,15 @@
 from squeezealexa.ssl_wrap import SslSocketWrapper
 from squeezealexa.utils import print_d
 
+REAL_FAVES = """title%3AFavorites id%3A0
+name%3AChilled%20Jazz type%3Aaudio
+url%3Afile%3A%2F%2F%2Fvolume1%2Fplaylists%2FChilled%2520Jazz.m3u isaudio%3A1
+hasitems%3A0 id%3A1
+name%3APiano-friendly type%3Aaudio
+url%3Afile%3A%2F%2F%2Fvolume1%2Fplaylists%2FPiano-friendly.m3u isaudio%3A1
+hasitems%3A0
+count%3A18""".replace('\n', ' ')
+
 A_REAL_STATUS = """
  player_name%3AStudy player_connected%3A1 player_ip%3A'
  192.168.1.35%3A51196 power%3A1 signalstrength%3A0 mode%3Aplay
@@ -36,7 +45,7 @@ FAKE_LENGTH = 358.852
 
 class FakeSsl(SslSocketWrapper):
 
-    def __init__(self, fake_name='fake', fake_id='1234'):
+    def __init__(self, fake_name='fake', fake_id='12:34'):
         self.hostname = 'localhost'
         self.port = 0
         self.failures = 0
@@ -58,4 +67,6 @@ class FakeSsl(SslSocketWrapper):
             return 'login %s ******' % stripped.split()[1].replace(' ', '%20')
         elif ' time ' in data:
             return '%s %.3f' % (stripped.rstrip('?'), FAKE_LENGTH)
+        elif 'favorites items ' in data:
+            return stripped + REAL_FAVES
         return stripped + ' OK\n'

@@ -58,8 +58,24 @@ def sanitise_text(text):
     return re.sub(r'\s{2,}', ' ', no_punc)
 
 
-def with_example(template, lst):
-    msg = template % len(lst)
-    if lst:
-        msg += " (e.g. \"%s\")" % random.choice(lst)
+def with_example(template, collection):
+    msg = template % len(collection)
+    if collection:
+        msg += " (e.g. \"%s\")" % random.choice(list(collection))
     return msg
+
+
+def stronger(k, v, extra_bools=None):
+    """Return a stronger-typed version of a value if possible"""
+    prefixes = set(extra_bools or [])
+    prefixes.update({'has', 'is', 'can'})
+    try:
+        for prefix in prefixes:
+            if k.startswith(prefix):
+                return bool(int(v))
+        try:
+            return int(v)
+        except ValueError:
+            return float(v)
+    except ValueError:
+        return None if not v else v
