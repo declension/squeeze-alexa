@@ -20,6 +20,10 @@ If you think it's the speech, try using the test input page on the Amazon dev ac
 
 If all else fails, raise an issue here...
 
+### Strange IOErrors
+If you're getting permission denied `IOErrors` reported in the logs,
+make sure you cert file has world read (i.e. run `chmod 644 squeeze-alexa.pem`)
+
 Checking certificate problems
 -----------------------------
 
