@@ -12,6 +12,10 @@
 
 from unittest import TestCase
 
+import os
+
+import json
+
 from squeezealexa.main import handler, SqueezeAlexa
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.utils import print_d
@@ -33,3 +37,8 @@ class AllIntentHandlingTest(TestCase):
             response = raw['response']
             assert 'directives' in response or 'outputSpeech' in response
             assert 'shouldEndSession' in response
+
+    def test_intents_json(self):
+        with open(os.path.realpath('../metadata/intents.json')) as f:
+            j = json.load(f)
+            assert j["intents"]
