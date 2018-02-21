@@ -68,3 +68,10 @@ VERIFY_SERVER_HOSTNAME = bool(CERT_FILE_PATH)
 """Whether to verify the server's TLS certificate hostname.
 Override to False if your certificate is for a different domain than your
 SERVER_HOSTNAME."""
+
+# ------------------------- Squeezealexa Configuration ---------------------------
+LANGUAGE = "EN"
+"""Possible Values:
+   - EN: english
+   - DE: german
+"""
