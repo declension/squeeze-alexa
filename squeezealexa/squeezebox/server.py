@@ -273,8 +273,7 @@ class Server(object):
             return
         cmd = "mixer volume %.1f" % float(value)
         self.player_request(cmd, player_id=player_id)
-        
-        
+
     def get_milliseconds(self):
         secs = self.player_request("time ?") or 0
         return float(secs) * 1000.0

@@ -13,7 +13,8 @@
 from squeezealexa.settings import RESPONSE_AUDIO_FILE_URL
 
 
-def speech_fragment(speech=None, text=None, title=None, reprompt_text=None, end=True):
+def speech_fragment(speech=None, text=None, title=None,
+                    reprompt_text=None, end=True):
     text = text or speech
     speech = speech or text
     output = {'shouldEndSession': end}
@@ -23,7 +24,7 @@ def speech_fragment(speech=None, text=None, title=None, reprompt_text=None, end=
             'type': 'PlainText',
             'text': speech
         }
-        
+
     if text:
         card = {
             'type': 'Simple',
@@ -42,10 +43,12 @@ def speech_fragment(speech=None, text=None, title=None, reprompt_text=None, end=
         }
     return output
 
-def audio_response(speech=None, text=None, title=None, reprompt_text=None, end=True, store=None):
-    speechlet_response = speech_fragment(speech=speech,text=text, title=title,
+
+def audio_response(speech=None, text=None, title=None,
+                   reprompt_text=None, end=True, store=None):
+    speechlet_response = speech_fragment(speech=speech, text=text, title=title,
                                          reprompt_text=reprompt_text, end=end)
-    speechlet_response['directives']= [
+    speechlet_response['directives'] = [
         {
             'type': 'AudioPlayer.Play',
             'playBehavior': 'REPLACE_ALL',
@@ -62,13 +65,11 @@ def audio_response(speech=None, text=None, title=None, reprompt_text=None, end=T
     return _build_response(speechlet_response, store=store)
 
 
-def speech_response(speech= None, title=None, text=None, reprompt_text=None, end=True,
-                    store=None):
-    speechlet_response = speech_fragment(speech=speech,text=text, title=title,
+def speech_response(speech=None, title=None, text=None,
+                    reprompt_text=None, end=True, store=None):
+    speechlet_response = speech_fragment(speech=speech, text=text, title=title,
                                          reprompt_text=reprompt_text, end=end)
     return _build_response(speechlet_response, store=store)
-
-
 
 def _build_response(speechlet_response, store=None):
     return {

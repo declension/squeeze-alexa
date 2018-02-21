@@ -19,8 +19,7 @@ from fuzzywuzzy import process
 
 from squeezealexa.alexa.handlers import AlexaHandler, IntentHandler
 from squeezealexa.alexa.intents import *
-from squeezealexa.alexa.response import audio_response, speech_response, \
-    _build_response
+from squeezealexa.alexa.response import audio_response, speech_response
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server, print_d
@@ -106,7 +105,7 @@ class SqueezeAlexa(AlexaHandler):
         intent_handler = handler.for_name(intent_name)
         if intent_handler:
             return intent_handler(self, intent, session, pid=pid)
-        return self.language_response('unknown_intent',[intent_name])
+        return self.language_response('unknown_intent', [intent_name])
 
     @handler.handle(Audio.RESUME)
     def on_resume(self, intent, session, pid=None):
@@ -134,10 +133,16 @@ class SqueezeAlexa(AlexaHandler):
         title = details['current_title']
         artist = details['artist']
         if title:
-            desc = substitute(speechoutput[LANGUAGE].get('current',None),[title])
+            desc = substitute(
+                speechoutput[LANGUAGE].get('current', None), [title]
+            )
             if artist:
-                desc += substitute(speechoutput[LANGUAGE].get('current_by',None),[artist])
-            heading = substitute(textoutput[LANGUAGE].get('current',None),[title])
+                desc += substitute(
+                    speechoutput[LANGUAGE].get('current_by', None), [artist]
+                )
+            heading = substitute(
+                textoutput[LANGUAGE].get('current', None), [title]
+            )
         else:
             desc = speechoutput[LANGUAGE]['current_none']
             heading = None
@@ -156,9 +161,9 @@ class SqueezeAlexa(AlexaHandler):
         if (vol > 10) or (vol < 0):
             print_d("Volume value out of range: %f" % vol)
             return self.language_response('set_vol_nf')
-        self.get_server().set_volume(vol*10,pid)
-        return self.language_response('set_vol',[int(vol)])
-    
+        self.get_server().set_volume(vol * 10, pid)
+        return self.language_response('set_vol', [int(vol)])
+
     @handler.handle(Custom.INC_VOL)
     def on_inc_vol(self, intent, session, pid=None):
         self.get_server().change_volume(+12.5, player_id=pid)
@@ -179,16 +184,28 @@ class SqueezeAlexa(AlexaHandler):
         if pid:
             player = srv.players[pid]
             srv.cur_player_id = player.id
-            return self.language_response('select_player',[player,player.name],store={"player_id": pid})
+            return self.language_response(
+                'select_player', [player,player.name], store={"player_id": pid}
+            )
         else:
-            speech = substitute(speechoutput[LANGUAGE].get('select_player_nf',None),[english_join(srv.player_names)])
-            reprompt = substitute(repromptoutput[LANGUAGE].get('select_player_nf',None),[Utterances.SELECT_PLAYER])
+            speech = substitute(
+                speechoutput[LANGUAGE].get('select_player_nf', None),
+                [english_join(srv.player_names)]
+            )
+            reprompt = substitute(
+                repromptoutput[LANGUAGE].get('select_player_nf', None),
+                [Utterances.SELECT_PLAYER]
+            )
             try:
-                title = substitute(titleoutput[LANGUAGE].get('select_player_nf',None),[intent['slots']['Player']['value']])
+                title = substitute(
+                    titleoutput[LANGUAGE].get('select_player_nf', None),
+                    [intent['slots']['Player']['value']]
+                )
             except KeyError:
-                title = titleoutput[LANGUAGE].get('select_player_nk',None)
-            return smart_response(speech=speech,title=title, reprompt_text=reprompt,
-                                   end=False)
+                title = titleoutput[LANGUAGE].get('select_player_nk', None)
+            return self.smart_response(
+                speech=speech, title=title, reprompt_text=reprompt, end=False
+            )
 
     @handler.handle(Audio.SHUFFLE_ON)
     @handler.handle(CustomAudio.SHUFFLE_ON)
@@ -221,7 +238,7 @@ class SqueezeAlexa(AlexaHandler):
         server = self.get_server()
         server.set_power(on=False, player_id=pid)
         player = server.players[pid]
-        return self.language_response('player_off', [player.name,player])
+        return self.language_response('player_off', [player.name, player])
 
     @handler.handle(Power.PLAYER_ON)
     def on_player_on(self, intent, session, pid=None):
@@ -230,11 +247,11 @@ class SqueezeAlexa(AlexaHandler):
         server = self.get_server()
         server.set_power(on=True, player_id=pid)
         player = server.players[pid]
-        speech = substitute(speechoutput[LANGUAGE]['player_on'],[player.name])
+        speech = substitute(speechoutput[LANGUAGE]['player_on'], [player.name])
         if server.cur_player_id != pid:
             speech += speechoutput[LANGUAGE]['player_on_select']
-        text = substitute(textoutput[LANGUAGE]['player_on'],[player])
-        title = substitute(titleoutput[LANGUAGE]['player_on'],[player.name])
+        text = substitute(textoutput[LANGUAGE]['player_on'], [player])
+        title = substitute(titleoutput[LANGUAGE]['player_on'], [player.name])
         server.cur_player_id = pid
         return self.smart_response(title=title,
                                    text=text,
@@ -260,7 +277,9 @@ class SqueezeAlexa(AlexaHandler):
             print_d("Couldn't process playlist from: %s" % intent)
             if not server.playlists:
                 return self.language_response('play_playlist_nh_none')
-            return self.language_response('play_playlist_nh',[random.choice(server.playlists)])
+            return self.language_response(
+                'play_playlist_nh', [random.choice(server.playlists)]
+            )
         else:
             if not server.playlists:
                 return self.language_response('play_playlist_none')
@@ -271,8 +290,10 @@ class SqueezeAlexa(AlexaHandler):
                 pl = result[0]
                 server.playlist_resume(pl, player_id=pid)
                 name = sanitise_text(pl)
-                return self.language_response('play_playlist',[name])
-            return self.language_response('play_playlist_nf',[slot, random.choice(server.playlists)])
+                return self.language_response('play_playlist', [name])
+            return self.language_response(
+                'play_playlist_nf', [slot, random.choice(server.playlists)]
+            )
 
     @handler.handle(Play.RANDOM_MIX)
     def on_play_random_mix(self, intent, session, pid=None):
@@ -289,10 +310,12 @@ class SqueezeAlexa(AlexaHandler):
             if lms_genres:
                 server.play_genres(lms_genres, player_id=pid)
                 gs = english_join(sanitise_text(g) for g in lms_genres)
-                return self.language_response('play_random_mix',[gs])
+                return self.language_response('play_random_mix', [gs])
             else:
                 genres_text = english_join(slots, "or")
-                return self.language_response('play_random_mix_nf',[genre_text])
+                return self.language_response(
+                    'play_random_mix_nf', [genres_text]
+                )
         raise ValueError("Don't understand intent '%s'" % intent)
 
     def _genres_from_slots(self, slots, genres):
@@ -350,13 +373,25 @@ class SqueezeAlexa(AlexaHandler):
         return (time.time() - self._audio_touched) < AUDIO_TIMEOUT_SECS
 
     def language_response(self, resId, subs=[], end=True, store=None):
-        speech = substitute(speechoutput[LANGUAGE].get(resId,None),subs)
-        text = substitute(textoutput[LANGUAGE].get(resId,None),subs)
-        title = substitute(titleoutput[LANGUAGE].get(resId,None),subs)
-        reprompt = substitute(repromptoutput[LANGUAGE].get(resId,None),subs)
-        return self.smart_response(speech=speech, title=title, text=text, reprompt_text=reprompt, end=end, store=store)
-    
-    def smart_response(self, speech=None, title=None, text=None, reprompt_text=None, end=True, store=None):
+        speech = substitute(speechoutput[LANGUAGE].get(resId, None), subs)
+        text = substitute(textoutput[LANGUAGE].get(resId, None), subs)
+        title = substitute(titleoutput[LANGUAGE].get(resId, None), subs)
+        reprompt = substitute(repromptoutput[LANGUAGE].get(resId, None), subs)
+        return self.smart_response(
+            speech=speech, title=title, text=text,
+            reprompt_text=reprompt, end=end, store=store
+        )
+
+    def smart_response(
+            self, speech=None, title=None, text=None,
+            reprompt_text=None, end=True, store=None
+    ):
         if self.audio_enabled:
-            return speech_response(speech=speech, title=title, text=text, reprompt_text=reprompt_text, end=end, store=store )
-        return audio_response(speech=speech, title=title, text=text, reprompt_text=reprompt_text, end=end, store=store)
+            return speech_response(
+                speech=speech, title=title, text=text,
+                reprompt_text=reprompt_text, end=end, store=store
+            )
+        return audio_response(
+            speech=speech, title=title, text=text,
+            reprompt_text=reprompt_text, end=end, store=store
+        )
