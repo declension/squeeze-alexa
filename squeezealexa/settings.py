@@ -69,7 +69,7 @@ VERIFY_SERVER_HOSTNAME = bool(CERT_FILE_PATH)
 Override to False if your certificate is for a different domain than your
 SERVER_HOSTNAME."""
 
-# ------------------------- Squeezealexa Configuration ---------------------------
+# ------------------------- Squeezealexa Configuration -----------------------
 LANGUAGE = "EN"
 """Possible Values:
    - EN: english
