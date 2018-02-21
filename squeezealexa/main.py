@@ -19,7 +19,7 @@ from fuzzywuzzy import process
 
 from squeezealexa.alexa.handlers import AlexaHandler, IntentHandler
 from squeezealexa.alexa.intents import *
-from squeezealexa.alexa.response import audio_response, speech_response \
+from squeezealexa.alexa.response import audio_response, speech_response, \
     _build_response
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
