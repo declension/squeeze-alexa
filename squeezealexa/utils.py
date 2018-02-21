@@ -41,6 +41,13 @@ _SANITISE = {'&': ' N ',
              '$': 's'}
 
 
+def substitute(text, subs):
+    try:
+        back = text.format(*subs)
+    except AttributeError:
+        back = None
+    return back
+
 def remove_punctuation(text):
     if not isinstance(text, Unicode):
         text = text.decode('utf-8')
