@@ -20,7 +20,9 @@ speechoutput_en = {
     'player_off': "{0} is now off",
     'all_on': "Ready to rock",
     'all_off': "Silence",
-    'play_random_mix_nf': "Can't find genres: {0}"
+    'play_random_mix_nf': "Can't find genres: {0}",
+    'set_vol_nf': "Select a volume value between 0 and 10",
+    'set_vol': "Volume set to {0}"
 }
 
 titleoutput_en = {
