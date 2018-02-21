@@ -185,7 +185,7 @@ class SqueezeAlexa(AlexaHandler):
             player = srv.players[pid]
             srv.cur_player_id = player.id
             return self.language_response(
-                'select_player', [player,player.name], store={"player_id": pid}
+                'select_player', [player, player.name], store={"player_id": pid}
             )
         else:
             speech = substitute(
