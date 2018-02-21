@@ -1,3 +1,5 @@
+# coding=utf-8
+
 speechoutput_en = {
     'launch' : "Squeezebox is online. Please try some commands.",
     'session_ended': "Hasta la vista. Baby.",
