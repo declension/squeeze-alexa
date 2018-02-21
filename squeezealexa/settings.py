@@ -25,13 +25,13 @@ APPLICATION_ID = None
 A value of None means verification of the request's Skill will be disabled.
 """
 
-RESPONSE_AUDIO_FILE_URL = "***REMOVED***"
-"""https://s3.amazonaws.com/declension-alexa-media/silence.mp3"""
+RESPONSE_AUDIO_FILE_URL = \
+    "https://s3.amazonaws.com/declension-alexa-media/silence.mp3"
 """Change this to your own HTTPS MP3 file, which must be accessible to Alexa"""
 
 # ----------------------------- Squeezebox Config -----------------------------
 
-SERVER_HOSTNAME = '***REMOVED***'
+SERVER_HOSTNAME = 'my-squeezebox-cli-proxy.example.com'
 """The public hostname / IP of your Squeezebox server CLI proxy"""
 
 SERVER_SSL_PORT = 19090
