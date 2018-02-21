@@ -73,4 +73,5 @@ SERVER_HOSTNAME."""
 LANGUAGE = "EN"
 """Possible Values:
    - EN: english
+   - DE: german
 """
