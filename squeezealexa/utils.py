@@ -48,6 +48,7 @@ def substitute(text, subs):
         back = None
     return back
 
+
 def remove_punctuation(text):
     if not isinstance(text, Unicode):
         text = text.decode('utf-8')

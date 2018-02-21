@@ -19,7 +19,8 @@ from fuzzywuzzy import process
 
 from squeezealexa.alexa.handlers import AlexaHandler, IntentHandler
 from squeezealexa.alexa.intents import *
-from squeezealexa.alexa.response import audio_response, speech_response
+from squeezealexa.alexa.response import audio_response, speech_response \
+    _build_response
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server, print_d
@@ -61,7 +62,7 @@ class SqueezeAlexa(AlexaHandler):
             print_d("Ignoring %s callback %s"
                     % (request['type'], request['requestId']))
             self.touch_audio()
-            return self.smart_response()
+            return _build_response({})
         return super(SqueezeAlexa, self).handle(event, context)
 
     def on_session_started(self, request, session):

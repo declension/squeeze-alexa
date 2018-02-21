@@ -63,8 +63,8 @@ textoutput_en = {
 }
 
 repromptoutput_en = {
-    'launch': "Try resume, pause, next, previous "
-        "or ask Squeezebox to turn it up or down"
+    'launch': "Try resume, pause, next, previous \
+               or ask Squeezebox to turn it up or down"
 }
 
 speechoutput_de = {

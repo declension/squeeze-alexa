@@ -71,6 +71,7 @@ def speech_response(speech=None, title=None, text=None,
                                          reprompt_text=reprompt_text, end=end)
     return _build_response(speechlet_response, store=store)
 
+
 def _build_response(speechlet_response, store=None):
     return {
         'version': '1.0',
