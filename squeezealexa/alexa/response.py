@@ -13,20 +13,27 @@
 from squeezealexa.settings import RESPONSE_AUDIO_FILE_URL
 
 
-def speech_fragment(text, title=None, reprompt_text=None, end=True):
-    output = {
-        'outputSpeech': {
+def speech_fragment(speech=None, text=None, title=None,
+                    reprompt_text=None, end=True):
+    text = text or speech
+    speech = speech or text
+    output = {'shouldEndSession': end}
+
+    if speech:
+        output['outputSpeech'] = {
             'type': 'PlainText',
-            'text': text
-        },
-        'shouldEndSession': end
-    }
-    if title:
-        output['card'] = {
+            'text': speech
+        }
+
+    if text:
+        card = {
             'type': 'Simple',
-            'title': title,
             'content': text
         }
+        if title:
+            card['title'] = title
+        output['card'] = card
+
     if reprompt_text:
         output['reprompt'] = {
             'outputSpeech': {
@@ -37,38 +44,30 @@ def speech_fragment(text, title=None, reprompt_text=None, end=True):
     return output
 
 
-def audio_response(speech=None, text=None, title=None):
-    output = {
-        'directives': [
-            {
-                'type': 'AudioPlayer.Play',
-                'playBehavior': 'REPLACE_ALL',
-                'audioItem': {
-                    'stream': {
-                        'token': 'beep',
-                        'url': RESPONSE_AUDIO_FILE_URL,
-                        'offsetInMilliseconds': 0
-                    }
+def audio_response(speech=None, text=None, title=None,
+                   reprompt_text=None, end=True, store=None):
+    speechlet_response = speech_fragment(speech=speech, text=text, title=title,
+                                         reprompt_text=reprompt_text, end=end)
+    speechlet_response['directives'] = [
+        {
+            'type': 'AudioPlayer.Play',
+            'playBehavior': 'REPLACE_ALL',
+            'audioItem': {
+                'stream': {
+                    'token': 'beep',
+                    'url': RESPONSE_AUDIO_FILE_URL,
+                    'offsetInMilliseconds': 0
                 }
             }
-        ],
-        'shouldEndSession': True
-    }
-    if speech:
-        output['outputSpeech'] = {'type': 'PlainText',
-                                  'text': speech}
-    if text:
-        card = {'type': 'Simple', 'content': text}
-        if title:
-            card['title'] = title
-        output['card'] = card
+        }
+    ]
 
-    return _build_response(output)
+    return _build_response(speechlet_response, store=store)
 
 
-def speech_response(title=None, text=None, reprompt_text=None, end=True,
-                    store=None):
-    speechlet_response = speech_fragment(text=text, title=title,
+def speech_response(speech=None, title=None, text=None,
+                    reprompt_text=None, end=True, store=None):
+    speechlet_response = speech_fragment(speech=speech, text=text, title=title,
                                          reprompt_text=reprompt_text, end=end)
     return _build_response(speechlet_response, store=store)
 
