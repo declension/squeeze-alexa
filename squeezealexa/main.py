@@ -148,6 +148,32 @@ class SqueezeAlexa(AlexaHandler):
             heading = None
         return self.smart_response(text=heading, speech=desc)
 
+    @handler.handle(Custom.SET_VOL)
+    def on_set_vol(self, intent, session, pid=None):
+        srv = self.get_server()
+        srv.refresh_status()
+        try:
+            vol = float(intent['slots']['Volume']['value'])
+            print_d("Extracted playlist slot: %s" % vol)
+        except KeyError:
+            print_d("Couldn't process volume from: %s" % intent)
+            desc = "Select a volume value between 0 and 10"
+            heading = "Invalid volume value"
+            return self.smart_response(text=heading,
+                                       speech=desc)
+
+            return self.language_response('set_vol_nf')
+        if (vol > 10) or (vol < 0):
+            print_d("Volume value out of range: %f" % vol)
+            desc = "Select a volume value between 0 and 10"
+            heading = "Volume value out of range: %f" % vol
+            return self.smart_response(text=heading,
+                                       speech=desc)
+        self.get_server().set_volume(vol * 10, pid)
+        desc = "Volume set to %i" % vol
+        return self.smart_response(text="Set Volume",
+                                   speech=desc)
+
     @handler.handle(Custom.INC_VOL)
     def on_inc_vol(self, intent, session, pid=None):
         self.get_server().change_volume(+12.5, player_id=pid)
