@@ -95,7 +95,11 @@ class SqueezeAlexaTest(TestCase):
         alexa = SqueezeAlexa(server=server)
         for name, func in handler._handlers.items():
             intent = {'name': name,
-                      'slots': {'Player': {'name': 'Player', 'value': 'fake'}}}
+                      'slots': {
+                          'Player': {'name': 'Player', 'value': 'fake'},
+                          'Volume': {'name': 'Volume', 'value': '5'}
+                      }
+            }
             output = alexa.handle(self.request_for(intent, SOME_SESSION))
             self.validate_response(name, output)
 
