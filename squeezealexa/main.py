@@ -173,7 +173,7 @@ class SqueezeAlexa(AlexaHandler):
                                    speech=desc)
 
     @handler.handle(Custom.SET_VOL_PERCENT)
-    def on_set_vol(self, intent, session, pid=None):
+    def on_set_vol_percent(self, intent, session, pid=None):
         srv = self.get_server()
         srv.refresh_status()
         try:
@@ -195,7 +195,7 @@ class SqueezeAlexa(AlexaHandler):
         desc = "Volume set to %d percent" % vol
         return self.smart_response(text="Set Volume",
                                    speech=desc)
-    
+
     @handler.handle(Custom.INC_VOL)
     def on_inc_vol(self, intent, session, pid=None):
         self.get_server().change_volume(+12.5, player_id=pid)
