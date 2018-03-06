@@ -150,11 +150,9 @@ class SqueezeAlexa(AlexaHandler):
 
     @handler.handle(Custom.SET_VOL)
     def on_set_vol(self, intent, session, pid=None):
-        srv = self.get_server()
-        srv.refresh_status()
         try:
             vol = float(intent['slots']['Volume']['value'])
-            print_d("Extracted volume slot: %d" % vol)
+            print_d("Extracted volume slot: %.1f" % vol)
         except KeyError:
             print_d("Couldn't process volume from: %s" % intent)
             desc = "Select a volume value between 0 and 10"
@@ -162,23 +160,23 @@ class SqueezeAlexa(AlexaHandler):
             return self.smart_response(text=heading,
                                        speech=desc)
         if (vol > 10) or (vol < 0):
-            print_d("Volume value out of range: %d" % vol)
+            print_d("Volume value out of range: %.1f" % vol)
             desc = "Select a volume value between 0 and 10"
-            heading = "Volume value out of range: %d" % vol
+            heading = "Volume value out of range: %.1f" % vol
             return self.smart_response(text=heading,
                                        speech=desc)
         self.get_server().set_volume(vol * 10, pid)
-        desc = "Volume set to %d" % vol
-        return self.smart_response(text="Set Volume",
+        desc = "OK"
+        vol_out = vol if (vol!=int(vol)) else int(vol)
+        heading = "Set volume to %s" % vol_out
+        return self.smart_response(text=heading,
                                    speech=desc)
 
     @handler.handle(Custom.SET_VOL_PERCENT)
     def on_set_vol_percent(self, intent, session, pid=None):
-        srv = self.get_server()
-        srv.refresh_status()
         try:
-            vol = float(intent['slots']['Volume']['value'])
-            print_d("Extracted playlist slot: %d" % vol)
+            vol = int(float(intent['slots']['Volume']['value']))
+            print_d("Extracted volume slot: %d" % vol)
         except KeyError:
             print_d("Couldn't process volume from: %s" % intent)
             desc = "Select a volume value between 0 and 100 precent"
@@ -188,12 +186,12 @@ class SqueezeAlexa(AlexaHandler):
         if (vol > 100) or (vol < 0):
             print_d("Volume value out of range: %d" % vol)
             desc = "Select a volume value between 0 and 100 percent"
-            heading = "Volume value out of range: %d" % vol
+            heading = "Volume value out of range: %d percent" % vol
             return self.smart_response(text=heading,
                                        speech=desc)
         self.get_server().set_volume(vol, pid)
-        desc = "Volume set to %d percent" % vol
-        return self.smart_response(text="Set Volume",
+        desc = "OK"
+        return self.smart_response(text="Set Volume to %d percent" % vol,
                                    speech=desc)
 
     @handler.handle(Custom.INC_VOL)
