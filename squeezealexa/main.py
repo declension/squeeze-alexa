@@ -167,7 +167,7 @@ class SqueezeAlexa(AlexaHandler):
                                        speech=desc)
         self.get_server().set_volume(vol * 10, pid)
         desc = "OK"
-        vol_out = vol if (vol!=int(vol)) else int(vol)
+        vol_out = vol if (vol != int(vol)) else int(vol)
         heading = "Set volume to %s" % vol_out
         return self.smart_response(text=heading,
                                    speech=desc)
@@ -191,7 +191,8 @@ class SqueezeAlexa(AlexaHandler):
                                        speech=desc)
         self.get_server().set_volume(vol, pid)
         desc = "OK"
-        return self.smart_response(text="Set Volume to %d percent" % vol,
+        heading = "Set Volume to %d percent" % vol
+        return self.smart_response(text=heading,
                                    speech=desc)
 
     @handler.handle(Custom.INC_VOL)
