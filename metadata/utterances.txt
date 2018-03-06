@@ -17,7 +17,11 @@ SetVolumeIntent set volume to {Volume}
 SetVolumeIntent set volume {Player} to {Volume}
 SetVolumeIntent set volume in {Player} to {Volume}
 SetVolumeIntent set volume to {Volume} in {Player}
-SetVolumeIntent set {Player} to {Volume} percent
+
+SetVolumePercentIntent set volume to {Volume} percent
+SetVolumePercentIntent set volume {Player} to {Volume} percent
+SetVolumePercentIntent set volume in {Player} to {Volume} percent
+SetVolumePercentIntent set volume to {Volume} percent in {Player}
 
 NowPlayingIntent what song is this
 NowPlayingIntent what song this is

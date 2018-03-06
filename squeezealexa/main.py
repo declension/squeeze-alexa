@@ -148,6 +148,53 @@ class SqueezeAlexa(AlexaHandler):
             heading = None
         return self.smart_response(text=heading, speech=desc)
 
+    @handler.handle(Custom.SET_VOL)
+    def on_set_vol(self, intent, session, pid=None):
+        try:
+            vol = float(intent['slots']['Volume']['value'])
+            print_d("Extracted volume slot: %.1f" % vol)
+        except KeyError:
+            print_d("Couldn't process volume from: %s" % intent)
+            desc = "Select a volume value between 0 and 10"
+            heading = "Invalid volume value"
+            return self.smart_response(text=heading,
+                                       speech=desc)
+        if (vol > 10) or (vol < 0):
+            print_d("Volume value out of range: %.1f" % vol)
+            desc = "Select a volume value between 0 and 10"
+            heading = "Volume value out of range: %.1f" % vol
+            return self.smart_response(text=heading,
+                                       speech=desc)
+        self.get_server().set_volume(vol * 10, pid)
+        desc = "OK"
+        vol_out = vol if (vol != int(vol)) else int(vol)
+        heading = "Set volume to %s" % vol_out
+        return self.smart_response(text=heading,
+                                   speech=desc)
+
+    @handler.handle(Custom.SET_VOL_PERCENT)
+    def on_set_vol_percent(self, intent, session, pid=None):
+        try:
+            vol = int(float(intent['slots']['Volume']['value']))
+            print_d("Extracted volume slot: %d" % vol)
+        except KeyError:
+            print_d("Couldn't process volume from: %s" % intent)
+            desc = "Select a volume value between 0 and 100 precent"
+            heading = "Invalid volume value"
+            return self.smart_response(text=heading,
+                                       speech=desc)
+        if (vol > 100) or (vol < 0):
+            print_d("Volume value out of range: %d" % vol)
+            desc = "Select a volume value between 0 and 100 percent"
+            heading = "Volume value out of range: %d percent" % vol
+            return self.smart_response(text=heading,
+                                       speech=desc)
+        self.get_server().set_volume(vol, pid)
+        desc = "OK"
+        heading = "Set Volume to %d percent" % vol
+        return self.smart_response(text=heading,
+                                   speech=desc)
+
     @handler.handle(Custom.INC_VOL)
     def on_inc_vol(self, intent, session, pid=None):
         self.get_server().change_volume(+12.5, player_id=pid)
