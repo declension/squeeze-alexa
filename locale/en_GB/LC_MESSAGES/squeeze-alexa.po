@@ -1,0 +1,228 @@
+#: squeezealexa/utils.py:34
+msgid "and"
+msgstr ""
+
+#: squeezealexa/main.py:76
+msgid "Squeezebox is online. Please try some commands."
+msgstr ""
+
+#: squeezealexa/main.py:77
+msgid ""
+"Try resume, pause, next, previous, play some jazz, or ask Squeezebox to turn "
+"it up or down"
+msgstr ""
+
+#: squeezealexa/main.py:115
+#, python-brace-format
+msgid "Sorry, I don't know how to process a \"{intent}\""
+msgstr ""
+
+#: squeezealexa/main.py:117
+#, python-brace-format
+msgid "Unknown intent: '{intent}'"
+msgstr ""
+
+#: squeezealexa/main.py:132
+msgid "Rewind!"
+msgstr ""
+
+#: squeezealexa/main.py:137
+msgid "Yep, pretty lame."
+msgstr ""
+
+#: squeezealexa/main.py:145
+msgid "Currently playing: \"{}\""
+msgstr ""
+
+#: squeezealexa/main.py:148
+msgid "Now playing: \"{}\""
+msgstr ""
+
+#: squeezealexa/main.py:150
+msgid "Nothing playing."
+msgstr ""
+
+#: squeezealexa/main.py:161 squeezealexa/main.py:165
+msgid "Select a volume value between 0 and 10"
+msgstr ""
+
+#: squeezealexa/main.py:162 squeezealexa/main.py:184
+msgid "Invalid volume value"
+msgstr ""
+
+#: squeezealexa/main.py:166
+#, python-brace-format
+msgid "Volume value out of range: {volume}"
+msgstr ""
+
+#: squeezealexa/main.py:172
+msgid "Set volume to {}"
+msgstr ""
+
+#: squeezealexa/main.py:183 squeezealexa/main.py:187
+msgid "Select a volume value between 0 and 100 percent"
+msgstr ""
+
+#: squeezealexa/main.py:188
+#, python-format
+msgid "Volume value out of range: %d percent"
+msgstr ""
+
+#: squeezealexa/main.py:191
+msgid "OK"
+msgstr ""
+
+#: squeezealexa/main.py:192
+#, python-format
+msgid "Set Volume to %d percent"
+msgstr ""
+
+#: squeezealexa/main.py:198
+msgid "Increase Volume"
+msgstr ""
+
+#: squeezealexa/main.py:199
+msgid "Pumped it up."
+msgstr ""
+
+#: squeezealexa/main.py:204
+msgid "Decrease Volume"
+msgstr ""
+
+#: squeezealexa/main.py:205
+msgid "OK, quieter now."
+msgstr ""
+
+#: squeezealexa/main.py:217
+#, python-brace-format
+msgid "Selected {player}"
+msgstr ""
+
+#: squeezealexa/main.py:218
+msgid "Selected player {}"
+msgstr ""
+
+#: squeezealexa/main.py:221
+msgid "I only found these players: {}. Could you try again?"
+msgstr ""
+
+#: squeezealexa/main.py:223
+#, python-brace-format
+msgid ""
+"You can select a player by saying \"{utterance}\" and then the player name."
+msgstr ""
+
+#: squeezealexa/main.py:228
+msgid "No player called \"{}\""
+msgstr ""
+
+#: squeezealexa/main.py:238
+msgid "Shuffle on"
+msgstr ""
+
+#: squeezealexa/main.py:239
+msgid "Shuffle is now on"
+msgstr ""
+
+#: squeezealexa/main.py:245
+msgid "Shuffle off"
+msgstr ""
+
+#: squeezealexa/main.py:246
+msgid "Shuffle is now off"
+msgstr ""
+
+#: squeezealexa/main.py:252
+msgid "Repeat on"
+msgstr ""
+
+#: squeezealexa/main.py:253
+msgid "Repeat is now on"
+msgstr ""
+
+#: squeezealexa/main.py:259
+msgid "Repeat Off"
+msgstr ""
+
+#: squeezealexa/main.py:260
+msgid "Repeat is now off"
+msgstr ""
+
+#: squeezealexa/main.py:269
+msgid "Switched {} off"
+msgstr ""
+
+#: squeezealexa/main.py:270
+#, python-brace-format
+msgid "{player} is now off"
+msgstr ""
+
+#: squeezealexa/main.py:284
+#, python-brace-format
+msgid "Switched {player} on"
+msgstr ""
+
+#: squeezealexa/main.py:290
+msgid "Players all off"
+msgstr ""
+
+#: squeezealexa/main.py:291
+msgid "Silence."
+msgstr ""
+
+#: squeezealexa/main.py:296
+msgid "All On."
+msgstr ""
+
+#: squeezealexa/main.py:297
+msgid "Ready to rock"
+msgstr ""
+
+#: squeezealexa/main.py:308
+msgid "There are no playlists"
+msgstr ""
+
+#: squeezealexa/main.py:311
+msgid "Didn't hear a playlist there. You could try the \"{}\" playlist?"
+msgstr ""
+
+#: squeezealexa/main.py:315
+msgid "No Squeezebox playlists found"
+msgstr ""
+
+#: squeezealexa/main.py:324 squeezealexa/main.py:325
+#, python-brace-format
+msgid "Playing \"{name}\" playlist"
+msgstr ""
+
+#: squeezealexa/main.py:327
+#, python-brace-format
+msgid ""
+"Couldn't find a playlist matching \"{name}\".How about the \"{suggestion}\" "
+"playlist?"
+msgstr ""
+
+#: squeezealexa/main.py:346
+#, python-brace-format
+msgid "Playing mix of {genres}"
+msgstr ""
+
+#: squeezealexa/main.py:349
+msgid "or"
+msgstr ""
+
+#: squeezealexa/main.py:350
+msgid "Don't understand requested genres {}"
+msgstr ""
+
+#: squeezealexa/main.py:352
+msgid "Can't find genres: {}"
+msgstr ""
+
+#: squeezealexa/main.py:400
+msgid "Hasta la vista. Baby."
+msgstr ""
+
+#: squeezealexa/__init__.py:24
+msgid "favorites"
+msgstr "favourites"
