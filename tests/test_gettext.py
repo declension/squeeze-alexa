@@ -9,10 +9,10 @@
 #   (at your option) any later version.
 #
 #   See LICENSE for full license
-
+import gettext
 import os
 
-from squeezealexa import _
+from squeezealexa import _, LOCALE_DIR
 
 AN_UNTRANSLATED_STRING = "foobar baz"
 
@@ -23,6 +23,8 @@ def test_gettext_basic():
 
 def test_gettext_known_british():
     lang = os.environ["LANG"]
-    os.environ["LANG"] = "en_GB.utf8"
+    os.environ["LANG"] = "en_GB.UTF-8"
+    mo_file = gettext.find('squeeze-alexa', localedir=LOCALE_DIR)
+    assert mo_file, "Can't find British .mo"
     assert _("favorites") == "favourites"
     os.environ["LANG"] = lang

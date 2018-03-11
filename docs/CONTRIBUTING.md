@@ -22,12 +22,17 @@ It's a little old-fashioned / troublesome at first, but it serves its purposes w
 Great! I wrote a script to help with that:
 
 #### Update translations from source
-```
+This re-scans the source and recreates the master `.pot` file, before then updating the translations files (`.po`s).
+
+```bash
 bin/update-translations
 ```
 
 ### Compile translations
-...
+This takes the `.po`s and makes binary `.mo`s that are necessary for gettext to work.
+```bash
+bin/update-translations
+```
 
 
 ### I have a new language
