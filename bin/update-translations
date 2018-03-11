@@ -12,9 +12,6 @@ echo -e "\nMerging translations sources..."
 find locale -iname '*.po' -execdir msgmerge -U -v {} ../../${DOMAIN}.pot \;
 echo "...done"
 
-echo -e "\nCompiling translations..."
-find locale -iname '*.po' -execdir msgfmt -v -o ${DOMAIN}.mo {} \;
-
 echo -e "\nTidying up..."
 rm "locale/$DOMAIN.pot"
 echo "...done"
