@@ -189,8 +189,14 @@ Set up your Alexa Skill
 -----------------------
 
 ### Configure `squeeze-alexa`
- * Download this project, either with Git: `git clone git@github.com:declension/squeeze-alexa.git`
-  or click _Download Zip_ (under _Clone or download_) in Github.
+#### Get the project
+`squeeze-alexa` has official [releases on Github](https://github.com/declension/squeeze-alexa/releases).
+It is recommended to choose from these, but if you want the _very_ latest, get the `master` branch (no guarantees though generally the testing ensures it's fully working)
+You can either:
+ * Download a [a release ZIP](https://github.com/declension/squeeze-alexa/releases) (or [latest master](https://github.com/declension/squeeze-alexa/archive/master.zip)), and extract this to your computer, or...
+ * if you prefer, use Git: `git clone git@github.com:declension/squeeze-alexa.git` and if you want, choose a release tag (e.g. `git checkout v1.1`)
+
+#### Configure with your settings
  * Edit `src/settings.py`, filling in the details as commented there.
  * Make sure your `squeeze-alexa.pem` file is moved to the root of the `squeeze-alexa` directory.
 
