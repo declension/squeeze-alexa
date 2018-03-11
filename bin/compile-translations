@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
+DOMAIN=squeeze-alexa
 
 echo -e "\nCompiling translations..."
 find locale -iname '*.po' -execdir msgfmt -v -o ${DOMAIN}.mo {} \;
