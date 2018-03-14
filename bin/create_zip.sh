@@ -15,7 +15,7 @@ done
 # Allow restarting...
 rm "$output" 2>/dev/null || true
 
-zip -r upload.zip squeezealexa/ $deps LICENSE *.py *.pem --exclude '*.pyc' --exclude __pycache__
+zip -r upload.zip squeezealexa/ locale/ $deps LICENSE *.py *.pem --exclude '*.pyc' --exclude __pycache__ --exclude '*.po' --exclude '*~'
 
 echo "Cleaning up dependencies..."
 for dep in $deps; do
