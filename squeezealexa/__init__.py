@@ -9,16 +9,3 @@
 #   (at your option) any later version.
 #
 #   See LICENSE for full license
-
-import gettext
-
-from os import path
-
-from os.path import dirname
-
-LOCALE_DIR = path.join(dirname(dirname(__file__)), 'locale')
-t = gettext.translation('squeeze-alexa', localedir=LOCALE_DIR)
-_ = t.gettext
-
-# Canary translation
-_("favorites")

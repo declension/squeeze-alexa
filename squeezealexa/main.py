@@ -17,7 +17,7 @@ import random
 import time
 from fuzzywuzzy import process
 
-from squeezealexa import _
+from squeezealexa.gettext import _
 from squeezealexa.alexa.handlers import AlexaHandler, IntentHandler
 from squeezealexa.alexa.intents import *
 from squeezealexa.alexa.response import audio_response, speech_response, \

@@ -12,7 +12,7 @@
 import gettext
 import os
 
-from squeezealexa import _, LOCALE_DIR
+from squeezealexa.gettext import _, LOCALE_DIR
 
 AN_UNTRANSLATED_STRING = "foobar baz"
 

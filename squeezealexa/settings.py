@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -24,6 +24,10 @@ APPLICATION_ID = None
 """The Skill's Amazon application ID (e.g. amznl.ask.skill.xyz...) as a string
 A value of None means verification of the request's Skill will be disabled.
 """
+
+LOCALE = 'en_GB'
+"""The locale (language & region) to use for your app,
+e.g. en_GB.UTF-8, or de_DE"""
 
 RESPONSE_AUDIO_FILE_URL = \
     "https://s3.amazonaws.com/declension-alexa-media/silence.mp3"
