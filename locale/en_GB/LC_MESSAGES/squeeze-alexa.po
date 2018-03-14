@@ -223,6 +223,6 @@ msgstr ""
 msgid "Hasta la vista. Baby."
 msgstr ""
 
-#: squeezealexa/gettext.py:26
+#: squeezealexa/i18n.py:26
 msgid "favorites"
 msgstr "favourites"

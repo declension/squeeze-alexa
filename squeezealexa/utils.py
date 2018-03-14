@@ -15,7 +15,7 @@ import random
 import re
 import unicodedata
 import sys
-from squeezealexa.gettext import _
+from squeezealexa.i18n import _
 
 PY2 = sys.version_info[0] == 2
 Char = unichr if PY2 else chr
