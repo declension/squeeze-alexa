@@ -22,16 +22,16 @@ It's a little old-fashioned / troublesome at first, but it serves its purposes w
 Great! I wrote a script to help with that:
 
 #### Update translations from source
-This re-scans the source and recreates the master `.pot` file, before then updating the translations files (`.po`s).
+This re-scans the source and recreates a master `.pot` file, before then updating the translations files (`.po`s).
 
 ```bash
 bin/update-translations
 ```
 
 ### Compile translations
-This takes the `.po`s and makes binary `.mo`s that are necessary for gettext.py to work.
+This takes the `.po`s and makes binary `.mo`s that are necessary for gettext to work.
 ```bash
-bin/update-translations
+bin/compile-translations
 ```
 
 
@@ -41,18 +41,27 @@ Great! Follow these steps (imagine you are choosing Brazilian Portuguese, `pt_BR
 #### Create a directory
 
 ```bash
-cd locales
+cd locale
 LOCALE=pt_BR
 mkdir -p $LOCALE/LC_MESSAGES
 ```
 
-#### Generate a blank PO file with `xgettext`
+#### Generate a blank PO file
 ```bash
 DOMAIN=squeeze-alexa
-LOCALE=pt_BR
-find squeezealexa -iname '*.py' | xargs xgettext --omit-header --package-name $DOMAIN -o locale/$LOCALE/LC_MESSAGES/$DOMAIN.po -d $DOMAIN
+touch $LOCALE/LC_MESSAGES/$DOMAIN.po
 ```
 
-#### Update the translations
+#### Update the translations from source
 (see above)
 
+#### Translate your .po
+You can edit the using any text editor, or use PoEdit, or any other gettext tools e.g.
+
+ * [PoEdit](https://poedit.net/)
+ * [GTranslator](https://wiki.gnome.org/Apps/Gtranslator)
+ * [Virtaal](http://virtaal.translatehouse.org/download.html)
+
+#### Submit the translation
+ * Hopefully you opened a Github issue - if not, do this.
+ * Either attach the updated `.po`, or create a fork in Gibhut, branch, commit your new file(s) in Git, then make a Pull Request, mentioning the ticket number.
