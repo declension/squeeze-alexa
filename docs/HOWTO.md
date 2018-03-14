@@ -167,34 +167,31 @@ If the latter fails, try using `localhost`, but it's better to set up your DNS t
 
     127.0.0.1   localhost MY-SERVER
 
-Test your connectivity
-----------------------
-
-### Test the tunnel fully
-You can now use `local_test.py`[bin/local_test.py] to try out your connection. From the directory you checked out / unzipped the `squeeze-alexa` source:
-
-    bin/local_test.py
-
-This assumes you have `python2`. You can run this more explicitly (e.g. on Windows):
-
-    python bin/local_test.py
-
-If you get some stuff about what's playing and next, we're good to go!
-
-**Update**: `local_test.py` can now diagnose _some_ common connection problems :smile:
-
+See [TROUBLESHOOTING](TROUBLESHOOTING.md) for detailed diagnosis of connection problems.
 
 
 Set up your Alexa Skill
 -----------------------
 
-### Configure `squeeze-alexa`
-#### Get the project
+### Get `squeeze-alexa`
 `squeeze-alexa` has official [releases on Github](https://github.com/declension/squeeze-alexa/releases).
-It is recommended to choose from these, but if you want the _very_ latest, get the `master` branch (no guarantees though generally the testing ensures it's fully working)
-You can either:
- * Download a [a release ZIP](https://github.com/declension/squeeze-alexa/releases) (or [latest master](https://github.com/declension/squeeze-alexa/archive/master.zip)), and extract this to your computer, or...
- * if you prefer, use Git: `git clone git@github.com:declension/squeeze-alexa.git` and if you want, choose a release tag (e.g. `git checkout v1.1`)
+It is recommended to choose from these, but if you want the _very_ latest (or plan to contribute yourself),
+get the `master` branch (no guarantees though generally the testing ensures it's fully working)
+
+#### from a release
+ * Download a [a release ZIP](https://github.com/declension/squeeze-alexa/releases) (or [latest master](https://github.com/declension/squeeze-alexa/archive/master.zip))
+ * and extract this to your computer,
+
+#### from Source code
+Make sure you have
+ 1. Git (and [Git for Windows](https://gitforwindows.org/) if you're on Windows, so you can run Bash scripts too)
+ 2. `gettext` for translations. On Linux, Debian-flavoured: `sudo apt-get install gettext`, or on Fedora etc (`yum install gettext`).
+    For MacOS, `brew install gettext && brew link --force gettext`
+    On Windows, install [GetText for Windows](http://gnuwin32.sourceforge.net/packages/gettext.htm).
+
+* Clone the repo: `git clone git@github.com:declension/squeeze-alexa.git`.
+* You can / should still choose a release tag (e.g. `git checkout v1.1`), or go with bleeding edge (`HEAD`).
+Note you will have to run a release process now to get the translations
 
 #### Configure with your settings
  * Edit `src/settings.py`, filling in the details as commented there.

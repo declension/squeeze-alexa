@@ -7,8 +7,17 @@ From your `squeezealexa` directory,
 ```bash
 bin/local_test.py
 ```
+
+This assumes you have Python. You can run this more explicitly (e.g. on Windows):
+
+    python bin/local_test.py
+
+
+**Update**: `local_test.py` can now diagnose _some_ common connection problems :smile:
+
 This should connect with your settings as per `settings.py`. The latest diagnostics can help you find the root cause of many common connection / certificate problems (but not 100% accurate).
 Some examples of how this can happen are included in the [tests](../tests/).
+
 
 The skill is installed, but erroring when invoked
 -------------------------------------------------
