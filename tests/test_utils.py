@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -13,7 +13,7 @@
 from unittest import TestCase
 
 from squeezealexa.utils import english_join, sanitise_text, with_example, \
-    stronger
+    stronger, print_d, print_w
 
 LOTS = ['foo', 'bar', 'baz', 'quux']
 
@@ -77,3 +77,12 @@ class TestStrong(TestCase):
                             (('duration', '0.0'), 0.0),
                             (('foo', 'bar'), 'bar')]:
             assert stronger(k, v) == exp
+
+
+class TestLogging(TestCase):
+    def test_print_d(self):
+        actual = print_d("{foo} - {num:.1f}", foo="bar", num=3.1415)
+        assert actual == "bar - 3.1"
+
+    def test_print_w(self):
+        assert "Exception" in print_w("{!r}", Exception("bar"))

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-2018 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -46,33 +46,35 @@ class SslSocketWrapper(object):
                 context.check_hostname = verify_hostname
                 context.load_cert_chain(cert_file)
         except ssl.SSLError as e:
-            raise Error("Problem with Cert / CA (+key) files (%s / %s). "
+            raise Error("Problem with Cert / CA (+key) files ({} / {}). "
                         "Does it include the private key?"
-                        % (cert_file, ca_file), e)
+                        .format(cert_file, ca_file), e)
         except IOError as e:
             if 'No such file or directory' in e.strerror:
-                self._die("Can't find '%s'. "
-                          "Check CERT_NAME / CERT_PATH in settings" % ca_file)
+                self._die("Can't find '{ca_file}'. "
+                          "Check CERT_NAME / CERT_PATH in settings"
+                          .format(ca_file=ca_file))
             self._die("could be mismatched certificate files, "
                       "or wrong hostname in cert."
                       "Check CERT_FILE and certs on server too.", e)
 
         self._ssl_sock = context.wrap_socket(socket.socket(),
                                              server_hostname=hostname)
+        print_d("Connecting to {port}", port=port)
         try:
             self._ssl_sock.connect((hostname, port))
         except socket.gaierror as e:
             if "Name or service not know" in e.strerror:
-                self._die("unknown host (%s) - check SERVER_HOSTNAME"
-                          % hostname, e)
+                self._die("unknown host ({}) - check SERVER_HOSTNAME"
+                          .format(hostname), e)
             self._die("Couldn't connect to %s with TLS" % (self,), e)
         except IOError as e:
             if 'Connection refused' in e.strerror:
-                self._die("nothing listening on %s"
-                          "Check settings, or (re)start server." % self)
+                self._die("nothing listening on {}"
+                          "Check settings, or (re)start server.".format(self))
             elif 'WRONG_VERSION_NUMBER' in e.strerror:
-                self._die('probably not TLS on port %d - '
-                          'wrong SERVER_PORT maybe?' % port,
+                self._die('probably not TLS on port {} - '
+                          'wrong SERVER_PORT maybe?'.format(port),
                           e)
             elif 'Connection reset by peer' in e.strerror:
                 self._die("server killed the connection - handshake error? "
@@ -80,22 +82,22 @@ class SslSocketWrapper(object):
             elif 'CERTIFICATE_VERIFY_FAILED' in e.strerror:
                 self._die("Cert not trusted by / from server. "
                           "Is your CA correct? Is the cert expired? "
-                          "Is the cert for the right hostname (%s)?"
-                          % hostname, e)
-            self._die("Connection problem (%s)" % e.strerror)
+                          "Is the cert for the right hostname ({})?"
+                          .format(hostname), e)
+            self._die("Connection problem ({})".format(e.strerror))
 
         peer_cert = self._ssl_sock.getpeercert()
         if peer_cert is None:
-            self._die("No certificate configured at %s" % self)
+            self._die("No certificate configured at {}".format(self))
         elif not peer_cert:
-            print_w("Unvalidated server cert at %s" % self)
+            print_w("Unvalidated server cert at {}", self)
         else:
             subject_data = peer_cert['subject']
             try:
                 data = {k: v for d in subject_data for k, v in d}
             except Exception:
                 data = subject_data
-            print_d("Validated cert for %s" % (data, ))
+            print_d("Validated cert for {}", data)
         self.is_connected = True
 
     def _die(self, msg, e=None):
@@ -125,7 +127,7 @@ class SslSocketWrapper(object):
                 eof = response.count("\n") == num_lines or not response
             return response
         except socket.error as e:
-            print_d("Couldn't communicate with Squeezebox (%s)" % e)
+            print_d("Couldn't communicate with Squeezebox ({!r})", e)
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
                 print_w("Too many Squeezebox failures. Disconnecting")

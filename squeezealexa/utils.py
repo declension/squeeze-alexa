@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -15,16 +15,25 @@ import random
 import re
 import unicodedata
 import sys
+from squeezealexa.i18n import _
 
 PY2 = sys.version_info[0] == 2
 Char = unichr if PY2 else chr
 Unicode = unicode if PY2 else str
 
-print_d = print_w = print
+
+def print_d(msg, *args, **kwargs):
+    text = msg.format(*args, **kwargs)
+    print(text)
+    return text
 
 
-def english_join(items, final="and"):
-    """Like join, but in English (no Oxford commas...)"""
+print_w = print_d
+
+
+def english_join(items, final=_("and")):
+    """Like join, but in English (no Oxford commas...)
+       Kinda works in some other languages (French, German)"""
     items = list(filter(None, items))
     most = ", ".join(items[0:-1])
     sep = " %s " % final.strip()

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -e
+root=$(readlink -f "$(dirname $0)/..")
+pushd "$root" >/dev/null
+DOMAIN=squeeze-alexa
+
+echo -e "\nUpdating PO from source files..."
+find squeezealexa -iname '*.py' | xargs --verbose xgettext --omit-header --package-name $DOMAIN -o locale/$DOMAIN.pot -d $DOMAIN
+echo "...done"
+
+echo -e "\nMerging translations sources..."
+find locale -iname '*.po' -execdir msgmerge -U -v {} ../../${DOMAIN}.pot \;
+echo "...done"
+
+echo -e "\nTidying up..."
+rm "locale/$DOMAIN.pot"
+echo "...done"
+popd >/dev/null

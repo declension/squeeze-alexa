@@ -56,3 +56,9 @@ Most commands can take a player name, or will remember the default / last player
 I want!
 -------
 See the [HOWTO](docs/HOWTO.md) for the full details of installing and configuring your own squeeze-alexa instance, or [TROUBLESHOOTING](docs/TROUBLESHOOTING.md) if you're getting stuck.
+
+
+Contributing
+-------------
+`squeeze-alexa` is an open source project licensed under GPLv3 (or later).
+If you'd like to help test, translate, or develop it, see the [Github issues](https://github.com/declension/squeeze-alexa/issues) and read [CONTRIBUTING](docs/CONTRIBUTING.md).
