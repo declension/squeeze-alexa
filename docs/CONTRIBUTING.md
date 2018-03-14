@@ -29,7 +29,7 @@ bin/update-translations
 ```
 
 ### Compile translations
-This takes the `.po`s and makes binary `.mo`s that are necessary for gettext to work.
+This takes the `.po`s and makes binary `.mo`s that are necessary for gettext.py to work.
 ```bash
 bin/update-translations
 ```
