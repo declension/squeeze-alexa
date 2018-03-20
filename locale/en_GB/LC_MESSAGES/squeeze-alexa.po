@@ -1,6 +1,6 @@
-#: squeezealexa/i18n.py:26
-msgid "favorites"
-msgstr "favourites"
+#: squeezealexa/utils.py:34
+msgid "and"
+msgstr ""
 
 #: squeezealexa/main.py:76
 msgid "Squeezebox is online. Please try some commands."
@@ -223,6 +223,6 @@ msgstr ""
 msgid "Hasta la vista. Baby."
 msgstr ""
 
-#: squeezealexa/utils.py:34
-msgid "and"
-msgstr ""
+#: squeezealexa/i18n.py:26
+msgid "favorites"
+msgstr "favourites"
