@@ -40,6 +40,7 @@ class FakeSqueeze(Server):
         self._genres = []
         self._playlists = []
         self._created_time = time.time()
+        self.ssl_wrap = None
 
     @property
     def genres(self):

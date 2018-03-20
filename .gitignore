@@ -83,3 +83,5 @@ metadata/audio/
 
 # Amazon
 lambda_function.zip
+
+*.pot~
