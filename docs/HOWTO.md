@@ -216,7 +216,8 @@ After clicking through to the ASK section of the site, add a new Alexa Skill, th
 
 #### Skill Information
  * Use the _Custom Interaction Model_
- * Choose a language. I've tested in English UK, though it definitely works in US English too. If you want to help translate, please [submit an issue](https://github.com/declension/squeeze-alexa/issues/new) / PR!
+ * Choose a language / region. It's been tested in English (UK), English (US) and German (Germany).
+   If you want to help translate, please see the [CONTRIBUTING](CONTRIBUTING.md) guide.
  * Choose your own Name (a reference really) and Invocation Name (what you use to talk to Alexa with).
    The advantage of not needing Amazon certification is you can be "more creative" about your naming...
  * Select **yes** for _Audio Streaming API_, **no** for _Video App_ and _Render Template_ options.
