@@ -1,0 +1,228 @@
+#: squeezealexa/i18n.py:26
+msgid "favorites"
+msgstr "Favoriten"
+
+#: squeezealexa/main.py:76
+msgid "Squeezebox is online. Please try some commands."
+msgstr "Sueezebox ist bereit. Probier ein paar Komandos aus"
+
+#: squeezealexa/main.py:77
+msgid ""
+"Try resume, pause, next, previous, play some jazz, or ask Squeezebox to turn "
+"it up or down"
+msgstr "Probiers mal fortsetzen, Pause, nächstes, letztes, Spiel Jazz Musik oder schalte ein Abspielgerät ein. "
+
+#: squeezealexa/main.py:115
+#, python-brace-format
+msgid "Sorry, I don't know how to process a \"{intent}\""
+msgstr "Es tut mir Leid, ich weiß nicht wie ich auf \"{intent}\" reagieren soll"
+
+#: squeezealexa/main.py:117
+#, python-brace-format
+msgid "Unknown intent: '{intent}'"
+msgstr "Unbekannte Anfrage: '{intent}'"
+
+#: squeezealexa/main.py:132
+msgid "Rewind!"
+msgstr "Zurückgespult!"
+
+#: squeezealexa/main.py:137
+msgid "Yep, pretty lame."
+msgstr "Das mochte ich auch nicht"
+
+#: squeezealexa/main.py:145
+msgid "Currently playing: \"{}\""
+msgstr "Gerade läuft: \"{}\""
+
+#: squeezealexa/main.py:148
+msgid "Now playing: \"{}\""
+msgstr "Es läuft: \"{}\""
+
+#: squeezealexa/main.py:150
+msgid "Nothing playing."
+msgstr "Es wird nicht abgepsielt"
+
+#: squeezealexa/main.py:161 squeezealexa/main.py:165
+msgid "Select a volume value between 0 and 10"
+msgstr "Wähle eine Lautstärke zwischen 0 und 10"
+
+#: squeezealexa/main.py:162 squeezealexa/main.py:184
+msgid "Invalid volume value"
+msgstr "ungültige Lautstärke"
+
+#: squeezealexa/main.py:166
+#, python-brace-format
+msgid "Volume value out of range: {volume}"
+msgstr "Lautstärke außerhalb des gültigen Bereichs: {volume}"
+
+#: squeezealexa/main.py:172
+msgid "Set volume to {}"
+msgstr "Lautstärke auf {}"
+
+#: squeezealexa/main.py:183 squeezealexa/main.py:187
+msgid "Select a volume value between 0 and 100 percent"
+msgstr "Wähle eine Lautstärke zwischen 0 und 100 prozent"
+
+#: squeezealexa/main.py:188
+#, python-format
+msgid "Volume value out of range: %d percent"
+msgstr "Lautstärke außerhalb des gültigen Bereichs: %d prozent"
+
+#: squeezealexa/main.py:191
+msgid "OK"
+msgstr "OK"
+
+#: squeezealexa/main.py:192
+#, python-format
+msgid "Set Volume to %d percent"
+msgstr "Lautstärke auf %d prozent"
+
+#: squeezealexa/main.py:198
+msgid "Increase Volume"
+msgstr "Lautstärke erhöht"
+
+#: squeezealexa/main.py:199
+msgid "Pumped it up."
+msgstr "Alles klar: lauter."
+
+#: squeezealexa/main.py:204
+msgid "Decrease Volume"
+msgstr "Lautstärke niedriger"
+
+#: squeezealexa/main.py:205
+msgid "OK, quieter now."
+msgstr "Jetzt ist es leiser."
+
+#: squeezealexa/main.py:217
+#, python-brace-format
+msgid "Selected {player}"
+msgstr "{player} ausgewählt"
+
+#: squeezealexa/main.py:218
+msgid "Selected player {}"
+msgstr "Abspielgerät {} ausgewählt"
+
+#: squeezealexa/main.py:221
+msgid "I only found these players: {}. Could you try again?"
+msgstr "Ich kann nur die folgenden Geräte finden: {}. Welches willst du?"
+
+#: squeezealexa/main.py:223
+#, python-brace-format
+msgid ""
+"You can select a player by saying \"{utterance}\" and then the player name."
+msgstr "Du kannst ein Gerät auswählen indem du \"{utterance}\" sagst und dann den Namen des Gerätes "
+
+#: squeezealexa/main.py:228
+msgid "No player called \"{}\""
+msgstr "Es gibt kein Gerät mit dem Namen \"{}\""
+
+#: squeezealexa/main.py:238
+msgid "Shuffle on"
+msgstr "Zufallswiedergabe an"
+
+#: squeezealexa/main.py:239
+msgid "Shuffle is now on"
+msgstr "zufallswiedergabe ist jetzt eingeschaltet"
+
+#: squeezealexa/main.py:245
+msgid "Shuffle off"
+msgstr "Zufallswiedergabe aus"
+
+#: squeezealexa/main.py:246
+msgid "Shuffle is now off"
+msgstr "Zufallswiedergabe ist jetzt ausgeschaltet"
+
+#: squeezealexa/main.py:252
+msgid "Repeat on"
+msgstr "Wiederholung an"
+
+#: squeezealexa/main.py:253
+msgid "Repeat is now on"
+msgstr "Wiederholung ist jetzt eingeschaltet"
+
+#: squeezealexa/main.py:259
+msgid "Repeat Off"
+msgstr "Wiederholung aus"
+
+#: squeezealexa/main.py:260
+msgid "Repeat is now off"
+msgstr "Wiederholung ist jetzt ausgeschaltet"
+
+#: squeezealexa/main.py:269
+msgid "Switched {} off"
+msgstr "{} ausgeschaltet"
+
+#: squeezealexa/main.py:270
+#, python-brace-format
+msgid "{player} is now off"
+msgstr "{player} ist jetzt ausgeschaltet"
+
+#: squeezealexa/main.py:284
+#, python-brace-format
+msgid "Switched {player} on"
+msgstr "{player} eingeschaltet"
+
+#: squeezealexa/main.py:290
+msgid "Players all off"
+msgstr "Alle Abspielgeräte aus"
+
+#: squeezealexa/main.py:291
+msgid "Silence."
+msgstr "Jetzt ist es still."
+
+#: squeezealexa/main.py:296
+msgid "All On."
+msgstr "Alle an"
+
+#: squeezealexa/main.py:297
+msgid "Ready to rock"
+msgstr "Lass uns losrocken"
+
+#: squeezealexa/main.py:308
+msgid "There are no playlists"
+msgstr "Es gibt keine Wiedergabelisten"
+
+#: squeezealexa/main.py:311
+msgid "Didn't hear a playlist there. You could try the \"{}\" playlist?"
+msgstr "Ich habe keinen Gerätenamen verstanden. Versuchs doch mit \"{}\""
+
+#: squeezealexa/main.py:315
+msgid "No Squeezebox playlists found"
+msgstr "Keine Squeezbox-Wiedergabelisten gefunden"
+
+#: squeezealexa/main.py:324 squeezealexa/main.py:325
+#, python-brace-format
+msgid "Playing \"{name}\" playlist"
+msgstr "Spiele Wiedergabeliste \"{name}\""
+
+#: squeezealexa/main.py:327
+#, python-brace-format
+msgid ""
+"Couldn't find a playlist matching \"{name}\".How about the \"{suggestion}\" "
+"playlist?"
+msgstr "Ich habe keine Liste \"{name}\" gefunden. Versuchs doch mit \"{suggestion}\""
+
+#: squeezealexa/main.py:346
+#, python-brace-format
+msgid "Playing mix of {genres}"
+msgstr "Spiele eine Mischung aus {genres}"
+
+#: squeezealexa/main.py:349
+msgid "or"
+msgstr "oder"
+
+#: squeezealexa/main.py:350
+msgid "Don't understand requested genres {}"
+msgstr "Ich habe das angefragte Genre {} nicht verstanden"
+
+#: squeezealexa/main.py:352
+msgid "Can't find genres: {}"
+msgstr "Kann das Genre nicht finden: {}"
+
+#: squeezealexa/main.py:400
+msgid "Hasta la vista. Baby."
+msgstr "Hasta la vista. Baby."
+
+#: squeezealexa/utils.py:34
+msgid "and"
+msgstr "und"
