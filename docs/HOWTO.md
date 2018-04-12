@@ -26,10 +26,9 @@ Networking Overview
 
 Note how the _arbitrary_ ports are not labelled - see [setting up ports](#configure-ports).
 
+
 Set up your environment
 -----------------------
-
-If you're building from source, there are a few more steps and requirements
 
 ### Requirements
 
@@ -41,7 +40,7 @@ If you're building from source, there are a few more steps and requirements
 If you're installing the latest and greatest, or you prefer the developer-focused methods, you'll also need:
 
  * Git (and [Git for Windows](https://gitforwindows.org/) if you're on Windows)
- * If you're building from source, [GNU gettext](https://www.gnu.org/software/gettext/) for translations. On Linux, Debian-flavoured: `sudo apt-get install gettext.py`, or on Fedora etc (`yum install gettext.py`).
+ * [GNU gettext](https://www.gnu.org/software/gettext/) for translations. On Linux, Debian-flavoured: `sudo apt-get install gettext.py`, or on Fedora etc (`yum install gettext.py`).
     For MacOS, `brew install gettext.py && brew link --force gettext.py`
     On Windows, install [GetText for Windows](http://gnuwin32.sourceforge.net/packages/gettext.htm).
 
