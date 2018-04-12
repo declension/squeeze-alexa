@@ -13,15 +13,37 @@ Prerequisites
 
 About this guide
 ----------------
- * This is still a work in progress but getting better all the time.
+ * This is still a work in progress but improving all the time - and you can help!
+ * The documentation is versioned - so make sure you're using the docs for the same 
+   `squeeze-alexa` version you're installing (e.g. here's the [v1.1 README](https://github.com/declension/squeeze-alexa/blob/v1.1/README.md)).
  * If you've followed this guide and are getting stuck, see [TROUBLESHOOTING](TROUBLESHOOTING.md).
- * If you want to add some helpful detail to make it easier for others, that's great - please raise an issue first!
+ * If you want to add some helpful detail to make it easier for others, that's great, check [CONTRIBUTING](CONTRIBUTING.md) - but please raise an issue first.
+
 
 Networking Overview
 -------------------
 ![Networking diagram](squeeze-alexa-networking.png)
 
 Note how the _arbitrary_ ports are not labelled - see [setting up ports](#configure-ports).
+
+Set up your environment
+-----------------------
+
+If you're building from source, there are a few more steps and requirements
+
+### Requirements
+
+ * Python 2.7+ or 3.3+ (which will have `pip`)
+ * Bash (or similar shell) - use [Git for Windows](https://gitforwindows.org/) if you're on Windows.
+ * A text editor / IDE e.g. Atom, PyCharm, vim, Sublime etc.
+
+#### Building from source
+If you're installing the latest and greatest, or you prefer the developer-focused methods, you'll also need:
+
+ * Git (and [Git for Windows](https://gitforwindows.org/) if you're on Windows)
+ * If you're building from source, [GNU gettext](https://www.gnu.org/software/gettext/) for translations. On Linux, Debian-flavoured: `sudo apt-get install gettext.py`, or on Fedora etc (`yum install gettext.py`).
+    For MacOS, `brew install gettext.py && brew link --force gettext.py`
+    On Windows, install [GetText for Windows](http://gnuwin32.sourceforge.net/packages/gettext.htm).
 
 Tunnel the CLI
 --------------
@@ -183,15 +205,12 @@ get the `master` branch (no guarantees though generally the testing ensures it's
  * and extract this to your computer,
 
 #### from Source code
-Make sure you have
- 1. Git (and [Git for Windows](https://gitforwindows.org/) if you're on Windows, so you can run Bash scripts too)
- 2. `gettext.py` for translations. On Linux, Debian-flavoured: `sudo apt-get install gettext.py`, or on Fedora etc (`yum install gettext.py`).
-    For MacOS, `brew install gettext.py && brew link --force gettext.py`
-    On Windows, install [GetText for Windows](http://gnuwin32.sourceforge.net/packages/gettext.htm).
+Make sure you have everything detailed in [requirements](#Requirements) above set up.
 
 * Clone the repo: `git clone git@github.com:declension/squeeze-alexa.git`.
 * You can / should still choose a release tag (e.g. `git checkout v1.1`), or go with bleeding edge (`HEAD`).
 Note you will have to run a release process now to get the translations
+* Run the translation script: `bin/compile-translations`, else you'll get errors about like [No translation file found](https://github.com/declension/squeeze-alexa/issues/46).
 
 #### Configure with your settings
  * Edit `src/settings.py`, filling in the details as commented there.
