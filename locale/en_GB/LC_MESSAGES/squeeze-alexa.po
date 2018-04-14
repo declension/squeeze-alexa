@@ -1,3 +1,8 @@
+msgid ""
+msgstr ""
+"Language: en_GB\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
 #: squeezealexa/utils.py:34
 msgid "and"
 msgstr ""
@@ -7,9 +12,7 @@ msgid "Squeezebox is online. Please try some commands."
 msgstr ""
 
 #: squeezealexa/main.py:77
-msgid ""
-"Try resume, pause, next, previous, play some jazz, or ask Squeezebox to turn "
-"it up or down"
+msgid "Try resume, pause, next, previous, play some jazz, or ask Squeezebox to turn it up or down"
 msgstr ""
 
 #: squeezealexa/main.py:115
@@ -108,8 +111,7 @@ msgstr ""
 
 #: squeezealexa/main.py:223
 #, python-brace-format
-msgid ""
-"You can select a player by saying \"{utterance}\" and then the player name."
+msgid "You can select a player by saying \"{utterance}\" and then the player name."
 msgstr ""
 
 #: squeezealexa/main.py:228
@@ -197,9 +199,7 @@ msgstr ""
 
 #: squeezealexa/main.py:327
 #, python-brace-format
-msgid ""
-"Couldn't find a playlist matching \"{name}\".How about the \"{suggestion}\" "
-"playlist?"
+msgid "Couldn't find a playlist matching \"{name}\".How about the \"{suggestion}\" playlist?"
 msgstr ""
 
 #: squeezealexa/main.py:346

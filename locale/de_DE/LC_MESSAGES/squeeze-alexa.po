@@ -1,15 +1,18 @@
-#: squeezealexa/i18n.py:26
-msgid "favorites"
-msgstr "Favoriten"
+msgid ""
+msgstr ""
+"Language: de_DE\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: squeezealexa/utils.py:34
+msgid "and"
+msgstr "und"
 
 #: squeezealexa/main.py:76
 msgid "Squeezebox is online. Please try some commands."
 msgstr "Sueezebox ist bereit. Probier ein paar Komandos aus"
 
 #: squeezealexa/main.py:77
-msgid ""
-"Try resume, pause, next, previous, play some jazz, or ask Squeezebox to turn "
-"it up or down"
+msgid "Try resume, pause, next, previous, play some jazz, or ask Squeezebox to turn it up or down"
 msgstr "Probiers mal fortsetzen, Pause, nächstes, letztes, Spiel Jazz Musik oder schalte ein Abspielgerät ein. "
 
 #: squeezealexa/main.py:115
@@ -108,8 +111,7 @@ msgstr "Ich kann nur die folgenden Geräte finden: {}. Welches willst du?"
 
 #: squeezealexa/main.py:223
 #, python-brace-format
-msgid ""
-"You can select a player by saying \"{utterance}\" and then the player name."
+msgid "You can select a player by saying \"{utterance}\" and then the player name."
 msgstr "Du kannst ein Gerät auswählen indem du \"{utterance}\" sagst und dann den Namen des Gerätes "
 
 #: squeezealexa/main.py:228
@@ -197,9 +199,7 @@ msgstr "Spiele Wiedergabeliste \"{name}\""
 
 #: squeezealexa/main.py:327
 #, python-brace-format
-msgid ""
-"Couldn't find a playlist matching \"{name}\".How about the \"{suggestion}\" "
-"playlist?"
+msgid "Couldn't find a playlist matching \"{name}\".How about the \"{suggestion}\" playlist?"
 msgstr "Ich habe keine Liste \"{name}\" gefunden. Versuchs doch mit \"{suggestion}\""
 
 #: squeezealexa/main.py:346
@@ -223,6 +223,6 @@ msgstr "Kann das Genre nicht finden: {}"
 msgid "Hasta la vista. Baby."
 msgstr "Hasta la vista. Baby."
 
-#: squeezealexa/utils.py:34
-msgid "and"
-msgstr "und"
+#: squeezealexa/i18n.py:26
+msgid "favorites"
+msgstr "Favoriten"

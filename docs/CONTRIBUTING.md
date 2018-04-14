@@ -65,3 +65,20 @@ You can edit the using any text editor, or use PoEdit, or any other gettext tool
 #### Submit the translation
  * Hopefully you opened a Github issue - if not, do this.
  * Either attach the updated `.po`, or create a fork in Gibhut, branch, commit your new file(s) in Git, then make a Pull Request, mentioning the ticket number.
+
+
+### Translation FAQ
+
+#### What if I don't translate some strings?
+No problem. They'll come out in the source language (`en` here).
+
+#### I'm getting "invalid multibyte sequence" errors
+This `.po` header is probably missing:
+
+    msgid ""
+    msgstr ""
+    "Content-Type: text/plain; charset=UTF-8\n"
+
+#### There are newlines I didn't expect
+`xgettext` reformats source files to a maximum line width according to its settings.
+See [`update-translations`](../bin/update-translations) for the setup.
