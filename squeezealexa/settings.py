@@ -54,6 +54,10 @@ DEFAULT_PLAYER = None
 DEBUG_LMS = False
 """Dump LMS CLI communication to log if True"""
 
+USE_SPOKEN_ERRORS = True
+"""If True, Alexa will response with squeeze-alexa error information.
+Sometimes this is useful, sometimes it's definitely not what you want"""
+
 # ------------------------- TLS (SSL) Configuration ---------------------------
 
 CERT_FILE = 'squeeze-alexa.pem'

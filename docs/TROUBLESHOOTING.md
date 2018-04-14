@@ -13,7 +13,7 @@ This assumes you have Python. You can run this more explicitly (e.g. on Windows)
     python bin/local_test.py
 
 
-**Update**: `local_test.py` can now diagnose _some_ common connection problems :smile:
+:new: `local_test.py` can now diagnose _some_ common connection problems :smile:
 
 This should connect with your settings as per `settings.py`. The latest diagnostics can help you find the root cause of many common connection / certificate problems (but not 100% accurate).
 Some examples of how this can happen are included in the [tests](../tests/).
@@ -21,6 +21,14 @@ Some examples of how this can happen are included in the [tests](../tests/).
 
 The skill is installed, but erroring when invoked
 -------------------------------------------------
+
+### Spoken errors
+:new: Note that in versions 1.2+, `squeeze-alexa` will attempt to get Alexa to respond in semi-English text / cards.
+A bit _HAL-9000_, but it's quicker than checking Cloudwatch logs :smile:
+
+You can disable this by changing `USE_SPOKEN_ERRORS` to `False` in your settings.
+
+### Log-based errors
 
 If everything is installed and the connectivity working, but your Echo is saying "there was a problem with your skill" or similar, try checking the [Cloudwatch logs](https://console.aws.amazon.com/cloudwatch/) (note there's a delay in getting the latest logs).
 The squeeze-alexa logs are designed to be quite readable, and should help track down the problem.
