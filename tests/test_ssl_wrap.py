@@ -21,11 +21,11 @@ import pytest
 from squeezealexa import ssl_wrap
 from squeezealexa.ssl_wrap import SslSocketWrapper
 from squeezealexa.utils import print_d, PY2
+
 if PY2:
     from SocketServer import TCPServer, BaseRequestHandler
 else:
     from socketserver import TCPServer, BaseRequestHandler
-
 
 TEST_DATA = os.path.join(dirname(__file__), 'data')
 
@@ -52,6 +52,7 @@ class FakeRequestHandler(BaseRequestHandler):
 
 
 class TestSslWrap(TestCase):
+
     def test_with_real_server(self):
         with ServerResource() as server:
             sslw = SslSocketWrapper('', port=server.port,
@@ -102,11 +103,19 @@ class TestSslWrap(TestCase):
 
     def test_bad_port(self):
         with pytest.raises(ssl_wrap.Error) as exc:
-            SslSocketWrapper('', port=12345,
+            SslSocketWrapper('localhost', port=12345,
                              cert_file=CertFiles.CERT_AND_KEY)
         message = exc.value.message.lower()
-        assert 'nothing listening' in message
-        assert '12345' in message
+        assert 'nothing listening on localhost:12345.' in message
+
+    def test_timeout(self):
+        with TimeoutServer() as server:
+            with pytest.raises(ssl_wrap.Error) as exc:
+                SslSocketWrapper('', port=server.port,
+                                 cert_file=CertFiles.CERT_AND_KEY,
+                                 ca_file=CertFiles.CERT_AND_KEY,
+                                 timeout=1)
+            assert "check the server setup and the firewall" in str(exc)
 
 
 class ServerResource(TCPServer, object):
@@ -119,14 +128,14 @@ class ServerResource(TCPServer, object):
                                           certfile=CertFiles.CERT_AND_KEY,
                                           ca_certs=CertFiles.CERT_AND_KEY,
                                           server_side=True)
-        self.socket.settimeout(1)
+        self.socket.settimeout(5)
 
     @property
     def port(self):
         return self.socket.getsockname()[1]
 
     def __enter__(self):
-        self.socket.settimeout(1)
+        self.socket.settimeout(3)
         print_d("Creating test TCP server")
         self.thread = threading.Thread(target=self.serve_forever)
 
@@ -138,3 +147,15 @@ class ServerResource(TCPServer, object):
         self.shutdown()
         print_d("Destroyed test server")
         self.thread.join(1)
+
+
+class TimeoutServer(ServerResource):
+
+    def __init__(self):
+        super(TimeoutServer, self).__init__()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        pass

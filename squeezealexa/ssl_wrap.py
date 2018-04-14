@@ -31,10 +31,12 @@ class SslSocketWrapper(object):
 
     def __init__(self, hostname, port=9090,
                  ca_file=None, cert_file=None,
-                 verify_hostname=False):
+                 verify_hostname=False,
+                 timeout=5):
 
         self.hostname = hostname
         self.port = port
+        self.timeout = timeout
         self.failures = 0
         context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
         self.__harden_context(context)
@@ -58,9 +60,12 @@ class SslSocketWrapper(object):
                       "or wrong hostname in cert."
                       "Check CERT_FILE and certs on server too.", e)
 
-        self._ssl_sock = context.wrap_socket(socket.socket(),
+        sock = socket.socket()
+        sock.settimeout(self.timeout)
+        self._ssl_sock = context.wrap_socket(sock,
                                              server_hostname=hostname)
-        print_d("Connecting to {port}", port=port)
+        print_d("Connecting to port {port} on {hostname}",
+                port=port, hostname=hostname or '(localhost)')
         try:
             self._ssl_sock.connect((hostname, port))
         except socket.gaierror as e:
@@ -69,22 +74,29 @@ class SslSocketWrapper(object):
                           .format(hostname), e)
             self._die("Couldn't connect to %s with TLS" % (self,), e)
         except IOError as e:
-            if 'Connection refused' in e.strerror:
-                self._die("nothing listening on {}"
+            err_str = e.strerror or str(e)
+            if 'Connection refused' in err_str:
+                self._die("nothing listening on {}. "
                           "Check settings, or (re)start server.".format(self))
-            elif 'WRONG_VERSION_NUMBER' in e.strerror:
+            elif 'WRONG_VERSION_NUMBER' in err_str:
                 self._die('probably not TLS on port {} - '
                           'wrong SERVER_PORT maybe?'.format(port),
                           e)
-            elif 'Connection reset by peer' in e.strerror:
+            elif 'Connection reset by peer' in err_str:
                 self._die("server killed the connection - handshake error? "
                           "Check the SSL tunnel logs")
-            elif 'CERTIFICATE_VERIFY_FAILED' in e.strerror:
+            elif 'CERTIFICATE_VERIFY_FAILED' in err_str:
                 self._die("Cert not trusted by / from server. "
                           "Is your CA correct? Is the cert expired? "
                           "Is the cert for the right hostname ({})?"
                           .format(hostname), e)
-            self._die("Connection problem ({})".format(e.strerror))
+            elif 'timed out' in err_str:
+                msg = ("Couldn't connect to port {port} on {host} - "
+                       "check the server setup and the firewall."
+                       ).format(host=self.hostname, port=self.port)
+                self._die(msg)
+            self._die("Connection problem ({}: {})".format(type(e).__name__,
+                                                           err_str))
 
         peer_cert = self._ssl_sock.getpeercert()
         if peer_cert is None:
