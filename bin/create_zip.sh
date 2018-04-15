@@ -3,6 +3,7 @@ set -e
 
 # Just like lambda-uploader uses...
 output="lambda_function.zip"
+includes="squeezealexa/ locale/"
 
 mode=$1
 version=${2:-latest}
@@ -13,9 +14,9 @@ if test "$mode" == "release"; then
     extras="--exclude *.pem";
     $(dirname $0)/compile-translations
     echo -e "\nContinuing with build...\n"
-    output="squeeze-alexa-$2.zip"
+    output="squeeze-alexa-release-$2.zip"
+    includes="$includes metadata/ bin/local_test.py docs/ README.md"
 fi
-
 
 cd "$(dirname $0)/.."
 pip --isolated download -r requirements.txt
@@ -29,7 +30,7 @@ done
 # Allow restarting...
 rm "$output" 2>/dev/null || true
 
-zip -r $output squeezealexa/ locale/ $deps LICENSE *.py *.pem --exclude '*.pyc' --exclude '*__pycache__/' --exclude '*.po' --exclude '*~' $extras
+zip -r $output $includes $deps LICENSE *.py *.pem --exclude '*.pyc' --exclude '*__pycache__/' --exclude '*.po' --exclude '*~' $extras
 
 echo "Cleaning up dependencies..."
 for dep in $deps; do
