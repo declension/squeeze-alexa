@@ -16,7 +16,7 @@ done
 # Allow restarting...
 rm "$output" 2>/dev/null || true
 
-zip -r $output squeezealexa/ locale/ $deps LICENSE *.py *.pem --exclude '*.pyc' --exclude __pycache__ --exclude '*.po' --exclude '*~'
+zip -r $output squeezealexa/ locale/ $deps LICENSE *.py *.pem --exclude '*.pyc' --exclude '*__pycache__/' --exclude '*.po' --exclude '*~'
 
 echo "Cleaning up dependencies..."
 for dep in $deps; do
