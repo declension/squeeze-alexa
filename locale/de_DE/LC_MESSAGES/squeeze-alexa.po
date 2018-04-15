@@ -223,6 +223,6 @@ msgstr "Kann das Genre nicht finden: {}"
 msgid "Hasta la vista. Baby."
 msgstr "Hasta la vista. Baby."
 
-#: squeezealexa/i18n.py:26
+#: squeezealexa/i18n.py:38
 msgid "favorites"
 msgstr "Favoriten"
