@@ -9,7 +9,16 @@ Testing is very important in this project, and coverage is high.
 Please respect this!
 
 For tooling, we use [tox](https://tox.readthedocs.io/en/latest/). Just run `tox`.
+Coverage is reported [in Coveralls](https://coveralls.io/github/declension/squeeze-alexa).
 
+
+### Releasing
+
+This is crudely semi-automated now:
+```
+bin/create_zip.sh release 1.3
+```
+will create `squeeze-alexa-1.3.zip` (hopefully) suitable for upload to Github etc.
 
 
 Translation

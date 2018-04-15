@@ -212,8 +212,8 @@ Note you will have to run a release process now to get the translations
 * Run the translation script: `bin/compile-translations`, else you'll get errors about like [No translation file found](https://github.com/declension/squeeze-alexa/issues/46).
 
 #### Configure with your settings
- * Edit `src/settings.py`, filling in the details as commented there.
- * Make sure your `squeeze-alexa.pem` file is moved to the root of the `squeeze-alexa` directory.
+ * Edit `squeezealexa/settings.py`, filling in the details [as detailed there](../squeezealexa/settings.py).
+ * Make sure your `squeeze-alexa.pem` file is moved to the root of the `squeeze-alexa` directory (with the README etc).
 
 ### AWS overview
 AWS can be daunting for newcomers and pros alike. The console and range of services is ever increasing, and they love changing things too.
