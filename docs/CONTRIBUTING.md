@@ -69,6 +69,11 @@ You can edit the using any text editor, or use PoEdit, or any other gettext tool
 
 ### Translation FAQ
 
+#### Everything's still in US English
+ * Make sure you've set `LOCALE` in `settings.py`.
+ * Make sure the directory is setup as above and you've definitely compiled it (i.e. there's a `.mo` file)
+ * New versions of `squeeze-alexa` default to the source language (`en_US`) if there is no translation found.
+
 #### What if I don't translate some strings?
 No problem. They'll come out in the source language (`en` here).
 

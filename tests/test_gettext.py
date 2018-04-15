@@ -12,7 +12,7 @@
 import gettext
 import os
 
-from squeezealexa.i18n import _, LOCALE_DIR
+from squeezealexa.i18n import _, LOCALE_DIR, set_up_gettext
 
 AN_UNTRANSLATED_STRING = "foobar baz"
 
@@ -21,10 +21,28 @@ def test_gettext_basic():
     assert _(AN_UNTRANSLATED_STRING) == AN_UNTRANSLATED_STRING
 
 
-def test_gettext_known_british():
-    lang = os.environ["LANG"]
-    os.environ["LANG"] = "en_GB.UTF-8"
-    mo_file = gettext.find('squeeze-alexa', localedir=LOCALE_DIR)
-    assert mo_file, "Can't find British .mo"
-    assert _("favorites") == "favourites"
-    os.environ["LANG"] = lang
+def test_gettext_finds_mo():
+    with NewLocale("en_GB.UTF-8"):
+        mo_file = gettext.find('squeeze-alexa', localedir=LOCALE_DIR)
+        assert mo_file, "Can't find British .mo"
+
+
+def test_binding_uses_settings_locale():
+    with NewLocale("fr_FR"):
+        _ = set_up_gettext("en_GB.UTF-8")
+        assert _("favorites") == "favourites"
+
+
+class NewLocale(object):
+
+    def __init__(self, loc):
+        self.loc = loc
+        self.old = None
+
+    def __enter__(self):
+        self.old = os.environ["LANG"]
+        os.environ["LANG"] = self.loc
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        os.environ["LANG"] = self.old

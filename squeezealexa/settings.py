@@ -25,7 +25,7 @@ APPLICATION_ID = None
 A value of None means verification of the request's Skill will be disabled.
 """
 
-LOCALE = 'en_GB'
+LOCALE = 'en_US'
 """The locale (language & region) to use for your app,
 e.g. en_GB.UTF-8, or de_DE"""
 
