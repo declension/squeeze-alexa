@@ -81,7 +81,7 @@ ENV/
 metadata/audio/
 
 
-# Amazon
-lambda_function.zip
+# Amazon / release prep
+*.zip
 
 *.pot~
