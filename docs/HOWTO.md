@@ -229,6 +229,7 @@ The first thing to remember is there are **two** interesting dashboards:
  * Python (2.7) runtime is recommended currently, though Python 3.6 is now supported too (a bit untested).
  * Select an AWS region close to you (for better performance).
  * The defaults are generally fine (those in [lambda.json](../lambda.json)).
+ * You'll have to define the handler name - `handler.lambda_handler`.
 
 After clicking through to the ASK section of the site, add a new Alexa Skill, then continue here
 
