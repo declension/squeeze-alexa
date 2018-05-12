@@ -10,14 +10,13 @@ before_install:
  - sudo apt-get -y update && sudo apt-get -y install openssl
 
 install:
-  - pip install pipenv coveralls
-  - pipenv install
+  - pip install pipenv
+  - pipenv install --dev
   - bash bin/compile-translations
 
 script:
-  - py.test -v --cov=squeezealexa --cov-report=term tests
+  - pipenv run pytest -v --cov=squeezealexa --cov-report=term
   - pipenv run flake8 --statistics .
 
-
 after_success:
-  - coveralls
+  - pipenv run coveralls

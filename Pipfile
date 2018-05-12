@@ -12,6 +12,7 @@ pytest-cov = "*"
 coverage = "*"
 "flake8" = "*"
 pytest-sugar = "*"
+coveralls = "*"
 
 
 [packages]
