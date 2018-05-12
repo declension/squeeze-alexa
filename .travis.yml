@@ -7,6 +7,7 @@ cache: pip
 
 env:
   - LANG=en_GB.UTF-8
+  - PIPENV_IGNORE_VIRTUALENVS=1
 
 before_install:
   - sudo add-apt-repository -y ppa:0k53d-karl-f830m/openssl
