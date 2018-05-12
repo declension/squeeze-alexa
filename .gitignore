@@ -85,3 +85,4 @@ metadata/audio/
 *.zip
 
 *.pot~
+*.po~
