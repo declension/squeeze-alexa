@@ -5,9 +5,12 @@ python:
   - "3.6"
 cache: pip
 
+env:
+  - LANG=en_GB.UTF-8
+
 before_install:
- - sudo add-apt-repository -y ppa:0k53d-karl-f830m/openssl
- - sudo apt-get -y update && sudo apt-get -y install openssl
+  - sudo add-apt-repository -y ppa:0k53d-karl-f830m/openssl
+  - sudo apt-get -y update && sudo apt-get -y install openssl
 
 install:
   - pip install pipenv
