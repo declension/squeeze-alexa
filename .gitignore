@@ -86,3 +86,5 @@ metadata/audio/
 
 *.pot~
 *.po~
+
+.pytest_cache

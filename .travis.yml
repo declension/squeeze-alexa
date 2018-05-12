@@ -1,25 +1,23 @@
 dist: trusty
 language: python
 
-matrix:
-  include:
-    - python: 3.6
-      env: TOXENV=py36
-    - python: 2.7
-      env: TOXENV=py27
-    - python: 3.6
-      env: TOXENV=style
+python:
+  - "3.6"
+cache: pip
 
 before_install:
  - sudo add-apt-repository -y ppa:0k53d-karl-f830m/openssl
  - sudo apt-get -y update && sudo apt-get -y install openssl
-install: pip install tox coveralls
 
-script: tox
+install:
+  - pip install pipenv coveralls
+  - pipenv install
+  - bash bin/compile-translations
 
-cache:
-  directories:
-  - $HOME/.cache/pip
+script:
+  - py.test -v --cov=squeezealexa --cov-report=term tests
+  - pipenv run flake8 --statistics .
+
 
 after_success:
   - coveralls

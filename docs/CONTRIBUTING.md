@@ -4,13 +4,30 @@ Contributors' Guide
 Developing
 ----------
 
+### Building
+
+The project is now Python 3.6+ only, and we use Pipenv (not Tox).
+
+
 ### Testing
+We use PyTest and plugins for testing. You can run tests with
+
+```bash
+pipenv run pytest
+```
+
 Testing is very important in this project, and coverage is high.
 Please respect this!
 
-For tooling, we use [tox](https://tox.readthedocs.io/en/latest/). Just run `tox`.
 Coverage is reported [in Coveralls](https://coveralls.io/github/declension/squeeze-alexa).
 
+
+### Code Quality
+
+```bash
+pipenv run flake8 --statistics .
+```
+No output / error code means everything is good...
 
 ### Releasing
 
