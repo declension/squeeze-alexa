@@ -25,7 +25,7 @@ from squeezealexa.alexa.response import audio_response, speech_response, \
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server, print_d
-from squeezealexa.ssl_wrap import SslSocketWrapper
+from squeezealexa.transport.ssl_wrap import SslSocketTransport
 from squeezealexa.utils import english_join, sanitise_text
 
 
@@ -86,11 +86,11 @@ class SqueezeAlexa(AlexaHandler):
         :rtype Server
         """
         if not cls._server or cls._server.is_stale():
-            sslw = SslSocketWrapper(hostname=SERVER_HOSTNAME,
-                                    port=SERVER_SSL_PORT,
-                                    ca_file=CA_FILE_PATH,
-                                    cert_file=CERT_FILE_PATH,
-                                    verify_hostname=VERIFY_SERVER_HOSTNAME)
+            sslw = SslSocketTransport(hostname=SERVER_HOSTNAME,
+                                      port=SERVER_SSL_PORT,
+                                      ca_file=CA_FILE_PATH,
+                                      cert_file=CERT_FILE_PATH,
+                                      verify_hostname=VERIFY_SERVER_HOSTNAME)
             cls._server = Server(sslw,
                                  user=SERVER_USERNAME,
                                  password=SERVER_PASSWORD,

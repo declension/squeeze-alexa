@@ -18,14 +18,14 @@ sys.path.append(dirname(dirname(__file__)))
 
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server
-from squeezealexa.ssl_wrap import SslSocketWrapper
+from squeezealexa.transport.ssl_wrap import SslSocketTransport
 
 TEST_GENRES = ["Rock", "Latin", "Blues"]
 
 
 def run_diagnostics(sslw):
     server = Server(debug=DEBUG_LMS,
-                    ssl_wrap=sslw,
+                    transport=sslw,
                     cur_player_id=DEFAULT_PLAYER,
                     user=SERVER_USERNAME,
                     password=SERVER_PASSWORD)
@@ -53,10 +53,12 @@ def die(e):
 
 if __name__ == '__main__':
     try:
-        sslw = SslSocketWrapper(hostname=SERVER_HOSTNAME, port=SERVER_SSL_PORT,
-                                ca_file=CA_FILE_PATH, cert_file=CERT_FILE_PATH,
-                                verify_hostname=VERIFY_SERVER_HOSTNAME)
-        run_diagnostics(sslw)
+        sslst = SslSocketTransport(hostname=SERVER_HOSTNAME,
+                                   port=SERVER_SSL_PORT,
+                                   ca_file=CA_FILE_PATH,
+                                   cert_file=CERT_FILE_PATH,
+                                   verify_hostname=VERIFY_SERVER_HOSTNAME)
+        run_diagnostics(sslst)
         print("\n>>>> Looks good! <<<<")
         sys.exit(0)
     except Exception as e:

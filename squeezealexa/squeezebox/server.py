@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -51,10 +51,10 @@ class Server(object):
     _MAX_FAILURES = 3
     _MAX_CACHE_SECS = 600
 
-    def __init__(self, ssl_wrap, user=None, password=None,
+    def __init__(self, transport, user=None, password=None,
                  cur_player_id=None, debug=False):
 
-        self.ssl_wrap = ssl_wrap
+        self.transport = transport
         self._debug = debug
         self.user = user
         self.password = password
@@ -107,21 +107,21 @@ class Server(object):
         :type lines list[str]
         :rtype list[str]
         """
-        if not self.ssl_wrap.is_connected:
+        if not self.transport.is_connected:
             return []
         if not (lines and len(lines)):
             return []
         lines = [l.rstrip() for l in lines]
 
         first_word = lines[0].split()[0]
-        if not (self.ssl_wrap.is_connected or first_word == 'login'):
+        if not (self.transport.is_connected or first_word == 'login'):
             print_d("Can't do '%s' - not connected" % first_word, self)
             return
 
         if self._debug:
             print_d("<<<< " + "\n..<< ".join(lines))
         request = "\n".join(lines) + "\n"
-        raw_response = self.ssl_wrap.communicate(request, wait=wait)
+        raw_response = self.transport.communicate(request, wait=wait)
         if not wait:
             return []
         if not raw_response:
@@ -301,4 +301,4 @@ class Server(object):
                        for p in self.players.keys()])
 
     def __str__(self):
-        return "Squeezebox server at %s" % self.ssl_wrap
+        return "Squeezebox server at {}".format(str(self.transport))

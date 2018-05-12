@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ class FakeSqueeze(Server):
         self._genres = []
         self._playlists = []
         self._created_time = time.time()
-        self.ssl_wrap = None
+        self.transport = None
 
     @property
     def genres(self):

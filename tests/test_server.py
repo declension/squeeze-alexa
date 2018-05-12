@@ -13,12 +13,12 @@
 from unittest import TestCase
 
 from squeezealexa.squeezebox.server import Server
-from tests.fake_ssl import FakeSsl, FAKE_LENGTH, A_REAL_STATUS
+from tests.fake_ssl import FakeTransport, FAKE_LENGTH, A_REAL_STATUS
 
 
 class TestServer(TestCase):
     def setUp(self):
-        self.server = Server(ssl_wrap=FakeSsl())
+        self.server = Server(transport=FakeTransport())
 
     def test_get_current(self):
         assert self.server.get_status()['genre']
@@ -30,7 +30,8 @@ class TestServer(TestCase):
         assert 'localhost:0' in str(self.server)
 
     def test_login(self):
-        self.server = Server(ssl_wrap=FakeSsl(), user='admin', password='pass')
+        self.server = Server(transport=FakeTransport(),
+                             user='admin', password='pass')
         assert self.server.user == 'admin'
 
     def test_groups(self):

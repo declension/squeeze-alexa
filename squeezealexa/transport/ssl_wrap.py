@@ -15,18 +15,11 @@ import socket
 import ssl
 import _ssl
 
+from squeezealexa.transport.base import Error, Transport
 from squeezealexa.utils import print_d, print_w
 
 
-class Error(Exception):
-
-    def __init__(self, msg, e):
-        super(Error, self).__init__(msg)
-        self.message = msg
-        self.__cause__ = e
-
-
-class SslSocketWrapper(object):
+class SslSocketTransport(Transport):
     _MAX_FAILURES = 3
 
     def __init__(self, hostname, port=9090,
@@ -146,5 +139,5 @@ class SslSocketWrapper(object):
                 self.is_connected = False
             return None
 
-    def __str__(self):
+    def details(self):
         return "{hostname}:{port}".format(**self.__dict__)
