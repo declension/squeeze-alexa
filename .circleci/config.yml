@@ -1,0 +1,27 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: python:3.6
+    environment:
+      - LANG: "en_GB.UTF-8"
+      - PIPENV_IGNORE_VIRTUALENVS: "1"
+    steps:
+      - run:
+          name: Setup Pipenv
+          command: pip install pipenv
+      - run:
+          name: Install deps
+          command: pipenv install --dev
+      - run:
+          name: Compile translations
+          command: bash bin/compile-translations
+      - run:
+          name: Tests
+          command: pipenv run pytest -v --cov=squeezealexa --cov-report=term
+      - run:
+          name: Code Quality
+          command: - pipenv run flake8 --statistics .
+      - run:
+          name: Coverage submission
+          command: pip run coveralls
