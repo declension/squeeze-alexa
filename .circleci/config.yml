@@ -1,8 +1,8 @@
 version: 2
 jobs:
-  test:
+  build:
     docker:
-      - image: ubuntu:18.04
+      - image: ubuntu:16.04
     environment:
       - LANG: "en_GB.UTF-8"
       - PIPENV_IGNORE_VIRTUALENVS: "1"
@@ -21,7 +21,7 @@ jobs:
           command: pipenv run pytest -v --cov=squeezealexa --cov-report=term
       - run:
           name: Code Quality
-          command: - pipenv run flake8 --statistics .
+          command: pipenv run flake8 --statistics .
       - run:
           name: Coverage submission
           command: pip run coveralls
