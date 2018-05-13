@@ -3,6 +3,8 @@
 set -e
 DOMAIN=squeeze-alexa
 
-echo -e "\nCompiling translations..."
-find locale -iname '*.po' -execdir msgfmt -v -o ${DOMAIN}.mo {} \;
-echo "...done"
+base_dir=$(readlink -f "$PWD/$(dirname $0)/../locale")
+
+echo -e "\nCompiling translations in $base_dir"
+find $base_dir locale -iname '*.po' -execdir msgfmt -v -o ${DOMAIN}.mo {} \;
+echo "...done."
