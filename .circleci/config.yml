@@ -2,7 +2,7 @@ version: 2
 jobs:
   test:
     docker:
-      - image: python:3.6
+      - image: ubuntu:18.04
     environment:
       - LANG: "en_GB.UTF-8"
       - PIPENV_IGNORE_VIRTUALENVS: "1"
