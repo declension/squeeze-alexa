@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: python:3.6
+      - image: ubuntu:18.04
     environment:
       - LC_ALL: C.UTF-8
       - LANG: C.UTF-8
