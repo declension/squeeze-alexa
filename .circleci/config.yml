@@ -8,6 +8,9 @@ jobs:
       - LANG: C.UTF-8
     steps:
       - checkout
+      - run:
+          name: Set up gettext tools
+          command: apt-get install -y gettext
 
       - run:
           name: Compile translations
