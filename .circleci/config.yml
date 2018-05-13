@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: Set up gettext tools
-          command: apt-get install -y gettext
+          command: apt update && apt install -y gettext
 
       - run:
           name: Compile translations
