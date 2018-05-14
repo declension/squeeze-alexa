@@ -9,10 +9,9 @@
 #   (at your option) any later version.
 #
 #   See LICENSE for full license
-import gettext
-import os
 
-from squeezealexa.i18n import _, LOCALE_DIR, set_up_gettext
+import os
+from squeezealexa.i18n import _, set_up_gettext
 
 AN_UNTRANSLATED_STRING = "foobar baz"
 
