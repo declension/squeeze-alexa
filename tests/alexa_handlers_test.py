@@ -21,7 +21,7 @@ from squeezealexa.alexa.handlers import AlexaHandler
 from squeezealexa.alexa.requests import Request
 from squeezealexa.main import SqueezeAlexa, handler
 from squeezealexa.squeezebox.server import Server
-from tests.intents_test import FakeSsl
+from tests.intents_test import FakeTransport
 
 SOME_SESSION = {'new': False,
                 'sessionId': uuid.uuid4(),
@@ -90,8 +90,8 @@ class SqueezeAlexaTest(TestCase):
                                 'type': 'AudioPlayerStarted'}})
 
     def test_handling_all_intents(self):
-        fake_output = FakeSsl()
-        server = Server(ssl_wrap=fake_output)
+        fake_output = FakeTransport()
+        server = Server(transport=fake_output)
         alexa = SqueezeAlexa(server=server)
         for name, func in handler._handlers.items():
             intent = {'name': name,
@@ -101,7 +101,7 @@ class SqueezeAlexaTest(TestCase):
             self.validate_response(name, output)
 
     def test_handling_all_intents_without_session_or_slots(self):
-        alexa = SqueezeAlexa(server=(Server(ssl_wrap=(FakeSsl()))))
+        alexa = SqueezeAlexa(server=(Server(transport=(FakeTransport()))))
         for name, func in handler._handlers.items():
             request = self.request_for({'name': name, 'slots': {}}, NO_SESSION)
             output = alexa.handle(request, None)

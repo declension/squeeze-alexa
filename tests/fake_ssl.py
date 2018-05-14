@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 #
 #   See LICENSE for full license
 
-from squeezealexa.ssl_wrap import SslSocketWrapper
+from squeezealexa.transport.base import Transport
 from squeezealexa.utils import print_d
 
 REAL_FAVES = """title%3AFavorites id%3A0
@@ -43,7 +43,7 @@ A_REAL_STATUS = """
 FAKE_LENGTH = 358.852
 
 
-class FakeSsl(SslSocketWrapper):
+class FakeTransport(Transport):
 
     def __init__(self, fake_name='fake', fake_id='12:34'):
         self.hostname = 'localhost'
@@ -70,3 +70,6 @@ class FakeSsl(SslSocketWrapper):
         elif 'favorites items ' in data:
             return stripped + REAL_FAVES
         return stripped + ' OK\n'
+
+    def details(self):
+        return "{hostname}:{port}".format(**self.__dict__)

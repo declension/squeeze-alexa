@@ -1,0 +1,25 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[dev-packages]
+
+pytest = "*"
+pytest-cov = "*"
+coverage = "*"
+"flake8" = "*"
+pytest-sugar = "*"
+coveralls = "*"
+
+
+[packages]
+
+fuzzywuzzy = "==0.12"
+
+
+[requires]
+
+python_version = "3.6"

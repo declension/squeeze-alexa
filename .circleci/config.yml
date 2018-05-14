@@ -1,0 +1,37 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: python:3.6
+    environment:
+      - LC_ALL: C.UTF-8
+      - LANG: C.UTF-8
+    steps:
+      - checkout
+      - run:
+          name: Set up gettext tools
+          command: apt update && apt install -y gettext
+
+      - run:
+          name: Compile translations
+          command: bin/compile-translations
+
+      - run:
+          name: Setup Pipenv
+          command: pip install pipenv
+
+      - run:
+          name: Install deps
+          command: pipenv install --dev
+
+      - run:
+          name: Tests
+          command: pipenv run pytest -v --cov=squeezealexa --cov-report=term
+
+      - run:
+          name: Code Quality
+          command: pipenv run flake8 --statistics .
+
+      - run:
+          name: Coverage submission
+          command: pipenv run coveralls

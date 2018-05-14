@@ -18,7 +18,7 @@ from os.path import dirname
 
 from squeezealexa import settings
 
-LOCALE_DIR = path.join(dirname(dirname(__file__)), 'locale')
+LOCALE_DIR = path.abspath(path.join(dirname(dirname(__file__)), 'locale'))
 # Realistically this will have to be the default, sigh.
 CODE_LOCALE = "en_US"
 
