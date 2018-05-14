@@ -226,7 +226,7 @@ The first thing to remember is there are **two** interesting dashboards:
 #### Overview
  * Like most useful skills it should be a [Custom Skill](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/overviews/understanding-custom-skills)
  * Follow one of the guides ideally e.g. [Deploying a Sample Custom Skill To AWS Lambda](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/deploying-a-sample-skill-to-aws-lambda#creating-the-lambda-function-for-the-sample).
- * For squeeze-alexa > 1.2, use Python 3.6
+ * For squeeze-alexa > 1.2, use Python 3.6, or if not, perhaps [choose an older release](https://github.com/declension/squeeze-alexa/releases).
  * Select an AWS region close to you (for better performance).
  * The defaults are generally fine (those in [lambda.json](../lambda.json)).
  * You'll have to define the handler name - `handler.lambda_handler`.
