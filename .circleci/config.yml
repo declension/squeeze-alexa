@@ -29,9 +29,6 @@ jobs:
           command: pipenv run pytest -v --cov=squeezealexa --cov-report=term
 
       - run:
-          command: pipenv check
-
-      - run:
           name: Code Quality
           command: pipenv run flake8 --statistics .
 
