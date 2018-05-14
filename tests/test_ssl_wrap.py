@@ -14,18 +14,14 @@ import os
 import ssl
 import threading
 from os.path import dirname
+from socketserver import TCPServer, BaseRequestHandler
 from unittest import TestCase
 
 import pytest
 
 import squeezealexa.transport.base
 from squeezealexa.transport.ssl_wrap import SslSocketTransport
-from squeezealexa.utils import print_d, PY2
-
-if PY2:
-    from SocketServer import TCPServer, BaseRequestHandler
-else:
-    from socketserver import TCPServer, BaseRequestHandler
+from squeezealexa.utils import print_d
 
 TEST_DATA = os.path.join(dirname(__file__), 'data')
 
