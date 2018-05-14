@@ -10,16 +10,11 @@
 #
 #   See LICENSE for full license
 
-from __future__ import print_function
-
 import time
 
-from squeezealexa.utils import with_example, PY2, print_d, stronger
+from squeezealexa.utils import with_example, print_d, stronger
 
-if PY2:
-    import urllib
-else:
-    import urllib.request as urllib
+import urllib.request as urllib
 
 
 class SqueezeboxException(Exception):

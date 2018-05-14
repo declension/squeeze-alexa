@@ -17,9 +17,8 @@ import unicodedata
 import sys
 from squeezealexa.i18n import _
 
-PY2 = sys.version_info[0] == 2
-Char = unichr if PY2 else chr
-Unicode = unicode if PY2 else str
+Char = chr
+Unicode = str
 
 
 def print_d(msg, *args, **kwargs):
