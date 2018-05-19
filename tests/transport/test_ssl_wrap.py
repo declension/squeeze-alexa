@@ -23,7 +23,7 @@ import squeezealexa.transport.base
 from squeezealexa.transport.ssl_wrap import SslSocketTransport
 from squeezealexa.utils import print_d
 
-TEST_DATA = os.path.join(dirname(__file__), 'data')
+TEST_DATA = os.path.join(dirname(__file__), '..', 'data')
 
 
 class CertFiles:

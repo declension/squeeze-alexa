@@ -13,7 +13,7 @@
 from unittest import TestCase
 
 from squeezealexa.squeezebox.server import Server
-from tests.fake_ssl import FakeTransport, FAKE_LENGTH, A_REAL_STATUS
+from tests.transport.fake_ssl import FakeTransport, FAKE_LENGTH, A_REAL_STATUS
 
 
 class TestServer(TestCase):
