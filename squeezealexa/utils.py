@@ -21,8 +21,8 @@ Char = chr
 Unicode = str
 
 
-def print_d(msg, *args, **kwargs):
-    text = msg.format(*args, **kwargs)
+def print_d(template, *args, **kwargs):
+    text = template.format(*args, **kwargs)
     print(text)
     return text
 
