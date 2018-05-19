@@ -177,7 +177,7 @@ class Server(object):
                 % (len(self.players),
                    [p['name'] for p in self.players.values()]))
         if self._debug:
-            print_d("Player(s): %s" % (self.players.values(),))
+            print_d("Player(s): %s", self.players.values())
 
     def player_request(self, line, player_id=None, raw=False, wait=True):
         """Makes a single request to a particular player (or the current)"""
