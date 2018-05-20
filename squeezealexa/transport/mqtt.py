@@ -57,9 +57,8 @@ class CustomClient(Client):
 
     def __str__(self) -> str:
         s = self.settings
-        return "< #{req_topic} / #{resp_topic} on {host}:{port} >".format(
-            req_topic=s.topic_req, resp_topic=s.topic_resp, host=self._host,
-            port=self._port)
+        return "broker on {host}:{port}".format(host=self._host,
+                                                port=self._port)
 
 
 class MqttTransport(Transport):

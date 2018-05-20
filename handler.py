@@ -36,7 +36,7 @@ def lambda_handler(event, context):
         if not settings.USE_SPOKEN_ERRORS:
             raise e
         # Work with AWS stack-trace log magic
-        print_w(format_exc().replace('\n', '\r'))
+        print(format_exc().replace('\n', '\r'))
         error = str(e.msg if hasattr(e, "msg") else e)
         return speech_response(title=_("All went wrong"),
                                text=_("Oh dear: {type}. {message}").format(
