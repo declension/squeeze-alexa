@@ -13,6 +13,7 @@ coverage = "*"
 "flake8" = "*"
 pytest-sugar = "*"
 coveralls = "*"
+urllib3 = "*"
 
 
 [packages]
