@@ -41,7 +41,6 @@ class CustomClient(Client):
             return ret
         raise Error("Couldn't connect to {}".format(self.settings))
 
-
     def _conf_file_of(self, rel_glob: str) -> str:
         full_glob = os.path.join(self.settings.cert_dir, rel_glob)
         results = glob(full_glob)

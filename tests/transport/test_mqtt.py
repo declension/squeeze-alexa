@@ -18,15 +18,16 @@ from squeezealexa.transport.mqtt import MqttTransport, CustomClient
 #     assert ret
 #
 
+class NoTlsCustomClient(CustomClient):
+    def _configure_tls(self):
+        pass
 
-class EchoingFakeClient(CustomClient):
+
+class EchoingFakeClient(NoTlsCustomClient):
     PREFIX = "OK: "
 
     def __init__(self, settings: MqttSettings):
         super().__init__(settings)
-
-    def _configure_tls(self):
-        pass
 
     def connect(self, host=None, port=None, keepalive=30, bind_address=""):
         if self.on_connect:
@@ -100,12 +101,11 @@ class TestMqttTransport:
 
 class TestCustomClient:
     def test_get_conf_file(self):
-        c = CustomClient(MqttSettings())
+        c = NoTlsCustomClient(FakeSettings())
         assert c._conf_file_of("*.md")
 
     def test_get_conf_file_raises(self):
-        c = CustomClient(MqttSettings())
+        c = NoTlsCustomClient(FakeSettings())
         with pytest.raises(Error) as e:
             c._conf_file_of("*.py")
         assert "Can't find" in str(e)
-

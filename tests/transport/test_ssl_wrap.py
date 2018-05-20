@@ -85,5 +85,3 @@ class TestSslWrap(TestCase):
                                    ca_file=CertFiles.CERT_AND_KEY,
                                    timeout=1)
             assert "check the server setup and the firewall" in str(exc)
-
-

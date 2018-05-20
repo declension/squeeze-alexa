@@ -12,6 +12,7 @@
 
 from unittest import TestCase
 
+from squeezealexa import Settings
 from squeezealexa.utils import english_join, sanitise_text, with_example, \
     stronger, print_d, print_w
 
@@ -86,3 +87,14 @@ class TestLogging(TestCase):
 
     def test_print_w(self):
         assert "Exception" in print_w("{!r}", Exception("bar"))
+
+
+class FakeSettings(Settings):
+    foo = "bar"
+    _private = 1234
+
+
+class TestSettings:
+    s = FakeSettings()
+    assert "_private" not in str(s)
+    assert str(s) == "{'foo': 'bar'}"
