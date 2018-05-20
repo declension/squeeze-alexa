@@ -4,6 +4,7 @@ import pytest
 from paho.mqtt.client import MQTT_ERR_SUCCESS, MQTTMessage, MQTTMessageInfo
 
 from squeezealexa.settings import MqttSettings
+from squeezealexa.transport.base import Error
 from squeezealexa.transport.mqtt import MqttTransport, CustomClient
 
 
@@ -71,19 +72,40 @@ def fake_client():
     del c
 
 
-def test_communicate(fake_client):
-    """Ensure that the communication we get back is the echo server's"""
-    t = MqttTransport(fake_client, req_topic="foo", resp_topic="bar")
-    t.start()
-    msg = "TEST MESSAGE at %s" % datetime.now()
-    ret = t.communicate(msg)
-    assert ret == fake_client.PREFIX + msg
+class TestMqttTransport:
+    def test_communicate(self, fake_client):
+        """Ensure that the communication we get back is the echo server's"""
+        t = MqttTransport(fake_client, req_topic="foo", resp_topic="bar")
+        t.start()
+        msg = "TEST MESSAGE at %s" % datetime.now()
+        ret = t.communicate(msg)
+        assert ret == fake_client.PREFIX + msg
+        del t
+
+    def test_multiline_communicate(self, fake_client):
+        """Ensure that the communication we get back is the echo server's"""
+        t = MqttTransport(fake_client, req_topic="foo", resp_topic="bar")
+        t.start()
+        msg = "TEST MESSAGE at %s\nAND ANOTHER\nLAST" % datetime.now()
+        ret = t.communicate(msg)
+        assert ret == fake_client.PREFIX + msg
+
+    def test_details(self, fake_client):
+        """Ensure that the communication we get back is the echo server's"""
+        t = MqttTransport(fake_client, req_topic="foo", resp_topic="bar")
+        s = str(t)
+        assert "MQTT " in s
+        assert str(fake_client) in s
 
 
-def test_multiline_communicate(fake_client):
-    """Ensure that the communication we get back is the echo server's"""
-    t = MqttTransport(fake_client, req_topic="foo", resp_topic="bar")
-    t.start()
-    msg = "TEST MESSAGE at %s\nAND ANOTHER\nLAST" % datetime.now()
-    ret = t.communicate(msg)
-    assert ret == fake_client.PREFIX + msg
+class TestCustomClient:
+    def test_get_conf_file(self):
+        c = CustomClient(MqttSettings())
+        assert c._conf_file_of("*.md")
+
+    def test_get_conf_file_raises(self):
+        c = CustomClient(MqttSettings())
+        with pytest.raises(Error) as e:
+            c._conf_file_of("*.py")
+        assert "Can't find" in str(e)
+

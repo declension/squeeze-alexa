@@ -1,5 +1,4 @@
 import os
-import socket
 from _ssl import PROTOCOL_TLSv1_2
 from glob import glob
 from os.path import dirname, realpath, join
@@ -8,10 +7,9 @@ from paho.mqtt.client import Client, MQTT_ERR_SUCCESS, error_string, \
     MQTT_ERR_INVAL
 
 from squeezealexa.settings import MqttSettings
-from squeezealexa.transport.base import Transport, Error
+from squeezealexa.transport.base import Transport, Error, check_listening
 from squeezealexa.utils import print_d, wait_for
 
-MAX_CONNECT_SECS = 3
 
 BASE = realpath(join(dirname(__file__), "..", ".."))
 
@@ -34,7 +32,7 @@ class CustomClient(Client):
         host = host or self.settings.hostname
         port = port or self.settings.port
 
-        self._check_listening(host, port)
+        check_listening(host, port, msg="check your MQTT settings")
         ret = super().connect(host=host,
                               port=port,
                               keepalive=keepalive, bind_address=bind_address)
@@ -43,17 +41,6 @@ class CustomClient(Client):
             return ret
         raise Error("Couldn't connect to {}".format(self.settings))
 
-    @staticmethod
-    def _check_listening(host, port):
-        try:
-            s = socket.create_connection((host, port),
-                                         timeout=MAX_CONNECT_SECS)
-        except socket.error as e:
-            raise Error("Couldn't find anything at all on {host}:{port} - "
-                        "check your MQTT settings. ({err})".format(**locals(),
-                                                                   err=e))
-        else:
-            s.close()
 
     def _conf_file_of(self, rel_glob: str) -> str:
         full_glob = os.path.join(self.settings.cert_dir, rel_glob)

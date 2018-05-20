@@ -10,7 +10,11 @@
 #
 #   See LICENSE for full license
 
+import socket
 from typing import List
+
+MAX_CONNECT_SECS = 3
+"""Various connection timeouts"""
 
 
 class Error(Exception):
@@ -46,3 +50,14 @@ class Transport:
 
     def __del__(self) -> None:
         self.is_connected = False
+
+
+def check_listening(host, port, timeout=MAX_CONNECT_SECS, msg=""):
+    """Checks a socket, then releases"""
+    try:
+        s = socket.create_connection((host, port), timeout=timeout)
+    except socket.error as err:
+        raise Error("Couldn't find anything at all on {host}:{port} - "
+                    "{msg}({err})".format(**locals()))
+    else:
+        s.close()

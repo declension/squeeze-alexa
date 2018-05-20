@@ -10,41 +10,14 @@
 #
 #   See LICENSE for full license
 
-import os
-import ssl
-import threading
-from os.path import dirname
-from socketserver import TCPServer, BaseRequestHandler
 from unittest import TestCase
 
 import pytest
 
 import squeezealexa.transport.base
 from squeezealexa.transport.ssl_wrap import SslSocketTransport
-from squeezealexa.utils import print_d
-
-TEST_DATA = os.path.join(dirname(__file__), '..', 'data')
-
-
-class CertFiles:
-    CERT_AND_KEY = os.path.join(TEST_DATA, 'cert-and-key.pem')
-    BAD_HOSTNAME = os.path.join(TEST_DATA, 'bad-hostname.pem')
-    CERT_ONLY = os.path.join(TEST_DATA, 'cert-only.pem')
-
-
-def response_for(request):
-    return "%s, or something!\n" % request.strip()
-
-
-class FakeRequestHandler(BaseRequestHandler):
-    def handle(self):
-        try:
-            data = self.request.recv(1024).decode('utf-8')
-        except UnicodeDecodeError:
-            data = "(invalid)"
-        response = response_for(data)
-        print_d("> \"%s\"\n%s" % (data.strip(), response))
-        self.request.sendall(response.encode('utf-8'))
+from tests.transport.base import ServerResource, TimeoutServer, CertFiles, \
+    response_for
 
 
 class TestSslWrap(TestCase):
@@ -114,44 +87,3 @@ class TestSslWrap(TestCase):
             assert "check the server setup and the firewall" in str(exc)
 
 
-class ServerResource(TCPServer, object):
-
-    def __init__(self, tls=True):
-        super(ServerResource, self).__init__(('', 0), FakeRequestHandler)
-        if tls:
-            self.socket = ssl.wrap_socket(self.socket,
-                                          cert_reqs=ssl.CERT_REQUIRED,
-                                          certfile=CertFiles.CERT_AND_KEY,
-                                          ca_certs=CertFiles.CERT_AND_KEY,
-                                          server_side=True)
-        self.socket.settimeout(5)
-
-    @property
-    def port(self):
-        return self.socket.getsockname()[1]
-
-    def __enter__(self):
-        self.socket.settimeout(3)
-        print_d("Creating test TCP server")
-        self.thread = threading.Thread(target=self.serve_forever)
-
-        print_d("Starting test server")
-        self.thread.start()
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        self.shutdown()
-        print_d("Destroyed test server")
-        self.thread.join(1)
-
-
-class TimeoutServer(ServerResource):
-
-    def __init__(self):
-        super(TimeoutServer, self).__init__()
-
-    def __enter__(self):
-        return self
-
-    def __exit__(self, exc_type, exc_val, exc_tb):
-        pass
