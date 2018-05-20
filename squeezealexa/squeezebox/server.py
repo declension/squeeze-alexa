@@ -12,6 +12,8 @@
 
 import time
 
+from typing import List
+
 from squeezealexa.utils import with_example, print_d, stronger
 
 import urllib.request as urllib
@@ -65,6 +67,10 @@ class Server(object):
         self.__favorites = []
         self._created_time = time.time()
 
+    def __del__(self):
+        print_d("Goodbye from {}", self)
+        del self.transport
+
     @property
     def player_names(self):
         return {p.get("name", "unknown") for p in self.players.values()}
@@ -93,25 +99,21 @@ class Server(object):
     def _unquote(self, response):
         return ' '.join(urllib.unquote(s) for s in response.split(' '))
 
-    def _request(self, lines, raw=False, wait=True):
+    def _request(self, lines, raw=False, wait=True) -> List[str]:
         """
         Send multiple pipelined requests to the server, if connected,
         and return their responses,
         assuming order is maintained (which seems safe).
-
-        :type lines list[str]
-        :rtype list[str]
         """
-        if not self.transport.is_connected:
-            return []
         if not (lines and len(lines)):
             return []
         lines = [l.rstrip() for l in lines]
 
         first_word = lines[0].split()[0]
         if not (self.transport.is_connected or first_word == 'login'):
-            print_d("Can't do '%s' - not connected" % first_word, self)
-            return
+            raise SqueezeboxException(
+                "Can't do '{cmd}', {transport} not connected".format(
+                    cmd=first_word, transport=self.transport))
 
         if self._debug:
             print_d("<<<< " + "\n..<< ".join(lines))
@@ -296,4 +298,4 @@ class Server(object):
                        for p in self.players.keys()])
 
     def __str__(self):
-        return "Squeezebox server at {}".format(str(self.transport))
+        return "Squeezebox server over {}".format(str(self.transport))
