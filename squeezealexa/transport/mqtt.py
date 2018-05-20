@@ -23,6 +23,9 @@ class CustomClient(Client):
     def __init__(self, settings: MqttSettings):
         super().__init__()
         self.settings = settings
+        self._configure_tls()
+
+    def _configure_tls(self):
         self.tls_set(certfile=self._conf_file_of("*-certificate.pem.crt"),
                      keyfile=self._conf_file_of("*-private.pem.key"),
                      tls_version=PROTOCOL_TLSv1_2)

@@ -24,6 +24,9 @@ class EchoingFakeClient(CustomClient):
     def __init__(self, settings: MqttSettings):
         super().__init__(settings)
 
+    def _configure_tls(self):
+        pass
+
     def connect(self, host=None, port=None, keepalive=30, bind_address=""):
         if self.on_connect:
             self.on_connect(self, None, None, 1)
