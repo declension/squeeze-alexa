@@ -135,8 +135,9 @@ class SslSocketTransport(Transport):
             print_d("Couldn't communicate with Squeezebox ({!r})", e)
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
-                print_w("Too many Squeezebox failures. Disconnecting")
                 self.is_connected = False
+                self._ssl_sock.close()
+                raise Error("Too many Squeezebox failures. Disconnecting")
             return None
 
     @property
