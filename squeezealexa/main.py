@@ -127,10 +127,10 @@ class SqueezeAlexa(AlexaHandler):
         intent_handler = handler.for_name(intent_name)
         if intent_handler:
             return intent_handler(self, intent, session, pid=pid)
-        return self.smart_response(
-            speech=_("Sorry, I don't know how to process a \"{intent}\"")
-                .format(intent=intent_name),
-            text=_("Unknown intent: '{intent}'").format(intent=intent_name))
+        speech = _("Sorry, I don't know how to process a \"{intent}\"").format(
+            intent=intent_name)
+        text = _("Unknown intent: '{intent}'").format(intent=intent_name)
+        return self.smart_response(speech=speech, text=text)
 
     @handler.handle(Audio.RESUME)
     def on_resume(self, intent, session, pid=None):

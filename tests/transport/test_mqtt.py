@@ -55,13 +55,12 @@ class EchoingFakeClient(CustomClient):
         return "<Fake MQTT>"
 
     def reconnect(self):
-        # if self.on_connect:
-        #     self.on_connect(self, None, None, 123)
         return MQTT_ERR_SUCCESS
 
 
 class FakeSettings(MqttSettings):
     pass
+
 
 @pytest.fixture
 def fake_client():

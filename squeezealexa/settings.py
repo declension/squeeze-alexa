@@ -88,7 +88,7 @@ SERVER_HOSTNAME."""
 
 class MqttSettings(Settings):
     hostname = 'aorobo3koaq53.iot.eu-west-1.amazonaws.com'
-    """The hostname for the Internet MQTT server (for MQTT mode) 
+    """The hostname for the Internet MQTT server (for MQTT mode)
     e.g. "xxxxxxxxxxxxx.iot.eu-west-1.amazonaws.com
     Leaving this blank will disable MQTT mode"""
 
@@ -99,7 +99,7 @@ class MqttSettings(Settings):
     """Where the AWS IoT certificate / key files are kept"""
 
     internal_server_hostname = "192.168.1.9"
-    """The LAN-side hostname for your Squeezeserver 
+    """The LAN-side hostname for your Squeezeserver
     e.g. my-nas or 192.168.1.100"""
 
     internal_cli_port = 9090

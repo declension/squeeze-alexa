@@ -43,7 +43,6 @@ class CustomClient(Client):
             return ret
         raise Error("Couldn't connect to {}".format(self.settings))
 
-
     @staticmethod
     def _check_listening(host, port):
         try:
