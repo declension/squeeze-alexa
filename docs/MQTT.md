@@ -24,7 +24,7 @@ Go to the [AWS IoT section](https://console.aws.amazon.com/iot/) (make sure to s
 
 You'll need an IAM policy to grant MQTT access to the squeeze-alexa Lambda.
 
-Use the helpful [included IAM policy](../etc/iot-iam-policy.json) to permission topics - remember to make sure these match your MQTT settings.
+Use the helpful [included IAM policy](example-config/iot-iam-policy.json) to permission topics - remember to make sure these match your MQTT settings.
 
 
 Test

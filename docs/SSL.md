@@ -126,6 +126,7 @@ cat cert.pem key.pem > etc/certs/squeeze-alexa.pem && rm -f key.pem cert.pem
 _TODO: document optional creation of separate server cert for ~~more complicated~~ better(ish) security._
 
 ### Configure stunnel
+See the example [`stunnel.conf`](example-config/stunnel.conf) for a fuller version, but you'll need changes of course.
 
 #### Copy certificate
 Copy the `squeeze-alexa.pem` to somewhere stunnel can see it, e.g. the same location as `stunnel.conf` (see above).

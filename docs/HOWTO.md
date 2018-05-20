@@ -33,7 +33,7 @@ These are referred to as _transports_.
  * Need a router / firewall / ISP that can map incoming network ports.
 
 ### MQTT
- * More experimental
+ * More experimental, but simpler to set up (he says...)
  * Works on all networking / firewalls including 3G / 4G setups.
  * Relies on more AWS infrastructure (AWS IoT)
  * Need a server that can run Python (3.5+).
