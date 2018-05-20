@@ -56,7 +56,6 @@ class CustomClient(Client):
         self.loop_stop()
 
     def __str__(self) -> str:
-        s = self.settings
         return "broker on {host}:{port}".format(host=self._host,
                                                 port=self._port)
 

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -16,7 +16,6 @@ from squeezealexa import settings
 from squeezealexa.alexa.response import speech_response
 from squeezealexa.main import SqueezeAlexa
 from squeezealexa.settings import APPLICATION_ID
-from squeezealexa.utils import print_w
 
 try:
     from squeezealexa.i18n import _
