@@ -1,5 +1,5 @@
 from handler import lambda_handler, _
-from tests.alexa_handlers_test import NO_SESSION
+from tests.alexa.alexa_handlers_test import NO_SESSION
 
 
 def test_entrypoint_error():

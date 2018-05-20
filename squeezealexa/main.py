@@ -99,9 +99,9 @@ class SqueezeAlexa(AlexaHandler):
         return cls._server
 
     @classmethod
-    def create_transport(cls):
-        if MQTT_SETTINGS.configured:
-            s = MQTT_SETTINGS
+    def create_transport(cls, mqtt_settings=MQTT_SETTINGS):
+        if mqtt_settings.configured:
+            s = mqtt_settings
             print_d("Found MQTT config, so setting up MQTT transport.")
             client = CustomClient(s)
             transport = MqttTransport(client,

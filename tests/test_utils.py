@@ -95,6 +95,10 @@ class FakeSettings(Settings):
 
 
 class TestSettings:
-    s = FakeSettings()
-    assert "_private" not in str(s)
-    assert str(s) == "{'foo': 'bar'}"
+    def test_str(self):
+        s = FakeSettings()
+        assert "_private" not in str(s)
+        assert str(s) == "{'foo': 'bar'}"
+
+    def test_configured(self):
+        assert FakeSettings().configured

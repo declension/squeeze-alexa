@@ -111,12 +111,11 @@ class MqttSettings(Settings):
     topic_resp = 'squeeze-resp'
     """The MQTT topic for outgoing messages (back to squeeze-alexa Lambda)"""
 
-    @classmethod
     @property
-    def configured(cls) -> bool:
+    def configured(self):
         """Whether the settings are configured"""
-        return bool(cls.hostname and cls.port and
-                    cls.topic_req and cls.topic_resp)
+        return bool(self.hostname and self.port and
+                    self.topic_req and self.topic_resp)
 
 
 MQTT_SETTINGS = MqttSettings()

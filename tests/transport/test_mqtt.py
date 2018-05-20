@@ -1,3 +1,15 @@
+# -*- coding: utf-8 -*-
+#
+#   Copyright 2018 Nick Boultbee
+#   This file is part of squeeze-alexa.
+#
+#   squeeze-alexa is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   See LICENSE for full license
+
 from datetime import datetime
 
 import pytest
@@ -83,6 +95,11 @@ class TestMqttTransport:
         assert ret == fake_client.PREFIX + msg
         del t
 
+    def test_lazy_communicate(self, fake_client):
+        t = MqttTransport(fake_client, req_topic="foo", resp_topic="bar")
+        t.start()
+        assert not t.communicate("FIRE AND FORGET", wait=False)
+
     def test_multiline_communicate(self, fake_client):
         """Ensure that the communication we get back is the echo server's"""
         t = MqttTransport(fake_client, req_topic="foo", resp_topic="bar")
@@ -109,3 +126,11 @@ class TestCustomClient:
         with pytest.raises(Error) as e:
             c._conf_file_of("*.py")
         assert "Can't find" in str(e)
+
+
+class TestMqttSettings:
+    def test_configured(self):
+        m = MqttSettings()
+        m.hostname = None
+        c = m.configured
+        assert not c

@@ -23,6 +23,5 @@ class Settings:
         return str({k: v for k, v in type(self).__dict__.items()
                     if not k.startswith('_') and k not in Settings.__dict__})
 
-    @classmethod
-    def configured(cls) -> bool:
-        pass
+    def configured(self):
+        return True
