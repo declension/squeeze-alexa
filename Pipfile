@@ -18,6 +18,7 @@ coveralls = "*"
 [packages]
 
 fuzzywuzzy = "==0.12"
+paho-mqtt = "*"
 
 
 [requires]

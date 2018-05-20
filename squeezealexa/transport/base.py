@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -10,31 +10,39 @@
 #
 #   See LICENSE for full license
 
+from typing import List
+
 
 class Error(Exception):
 
-    def __init__(self, msg, e):
+    def __init__(self, msg, e=None):
         super(Error, self).__init__(msg)
         self.message = msg
         self.__cause__ = e
 
 
-class Transport(object):
+class Transport:
     """Communications transport
     for half-duplex / send-then-maybe-listen mode of communications"""
 
-    def communicate(self, data, wait=True):
+    def __init__(self) -> None:
+        self.is_connected = False
+
+    def communicate(self, data: str, wait=True) -> List[str]:
         """Send `data`, waiting if `wait` is True
-        :param [str] data: Data to send
-        :param bool wait: Block for response if True
-        :rtype: str
+        :param data: String to send.
+                     A final newlines will be added if not present
+        :param wait: Block for response if True
         :return: response lines, if any"""
         raise NotImplementedError()
 
     @property
     def details(self):
-        """:return: String of connection details"""
+        """Property for connection details"""
         raise NotImplementedError()
 
-    def __str__(self):
-        return self.details()
+    def __str__(self) -> str:
+        return self.details
+
+    def __del__(self) -> None:
+        self.is_connected = False

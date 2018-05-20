@@ -10,7 +10,9 @@
 #
 #   See LICENSE for full license
 
-from os.path import dirname, join
+from os.path import join
+
+from squeezealexa import ROOT_DIR, Settings
 
 """
 This file contains settings with everything set to the defaults
@@ -63,6 +65,9 @@ Sometimes this is useful, sometimes it's definitely not what you want"""
 CERT_FILE = 'squeeze-alexa.pem'
 """The PEM-format certificate filename for TLS verification,
 or None to disable"""
+
+CERT_DIR = join(ROOT_DIR, "etc", "certs")
+"""The directory that certs can be found in"""
 
 CERT_FILE_PATH = (join(dirname(dirname(__file__)), CERT_FILE)
                   if CERT_FILE else None)

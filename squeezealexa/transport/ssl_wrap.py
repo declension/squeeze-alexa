@@ -22,11 +22,10 @@ from squeezealexa.utils import print_d, print_w
 class SslSocketTransport(Transport):
     _MAX_FAILURES = 3
 
-    def __init__(self, hostname, port=9090,
-                 ca_file=None, cert_file=None,
-                 verify_hostname=False,
-                 timeout=5):
+    def __init__(self, hostname, port=9090, ca_file=None, cert_file=None,
+                 verify_hostname=False, timeout=5):
 
+        super().__init__()
         self.hostname = hostname
         self.port = port
         self.timeout = timeout
@@ -119,10 +118,11 @@ class SslSocketTransport(Transport):
         context.options |= getattr(_ssl, "OP_SINGLE_DH_USE", 0)
         context.options |= getattr(_ssl, "OP_SINGLE_ECDH_USE", 0)
 
-    def communicate(self, data, wait=True):
+    def communicate(self, raw: str, wait=True) -> str:
         eof = False
         response = ''
-        num_lines = data.count("\n")
+        data = raw.strip() + '\n'
+        num_lines = data.count('\n')
         try:
             self._ssl_sock.sendall(data.encode('utf-8'))
             if not wait:
@@ -139,5 +139,6 @@ class SslSocketTransport(Transport):
                 self.is_connected = False
             return None
 
+    @property
     def details(self):
         return "{hostname}:{port}".format(**self.__dict__)

@@ -71,5 +71,6 @@ class FakeTransport(Transport):
             return stripped + REAL_FAVES
         return stripped + ' OK\n'
 
+    @property
     def details(self):
         return "{hostname}:{port}".format(**self.__dict__)

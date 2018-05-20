@@ -112,12 +112,12 @@ class Server(object):
         first_word = lines[0].split()[0]
         if not (self.transport.is_connected or first_word == 'login'):
             raise SqueezeboxException(
-                "Can't do '{cmd}', {transport} not connected".format(
+                "Can't do '{cmd}', {transport} is not connected".format(
                     cmd=first_word, transport=self.transport))
 
         if self._debug:
             print_d("<<<< " + "\n..<< ".join(lines))
-        request = "\n".join(lines) + "\n"
+        request = "\n".join(lines)
         raw_response = self.transport.communicate(request, wait=wait)
         if not wait:
             return []
@@ -298,4 +298,4 @@ class Server(object):
                        for p in self.players.keys()])
 
     def __str__(self):
-        return "Squeezebox server over {}".format(str(self.transport))
+        return "Squeezebox server over {}".format(self.transport)

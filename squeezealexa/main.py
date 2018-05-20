@@ -25,6 +25,7 @@ from squeezealexa.alexa.response import audio_response, speech_response, \
 from squeezealexa.alexa.utterances import Utterances
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server, print_d
+from squeezealexa.transport.mqtt import MqttTransport, CustomClient
 from squeezealexa.transport.ssl_wrap import SslSocketTransport
 from squeezealexa.utils import english_join, sanitise_text
 
@@ -86,12 +87,8 @@ class SqueezeAlexa(AlexaHandler):
         :rtype Server
         """
         if not cls._server or cls._server.is_stale():
-            sslw = SslSocketTransport(hostname=SERVER_HOSTNAME,
-                                      port=SERVER_SSL_PORT,
-                                      ca_file=CA_FILE_PATH,
-                                      cert_file=CERT_FILE_PATH,
-                                      verify_hostname=VERIFY_SERVER_HOSTNAME)
-            cls._server = Server(sslw,
+            transport = SqueezeAlexa.create_transport()
+            cls._server = Server(transport,
                                  user=SERVER_USERNAME,
                                  password=SERVER_PASSWORD,
                                  cur_player_id=DEFAULT_PLAYER,
@@ -100,6 +97,25 @@ class SqueezeAlexa(AlexaHandler):
         else:
             print_d("Reusing cached {!r}", cls._server)
         return cls._server
+
+    @classmethod
+    def create_transport(cls):
+        if MQTT_SETTINGS.configured:
+            s = MQTT_SETTINGS
+            print_d("Found MQTT config, so setting up MQTT transport.")
+            client = CustomClient(s)
+            transport = MqttTransport(client,
+                                      req_topic=s.topic_req,
+                                      resp_topic=s.topic_resp)
+            transport.start()
+            return transport
+
+        print_d("Defaulting to SSL transport")
+        return SslSocketTransport(hostname=SERVER_HOSTNAME,
+                                  port=SERVER_SSL_PORT,
+                                  ca_file=CA_FILE_PATH,
+                                  cert_file=CERT_FILE_PATH,
+                                  verify_hostname=VERIFY_SERVER_HOSTNAME)
 
     def on_intent(self, intent_request, session):
         intent = intent_request['intent']
@@ -113,7 +129,7 @@ class SqueezeAlexa(AlexaHandler):
             return intent_handler(self, intent, session, pid=pid)
         return self.smart_response(
             speech=_("Sorry, I don't know how to process a \"{intent}\"")
-                   .format(intent=intent_name),
+                .format(intent=intent_name),
             text=_("Unknown intent: '{intent}'").format(intent=intent_name))
 
     @handler.handle(Audio.RESUME)
@@ -365,6 +381,7 @@ class SqueezeAlexa(AlexaHandler):
                     return {g}
             return {g for g, c in res
                     if g and int(c) >= MinConfidences.MULTI_GENRE}
+
         # Grr where's my foldl
         results = set()
         for slot in slots:

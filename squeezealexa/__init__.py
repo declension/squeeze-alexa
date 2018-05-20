@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -9,3 +9,20 @@
 #   (at your option) any later version.
 #
 #   See LICENSE for full license
+
+from os.path import dirname
+
+ROOT_DIR = dirname(dirname(__file__))
+"""The squeeze-alexa root directory"""
+
+
+class Settings:
+    """Class-level settings base.
+    It's in here to avoid circular imports"""
+    def __str__(self) -> str:
+        return str({k: v for k, v in type(self).__dict__.items()
+                    if not k.startswith('_') and k not in Settings.__dict__})
+
+    @classmethod
+    def configured(cls) -> bool:
+        pass

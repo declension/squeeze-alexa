@@ -15,6 +15,8 @@ import random
 import re
 import unicodedata
 import sys
+from time import time, sleep
+
 from squeezealexa.i18n import _
 
 Char = chr
@@ -87,3 +89,11 @@ def stronger(k, v, extra_bools=None):
             return float(v)
     except ValueError:
         return None if not v else v
+
+
+def wait_for(func, timeout=3, what=None, context=None):
+    t = time()
+    while not func(context):
+        sleep(0.1)
+        if time() - t > timeout:
+            raise Exception("Timed out {} in {}".format(what, str(context)))
