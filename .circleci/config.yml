@@ -26,7 +26,7 @@ jobs:
 
       - run:
           name: Tests
-          command: pipenv run pytest -v --cov=squeezealexa --cov-report=term
+          command: pipenv run pytest -v --cov=squeezealexa --cov-report=term tests
 
       - run:
           name: Code Quality

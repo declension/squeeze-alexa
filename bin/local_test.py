@@ -14,13 +14,12 @@ import sys
 from os.path import dirname
 from traceback import print_exc
 
-from squeezealexa.main import SqueezeAlexa
-from squeezealexa.transport.base import Transport
-
 sys.path.append(dirname(dirname(__file__)))
 
 from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server
+from squeezealexa.main import SqueezeAlexa
+from squeezealexa.transport.base import Transport
 
 TEST_GENRES = ["Rock", "Latin", "Blues"]
 
