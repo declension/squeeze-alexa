@@ -102,3 +102,4 @@ class TestSettings:
 
     def test_configured(self):
         assert FakeSettings().configured
+        assert Settings().configured

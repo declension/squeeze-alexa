@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -12,13 +12,23 @@
 
 from unittest import TestCase
 
-from squeezealexa.squeezebox.server import Server
-from tests.transport.fake_ssl import FakeTransport, FAKE_LENGTH, A_REAL_STATUS
+from squeezealexa.squeezebox.server import Server, SqueezeboxPlayerSettings
+from tests.transport.fake_transport import *
+
+
+def test_settings():
+    sps = SqueezeboxPlayerSettings({})
+    assert "Unidentified Squeezebox player" in str(sps)
 
 
 class TestServer(TestCase):
+
     def setUp(self):
-        self.server = Server(transport=FakeTransport())
+        self.transport = FakeTransport()
+        self.server = Server(transport=self.transport)
+
+    def test_debug(self):
+        Server(self.transport, debug=True)
 
     def test_get_current(self):
         assert self.server.get_status()['genre']
@@ -65,3 +75,11 @@ class TestServer(TestCase):
 
     def test_genres(self):
         assert len(self.server.genres) == 0
+
+    def test_change_volume(self):
+        self.server.change_volume(3)
+        assert "mixer volume +3" in self.transport.all_input
+
+    def test_change_volume_zero(self):
+        self.server.change_volume(0)
+        assert "mixer volume" not in self.transport.all_input
