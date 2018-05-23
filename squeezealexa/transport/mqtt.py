@@ -105,7 +105,7 @@ class MqttTransport(Transport):
 
     @property
     def details(self):
-        return "MQTT on {}".format(self.client)
+        return "MQTT to {}".format(self.client)
 
     def communicate(self, raw: str, wait=True) -> str:
         data = raw.strip() + '\n'
