@@ -35,3 +35,7 @@ jobs:
       - run:
           name: Coverage submission
           command: pipenv run coveralls
+
+      - run:
+          name: Test Packaging
+          command: bin/create_zip.sh

@@ -1,10 +1,13 @@
 #!/usr/bin/env bash
 set -e
+# TODO: migrate this to Python, it's much too big now
+
+includes="handler.py squeezealexa/ locale/ etc/"
+
+root=$(readlink -f "$(dirname $0)/..")
 
 # Just like lambda-uploader uses...
-output="lambda_function.zip"
-includes="squeezealexa/ locale/"
-
+output="$root/lambda_function.zip"
 mode=$1
 version=${2:-latest}
 if test "$mode" == "release"; then
@@ -18,25 +21,50 @@ if test "$mode" == "release"; then
     includes="$includes metadata/ bin/local_test.py docs/ README.md"
 fi
 
-cd "$(dirname $0)/.."
-pip --isolated download -r requirements.txt
+pushd "$root"
+echo "Installing Pipenv dependencies..."
+pipenv install --dev
+pipenv run pipenv_to_requirements -f
+dist_dir="$PWD/dist"
+[ -e "$dist_dir" ] && rm -rf "$dist_dir"
+mkdir "$dist_dir"
+cd "$dist_dir"
+pipenv run -- pip --isolated download --no-deps -r "$root/requirements.txt"
 
-deps=$(cut -d'=' -f1 requirements.txt | tr '\n' ' ')
-echo "Processing $deps"
+deps=$(grep -r -v '^#' "$root/requirements.txt" | cut -d'=' -f1 | tr '\n' ' ')
+echo "Processing: $deps"
 for dep in $deps; do
-    [ -d $dep ] || unzip $dep-*.whl >/dev/null
+    echo "Processing '$dep'"
+    whl=$dep-*.whl
+    [ -f $whl ] && unzip -q -o $whl
+    # Copy with things like paho-mqtt-1.3.1.tar.gz having paho-1.3.1/src
+    tarfile=$dep-*.tar.gz
+    [ -f $tarfile ] && tar -xf $tarfile && mv $dep-*/src/* ./ && rm -rf ./$dep-*/ && echo "Extracted $dep"
 done
 
-# Allow restarting...
-rm "$output" 2>/dev/null || true
+echo "Copying source and config"
+for inc in $includes; do
+    cp -r "$root/$inc" .
+done
 
-zip -r $output $includes $deps LICENSE *.py *.pem --exclude '*.pyc' --exclude '*__pycache__/' --exclude '*.po' --exclude '*~' $extras
 
 echo "Cleaning up dependencies..."
 for dep in $deps; do
-    rm -rf "./$dep/"
+    rm -rf ./$dep-*.whl
+    rm -rf ./$dep-*.tar.gz
+    rm -rf ./$dep-*/
     rm -rf ./$dep-*.dist-info/
 done
-rm -f ./*.whl
+
+
+echo "Creating ZIP"
+# Allow restarting...
+rm "$output" 2>/dev/null || true
+zip -r $output * --exclude '*.pyc' --exclude '*__pycache__/' --exclude '*.po' --exclude '*~' --exclude '*.egg-info/*' $extras
+
+
+echo "Cleaning up dependencies..."
+rm "$root"/requirements*.txt
 
 echo "Success! Created $output"
+popd >/dev/null
