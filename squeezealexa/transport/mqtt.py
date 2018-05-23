@@ -91,7 +91,8 @@ class MqttTransport(Transport):
 
     def start(self):
         def connected(client, userdata, flags, rc):
-            print_d("Connected to {}. Subscribing to {}", self.client, self.resp_topic)
+            print_d("Connected to {}. Subscribing to {}",
+                    self.client, self.resp_topic)
             self.client.subscribe(self.resp_topic, qos=1)
 
         self.client.on_connect = connected
