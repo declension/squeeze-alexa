@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 set -e
-# TODO: migrate this to Python, it's much too big now
 
 includes="handler.py squeezealexa/ locale/ etc/"
 
 root=$(readlink -f "$(dirname $0)/..")
 
-# Just like lambda-uploader uses...
 output="$root/lambda_function.zip"
 mode=$1
 version=${2:-latest}
@@ -29,33 +27,17 @@ dist_dir="$PWD/dist"
 [ -e "$dist_dir" ] && rm -rf "$dist_dir"
 mkdir "$dist_dir"
 cd "$dist_dir"
-pipenv run -- pip --isolated download --no-deps -r "$root/requirements.txt"
 
-deps=$(grep -r -v '^#' "$root/requirements.txt" | cut -d'=' -f1 | tr '\n' ' ')
-echo "Processing: $deps"
-for dep in $deps; do
-    echo "Processing '$dep'"
-    whl=$dep-*.whl
-    [ -f $whl ] && unzip -q -o $whl
-    # Copy with things like paho-mqtt-1.3.1.tar.gz having paho-1.3.1/src
-    tarfile=$dep-*.tar.gz
-    [ -f $tarfile ] && tar -xf $tarfile && mv $dep-*/src/* ./ && rm -rf ./$dep-*/ && echo "Extracted $dep"
-done
+# Do this the simpler way...
+# See https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html
+echo Installing dependencies from pip
+pipenv run pip install -r "$root/requirements.txt" -t ./
+rm -rf ./*.dist-info/
 
 echo "Copying source and config"
 for inc in $includes; do
     cp -r "$root/$inc" .
 done
-
-
-echo "Cleaning up dependencies..."
-for dep in $deps; do
-    rm -rf ./$dep-*.whl
-    rm -rf ./$dep-*.tar.gz
-    rm -rf ./$dep-*/
-    rm -rf ./$dep-*.dist-info/
-done
-
 
 echo "Creating ZIP"
 # Allow restarting...
