@@ -13,7 +13,7 @@ This convenient AWS CLI command will create the certs in the right place (assumi
 You'll need to be logged in first, as with all the other aws commands. Use `--profile` if you've got lots of accounts.
 
 ```bash
-aws iot create-keys-and-certificate --set-as-active --certificate-pem-outfile etc/iot-certificate.pem.crt --private-key-outfile etc/iot-private.pem.key
+aws iot create-keys-and-certificate --set-as-active --certificate-pem-outfile etc/certs/iot-certificate.pem.crt --private-key-outfile etc/certs/iot-private.pem.key
 ```
 
 
