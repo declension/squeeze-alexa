@@ -151,27 +151,19 @@ Here's what your Lambda function view should look like
 
 ### Upload the customised skill
 
-#### Using lambda-uploader
- * You can use [lambda-uploader](https://github.com/rackerlabs/lambda-uploader) to do this - much easier long term.
- * First run `pip install lambda-uploader` to install this.
- * Edit `lambda.json` filling in your role details etc (as set up earlier)
- * Once installed just run (from your Git project root)
- ```bash
- lambda-uploader --no-virtualenv
- ```
+#### Create the zip file
+ * To build the package, use the helpful [`create_zip.sh`](../bin/create_zip.sh) script:
+  ```bash
+  bin/create_zip.sh
+  ```
+To upload, you can choose:
 
-#### ...or with the included script
- * Get and extract the dependencies ~~the hard way~~.
-   **NEW**: Try the helpful [`create_zip.sh`](../bin/create_zip.sh) script.
-      ```bash
-      bin/create_zip.sh
-      ```
-##### Upload with the GUI
- * Upload the created `lambda_uploader.zip` in the AWS Lambda interface ([as described here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function#about-lambda-functions-and-custom-skills))
+#### Upload with the GUI
+ * Upload the created `lambda_function.zip` in the AWS Lambda interface ([as described here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function#about-lambda-functions-and-custom-skills))
 
-##### ...or with the AWS CLI
- * You can now use the [AWS CLI `update-function-code` call](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html) to upload the zip from the manual step.
- * Make sure you have the [AWS CLI installed](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) (e.g. `pip install awscli`).
+#### ...or with the AWS CLI
+ * You can use the [AWS CLI `update-function-code` call](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html) to upload the zip from the manual step.
+ * Make sure you have the [AWS CLI installed](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) (e.g. `pip install awscli`) and have logged in (`aws configure`).
  * Then
 ```bash
 aws lambda update-function-code --zip-file fileb://lambda_function.zip --function-name squeezebox
