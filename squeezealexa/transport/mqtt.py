@@ -1,3 +1,15 @@
+# -*- coding: utf-8 -*-
+#
+#   Copyright 2018 Nick Boultbee
+#   This file is part of squeeze-alexa.
+#
+#   squeeze-alexa is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   See LICENSE for full license
+
 import os
 from _ssl import PROTOCOL_TLSv1_2
 from glob import glob
@@ -79,8 +91,7 @@ class MqttTransport(Transport):
 
     def start(self):
         def connected(client, userdata, flags, rc):
-            print_d("Connected to {}", self.client)
-            print_d("Subscribing to '{}'", self.resp_topic)
+            print_d("Connected to {}. Subscribing to {}", self.client, self.resp_topic)
             self.client.subscribe(self.resp_topic, qos=1)
 
         self.client.on_connect = connected
@@ -110,7 +121,7 @@ class MqttTransport(Transport):
                 topic=self.req_topic, num=num_lines)
 
         wait_for(lambda s: len(s.response_lines) >= num_lines, context=self,
-                 what="response from Squeezebox")
+                 what="response from mqtt-squeeze", timeout=5)
         return "\n".join(m.decode('utf-8') for m in self.response_lines)
 
     def _clear(self):
