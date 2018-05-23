@@ -9,8 +9,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Set up gettext tools
-          command: apt update && apt install -y gettext
+          name: Set up various tools
+          command: apt update && apt install -y gettext unzip
 
       - run:
           name: Compile translations
