@@ -16,8 +16,11 @@ from unittest import TestCase
 
 import time
 
+import pytest
+
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.main import SqueezeAlexa
+from squeezealexa.transport.base import Error as TransportError
 
 SOME_PID = "zz:zz:zz"
 FAKE_ID = "ab:cd:ef:gh"
@@ -63,6 +66,14 @@ class IntegrationTests(TestCase):
         super(IntegrationTests, self).setUp()
         self.stub = FakeSqueeze()
         self.alexa = SqueezeAlexa(server=self.stub)
+
+    def test_staleness_gets_new_server(self):
+        self.alexa.get_server()
+        assert self.alexa._server
+        self.stub._created_time = time.time() - 100000
+        with pytest.raises(TransportError) as e:
+            self.alexa.get_server()
+        assert "nothing listening" in str(e)
 
     def test_on_pause_resume(self):
         intent = {}

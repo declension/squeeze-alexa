@@ -57,6 +57,9 @@ class TestSslWrap(TestCase):
             assert sslw.is_connected
             response = sslw.communicate('HELLO\n')
             assert response == response_for("HELLO")
+            del sslw
+            with pytest.raises(OSError):
+                server.socket._check_connected()
 
     def test_no_ca(self):
         with ServerResource() as server:
@@ -102,7 +105,7 @@ class TestSslWrap(TestCase):
             SslSocketTransport('localhost', port=12345,
                                cert_file=CertFiles.CERT_AND_KEY)
         message = exc.value.message.lower()
-        assert 'nothing listening on localhost:12345.' in message
+        assert 'nothing listening on localhost:12345 over ssl' in message
 
     def test_timeout(self):
         with TimeoutServer() as server:
