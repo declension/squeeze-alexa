@@ -114,7 +114,7 @@ class TestSslWrap(TestCase):
             SslSocketTransport('localhost', port=12345,
                                cert_file=CertFiles.CERT_AND_KEY)
         message = exc.value.message.lower()
-        assert 'nothing listening on localhost:12345.' in message
+        assert 'nothing listening on localhost:12345' in message
 
     def test_timeout(self):
         with TimeoutServer() as server:
