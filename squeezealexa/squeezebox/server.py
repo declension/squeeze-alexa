@@ -299,3 +299,7 @@ class Server(object):
 
     def __str__(self):
         return "Squeezebox server over {}".format(self.transport)
+
+    def __del__(self):
+        print_d("Closing {}", self)
+        del self.transport

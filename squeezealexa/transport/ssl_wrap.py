@@ -142,4 +142,9 @@ class SslSocketTransport(Transport):
 
     @property
     def details(self):
-        return "{hostname}:{port}".format(**self.__dict__)
+        return "{hostname}:{port} over SSL".format(**self.__dict__)
+
+    def __del__(self):
+        print_d("Closing {}", self)
+        if hasattr(self, '_ssl_sock'):
+            self._ssl_sock.close()

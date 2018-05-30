@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -86,6 +86,9 @@ class SqueezeAlexa(AlexaHandler):
         :return a Server instance
         :rtype Server
         """
+        if cls._server and cls._server.is_stale():
+            del cls._server
+            cls._server = None
         if not cls._server or cls._server.is_stale():
             transport = SqueezeAlexa.create_transport()
             cls._server = Server(transport,
