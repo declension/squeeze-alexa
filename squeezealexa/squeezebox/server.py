@@ -301,5 +301,5 @@ class Server(object):
         return "Squeezebox server over {}".format(self.transport)
 
     def __del__(self):
-        print_d("Closing {}", self)
+        print_d("Goodbye from {}", self)
         del self.transport
