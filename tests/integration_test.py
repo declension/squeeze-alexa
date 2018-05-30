@@ -79,6 +79,12 @@ class IntegrationTests(TestCase):
         # *Something* will go wrong, as there's no config and/or no server
         assert str(e)
 
+    def test_get_new_server(self):
+        SqueezeAlexa._server = None
+        squeezealexa.main.SERVER_HOSTNAME = "not.there"
+        with pytest.raises(TransportError):
+            self.alexa.get_server()
+
     def test_on_pause_resume(self):
         intent = {}
         self.alexa.on_pause(intent, None)

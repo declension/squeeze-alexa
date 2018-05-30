@@ -85,7 +85,7 @@ class SqueezeAlexa(AlexaHandler):
         :return a Server instance
         :rtype Server
         """
-        if cls._server.is_stale():
+        if cls._server and cls._server.is_stale():
             del cls._server
             cls._server = None
         if not cls._server or cls._server.is_stale():
