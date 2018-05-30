@@ -67,10 +67,6 @@ class Server(object):
         self.__favorites = []
         self._created_time = time.time()
 
-    def __del__(self):
-        print_d("Goodbye from {}", self)
-        del self.transport
-
     @property
     def player_names(self):
         return {p.get("name", "unknown") for p in self.players.values()}
