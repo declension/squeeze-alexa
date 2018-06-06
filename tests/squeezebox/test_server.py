@@ -10,6 +10,7 @@
 #
 #   See LICENSE for full license
 
+import time
 from unittest import TestCase
 
 from squeezealexa.squeezebox.server import Server, SqueezeboxPlayerSettings
@@ -26,6 +27,15 @@ class TestServer(TestCase):
     def setUp(self):
         self.transport = FakeTransport()
         self.server = Server(transport=self.transport)
+
+    def test_singleton(self):
+        second = Server(transport=self.transport)
+        assert second is self.server
+
+    def test_staleness_creates_new_instance(self):
+        Server._CREATION_TIME = time.time() - Server._MAX_CACHE_SECS - 1
+        second = Server(transport=self.transport)
+        assert second is not self.server
 
     def test_debug(self):
         Server(self.transport, debug=True)

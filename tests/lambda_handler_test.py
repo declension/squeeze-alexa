@@ -1,9 +1,11 @@
 from handler import lambda_handler, _
+from squeezealexa.squeezebox.server import Server
 from tests.alexa.alexa_handlers_test import NO_SESSION
+from tests.integration_test import FakeSqueeze
 
 
 def test_entrypoint_error():
-    full_response = lambda_handler(None, {})
+    full_response = lambda_handler(None, {}, server=FakeSqueeze())
     assert 'sessionAttributes' in full_response
     resp = full_response['response']
     assert resp, "Blank response generated"
@@ -13,7 +15,7 @@ def test_entrypoint_error():
 def test_entrypoint_ignore_audio():
     request = {'request': {'type': 'AudioPlayer.PlaybackStarted',
                            'requestId': 1234}}
-    full_response = lambda_handler(request, {})
+    full_response = lambda_handler(request, {}, server=FakeSqueeze())
     resp = full_response['response']
     assert not resp, "Should have ignored AudioPlayer request"
 
@@ -21,6 +23,6 @@ def test_entrypoint_ignore_audio():
 def test_entrypoint_launch():
     request = {'request': {'type': 'LaunchRequest', 'requestId': 1234},
                'session': NO_SESSION}
-    full_response = lambda_handler(request, {})
+    full_response = lambda_handler(request, {}, server=FakeSqueeze())
     resp = full_response['response']
     assert _("Squeezebox is online") in resp['outputSpeech']['text']

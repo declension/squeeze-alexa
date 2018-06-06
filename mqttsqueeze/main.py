@@ -1,9 +1,17 @@
+#!/usr/bin/env python3
+
 import socket
+import sys
 import telnetlib
+from os.path import dirname, abspath
 
 import paho.mqtt.client as mqtt
 
-from squeezealexa.settings import MQTT_SETTINGS
+# Sort out running directly
+path = dirname(dirname(abspath(__file__)))
+sys.path.append(path)
+
+from squeezealexa.settings import MQTT_SETTINGS, LMS_SETTINGS
 from squeezealexa.transport.mqtt import CustomClient
 from squeezealexa.utils import print_d, print_w
 
@@ -43,7 +51,7 @@ def on_message(client, userdata, message):
 def connect_cli():
     global telnet
     telnet = telnetlib.Telnet(host=MQTT_SETTINGS.internal_server_hostname,
-                              port=MQTT_SETTINGS.internal_cli_port, timeout=5)
+                              port=LMS_SETTINGS.cli_port, timeout=5)
     print_d("Connected to Squeezeserver CLI")
     return telnet
 

@@ -72,13 +72,10 @@ class EchoingFakeClient(NoTlsCustomClient):
         return MQTT_ERR_SUCCESS
 
 
-class FakeSettings(MqttSettings):
-    pass
-
 
 @pytest.fixture
 def fake_client():
-    c = EchoingFakeClient(FakeSettings())
+    c = EchoingFakeClient(MqttSettings())
     c.connect()
     yield c
     c.disconnect()
@@ -118,11 +115,11 @@ class TestMqttTransport:
 
 class TestCustomClient:
     def test_get_conf_file(self):
-        c = NoTlsCustomClient(FakeSettings())
+        c = NoTlsCustomClient(MqttSettings())
         assert c._conf_file_of("*.md")
 
     def test_get_conf_file_raises(self):
-        c = NoTlsCustomClient(FakeSettings())
+        c = NoTlsCustomClient(MqttSettings())
         with pytest.raises(Error) as e:
             c._conf_file_of("*.py")
         assert "Can't find" in str(e)

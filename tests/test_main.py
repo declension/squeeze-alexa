@@ -13,11 +13,14 @@
 from pytest import raises
 
 from squeezealexa import settings
-from squeezealexa.main import SqueezeAlexa, MqttSettings
+from squeezealexa.settings import MqttSettings
+
 from squeezealexa.transport.base import Error
+from squeezealexa.transport.configured import create_transport
 
 
 class TestSqueezeAlexa:
+
     def test_ssl_setup(self):
         s = MqttSettings()
         s.hostname = None
@@ -25,5 +28,5 @@ class TestSqueezeAlexa:
         assert not configured
         settings.CERT_DIR = "/dev/null"
         with raises(Error) as e:
-            SqueezeAlexa.create_transport(mqtt_settings=s)
+            create_transport(mqtt_settings=s)
         assert "Check CERT_NAME" in str(e)

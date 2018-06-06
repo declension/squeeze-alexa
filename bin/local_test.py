@@ -17,19 +17,19 @@ from traceback import print_exc
 sys.path.append(dirname(dirname(__file__)))
 
 from squeezealexa.settings import *
+from squeezealexa.transport.configured import create_transport
 from squeezealexa.squeezebox.server import Server
-from squeezealexa.main import SqueezeAlexa
 from squeezealexa.transport.base import Transport
 
 TEST_GENRES = ["Rock", "Latin", "Blues"]
 
 
 def run_diagnostics(transport: Transport):
-    server = Server(debug=DEBUG_LMS,
-                    transport=transport,
-                    cur_player_id=DEFAULT_PLAYER,
-                    user=SERVER_USERNAME,
-                    password=SERVER_PASSWORD)
+    server = Server(transport=transport,
+                    debug=LMS_SETTINGS.DEBUG,
+                    cur_player_id=LMS_SETTINGS.DEFAULT_PLAYER,
+                    user=LMS_SETTINGS.USERNAME,
+                    password=LMS_SETTINGS.PASSWORD)
     assert server.genres
     assert server.playlists
     assert server.favorites
@@ -55,7 +55,7 @@ def die(e):
 
 if __name__ == '__main__':
     try:
-        transport = SqueezeAlexa.create_transport()
+        transport = create_transport()
         run_diagnostics(transport)
         print("\n>>>> Looks good! <<<<")
         sys.exit(0)

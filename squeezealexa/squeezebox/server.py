@@ -47,6 +47,21 @@ class Server(object):
     _TIMEOUT = 10
     _MAX_FAILURES = 3
     _MAX_CACHE_SECS = 600
+    _INSTANCE = None
+    _CREATION_TIME = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._INSTANCE:
+            print_d("Creating new server instance")
+            cls._INSTANCE = super().__new__(cls)
+            cls._CREATION_TIME = time.time()
+            return cls._INSTANCE
+        if time.time() - cls._CREATION_TIME > cls._MAX_CACHE_SECS:
+            print_d("Recreating stale server instance")
+            del cls._INSTANCE
+            cls._CREATION_TIME = time.time()
+            cls._INSTANCE = super().__new__(cls)
+        return cls._INSTANCE
 
     def __init__(self, transport, user=None, password=None,
                  cur_player_id=None, debug=False):
@@ -65,14 +80,10 @@ class Server(object):
         self.__genres = []
         self.__playlists = []
         self.__favorites = []
-        self._created_time = time.time()
 
     @property
     def player_names(self):
         return {p.get("name", "unknown") for p in self.players.values()}
-
-    def is_stale(self):
-        return (time.time() - self._created_time) > self._MAX_CACHE_SECS
 
     def log_in(self):
         result = self.__a_request("login %s %s" % (self.user, self.password))

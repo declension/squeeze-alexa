@@ -16,7 +16,7 @@ from gettext import GNUTranslations
 from os import path
 from os.path import dirname
 
-from squeezealexa import settings
+from squeezealexa.settings import SKILL_SETTINGS
 
 LOCALE_DIR = path.abspath(path.join(dirname(dirname(__file__)), 'locale'))
 # Realistically this will have to be the default, sigh.
@@ -32,7 +32,7 @@ def set_up_gettext(user_locale):
     return t.gettext
 
 
-_ = set_up_gettext(settings.LOCALE)
+_ = set_up_gettext(SKILL_SETTINGS.LOCALE)
 
 # Canary translation
 _("favorites")
