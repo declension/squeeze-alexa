@@ -72,7 +72,6 @@ class EchoingFakeClient(NoTlsCustomClient):
         return MQTT_ERR_SUCCESS
 
 
-
 @pytest.fixture
 def fake_client():
     c = EchoingFakeClient(MqttSettings())

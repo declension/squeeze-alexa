@@ -1,5 +1,4 @@
 from handler import lambda_handler, _
-from squeezealexa.squeezebox.server import Server
 from tests.alexa.alexa_handlers_test import NO_SESSION
 from tests.integration_test import FakeSqueeze
 
