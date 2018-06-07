@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 set -e
 
-# Just like lambda-uploader uses...
-output="lambda_function.zip"
-includes="squeezealexa/ locale/"
+includes="handler.py squeezealexa/ locale/ etc/"
 
+root=$(readlink -f "$(dirname $0)/..")
+
+output="$root/lambda_function.zip"
 mode=$1
 version=${2:-latest}
 if test "$mode" == "release"; then
@@ -18,25 +19,34 @@ if test "$mode" == "release"; then
     includes="$includes metadata/ bin/local_test.py docs/ README.md"
 fi
 
-cd "$(dirname $0)/.."
-pip --isolated download -r requirements.txt
+pushd "$root"
+echo "Installing Pipenv dependencies..."
+pipenv install --dev
+pipenv run pipenv_to_requirements -f
+dist_dir="$PWD/dist"
+[ -e "$dist_dir" ] && rm -rf "$dist_dir"
+mkdir "$dist_dir"
+cd "$dist_dir"
 
-deps=$(cut -d'=' -f1 requirements.txt | tr '\n' ' ')
-echo "Processing $deps"
-for dep in $deps; do
-    [ -d $dep ] || unzip $dep-*.whl >/dev/null
+# Do this the simpler way...
+# See https://docs.aws.amazon.com/lambda/latest/dg/lambda-python-how-to-create-deployment-package.html
+echo Installing dependencies from pip
+pipenv run pip install -r "$root/requirements.txt" -t ./
+rm -rf ./*.dist-info/
+
+echo "Copying source and config"
+for inc in $includes; do
+    cp -r "$root/$inc" .
 done
 
+echo "Creating ZIP"
 # Allow restarting...
 rm "$output" 2>/dev/null || true
+zip -r $output * --exclude '*.pyc' --exclude '*__pycache__/' --exclude '*.po' --exclude '*~' --exclude '*.egg-info/*' $extras
 
-zip -r $output $includes $deps LICENSE *.py *.pem --exclude '*.pyc' --exclude '*__pycache__/' --exclude '*.po' --exclude '*~' $extras
 
 echo "Cleaning up dependencies..."
-for dep in $deps; do
-    rm -rf "./$dep/"
-    rm -rf ./$dep-*.dist-info/
-done
-rm -f ./*.whl
+rm "$root"/requirements*.txt
 
 echo "Success! Created $output"
+popd >/dev/null
