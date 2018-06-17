@@ -51,7 +51,7 @@ class TestServer(TestCase):
         assert next(groups) == expected
 
     def test_groups_multiple(self):
-        raw = """BLAH 
+        raw = """BLAH
         playerindex%3A0 playerid%3A00%3A04%3A20%3A17%3A6f%3Ad1
         uuid%3A968b401ba4791d3fadd152bbac2f1dab ip%3A192.168.1.35%3A23238
         name%3AUpstairs%20Music seq_no%3A0 model%3Areceiver
