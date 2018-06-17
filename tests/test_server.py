@@ -52,18 +52,16 @@ class TestServer(TestCase):
 
     def test_groups_multiple(self):
         raw = """BLAH 
-        
-        playerindex%3A0 playerid%3A00%3A04%3A20%3A17%3A6f%3Ad1 
-        uuid%3A968b401ba4791d3fadd152bbac2f1dab ip%3A192.168.1.35%3A23238 
-        name%3AUpstairs%20Music seq_no%3A0 model%3Areceiver 
-        modelname%3ASqueezebox%20Receiver power%3A0 isplaying%3A0 
-        displaytype%3Anone isplayer%3A1 canpoweroff%3A1 connected%3A1 
+        playerindex%3A0 playerid%3A00%3A04%3A20%3A17%3A6f%3Ad1
+        uuid%3A968b401ba4791d3fadd152bbac2f1dab ip%3A192.168.1.35%3A23238
+        name%3AUpstairs%20Music seq_no%3A0 model%3Areceiver
+        modelname%3ASqueezebox%20Receiver power%3A0 isplaying%3A0
+        displaytype%3Anone isplayer%3A1 canpoweroff%3A1 connected%3A1
         firmware%3A77
-         
-        playerindex%3A2 playerid%3A40%3A16%3A7e%3Aad%3A87%3A07 uuid%3A 
-        ip%3A192.168.1.37%3A54652 name%3AStudy seq_no%3A0 model%3Asqueezelite 
-        modelname%3ASqueezeLite power%3A0 isplaying%3A0 
-        displaytype%3Anone isplayer%3A1 canpoweroff%3A1 connected%3A1 
+        playerindex%3A2 playerid%3A40%3A16%3A7e%3Aad%3A87%3A07 uuid%3A
+        ip%3A192.168.1.37%3A54652 name%3AStudy seq_no%3A0 model%3Asqueezelite
+        modelname%3ASqueezeLite power%3A0 isplaying%3A0
+        displaytype%3Anone isplayer%3A1 canpoweroff%3A1 connected%3A1
         firmware%3Av1.8 sn%20player%20count%3A0 other%20player%20count%3A0
 """.replace('\n', '')
         groups = self.server._groups(raw, 'playerid')
