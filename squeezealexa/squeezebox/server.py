@@ -149,20 +149,22 @@ class Server(object):
         return [d for d in demunged if len(d) == 2]
 
     def _groups(self, response, start=None, extra_bools=None):
-        """Returns a group of dicts from `response`.
+        """Returns a series of dicts from `response`.
         If `start` is specified, items prior to this will be discarded,
-        and each group will be starting with this.
+        and each dict will be grouped starting with this key.
         `extra_bools` allows custom keys to be booleaned"""
-        group = []
+        groups = []
         for k, v in self.__pairs_from(response):
             if k == start:
-                if group:
-                    yield dict(group)
-                group = [(k, stronger(k, v, extra_bools))]
+                if groups:
+                    yield dict(groups)
+                # New group starts here
+                groups = [(k, stronger(k, v, extra_bools))]
             else:
-                if group or not start:
-                    group.append((k, stronger(k, v, extra_bools)))
-        yield dict(group)
+                if groups or not start:
+                    groups.append((k, stronger(k, v, extra_bools)))
+        if groups:
+            yield dict(groups)
 
     def refresh_status(self):
         """ Updates the list of the Squeezebox players available and other
