@@ -45,9 +45,9 @@ class SslSocketTransport(Transport):
                         .format(cert_file, ca_file), e)
         except IOError as e:
             if 'No such file or directory' in e.strerror:
-                self._die("Can't find '{ca_file}'. "
-                          "Check CERT_NAME / CERT_PATH in settings"
-                          .format(ca_file=ca_file))
+                self._die("Can't find cert '{cert_file}' or CA '{ca_file}'. "
+                          "Check CERT_FILE / CA_FILE_PATH in settings"
+                          .format(ca_file=ca_file, cert_file=cert_file))
             self._die("could be mismatched certificate files, "
                       "or wrong hostname in cert."
                       "Check CERT_FILE and certs on server too.", e)
