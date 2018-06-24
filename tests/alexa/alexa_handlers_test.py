@@ -85,7 +85,7 @@ class AlexaHandlerTest(TestCase):
 class SqueezeAlexaTest(TestCase):
 
     def test_ignores_audio_callbacks(self):
-        sqa = SqueezeAlexa()
+        sqa = SqueezeAlexa(server=None)
         sqa.handle({'request': {'requestId': '1234',
                                 'type': 'AudioPlayerStarted'}})
 

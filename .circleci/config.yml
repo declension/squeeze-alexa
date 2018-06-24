@@ -9,8 +9,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Set up gettext tools
-          command: apt update && apt install -y gettext
+          name: Set up various tools
+          command: apt update && apt install -y gettext zip unzip
 
       - run:
           name: Compile translations
@@ -26,7 +26,7 @@ jobs:
 
       - run:
           name: Tests
-          command: pipenv run pytest -v --cov=squeezealexa --cov-report=term
+          command: pipenv run pytest -v --cov=squeezealexa --cov-report=term tests
 
       - run:
           name: Code Quality
@@ -35,3 +35,7 @@ jobs:
       - run:
           name: Coverage submission
           command: pipenv run coveralls
+
+      - run:
+          name: Test Packaging
+          command: bin/create_zip.sh

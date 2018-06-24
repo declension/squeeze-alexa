@@ -17,18 +17,19 @@ from traceback import print_exc
 sys.path.append(dirname(dirname(__file__)))
 
 from squeezealexa.settings import *
+from squeezealexa.transport.configured import create_transport
 from squeezealexa.squeezebox.server import Server
-from squeezealexa.transport.ssl_wrap import SslSocketTransport
+from squeezealexa.transport.base import Transport
 
 TEST_GENRES = ["Rock", "Latin", "Blues"]
 
 
-def run_diagnostics(sslw):
-    server = Server(debug=DEBUG_LMS,
-                    transport=sslw,
-                    cur_player_id=DEFAULT_PLAYER,
-                    user=SERVER_USERNAME,
-                    password=SERVER_PASSWORD)
+def run_diagnostics(transport: Transport):
+    server = Server(transport=transport,
+                    debug=LMS_SETTINGS.DEBUG,
+                    cur_player_id=LMS_SETTINGS.DEFAULT_PLAYER,
+                    user=LMS_SETTINGS.USERNAME,
+                    password=LMS_SETTINGS.PASSWORD)
     assert server.genres
     assert server.playlists
     assert server.favorites
@@ -43,6 +44,7 @@ def run_diagnostics(sslw):
     print("Up next: %s >> %s >> %s" % (status.get('genre', "Unknown genre"),
                                        status.get('title', 'Unknown track'),
                                        status.get('artist', 'Unknown artist')))
+    del server
 
 
 def die(e):
@@ -53,12 +55,8 @@ def die(e):
 
 if __name__ == '__main__':
     try:
-        sslst = SslSocketTransport(hostname=SERVER_HOSTNAME,
-                                   port=SERVER_SSL_PORT,
-                                   ca_file=CA_FILE_PATH,
-                                   cert_file=CERT_FILE_PATH,
-                                   verify_hostname=VERIFY_SERVER_HOSTNAME)
-        run_diagnostics(sslst)
+        transport = create_transport()
+        run_diagnostics(transport)
         print("\n>>>> Looks good! <<<<")
         sys.exit(0)
     except Exception as e:

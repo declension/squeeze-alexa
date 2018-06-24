@@ -12,6 +12,7 @@
 
 import time
 
+from typing import List
 from squeezealexa.utils import with_example, print_d, stronger, print_w
 
 import urllib.request as urllib
@@ -38,11 +39,7 @@ class SqueezeboxPlayerSettings(dict):
         return self.get(key, None)
 
     def __str__(self):
-        try:
-            return "{name} [{short}]".format(short=self['playerid'][-5:],
-                                             **self)
-        except KeyError:
-            return "Unidentified Squeezebox player: %r" % self
+        return "{name} [{short}]".format(short=self['playerid'][-5:], **self)
 
 
 class Server(object):
@@ -51,6 +48,21 @@ class Server(object):
     _TIMEOUT = 10
     _MAX_FAILURES = 3
     _MAX_CACHE_SECS = 600
+    _INSTANCE = None
+    _CREATION_TIME = None
+
+    def __new__(cls, *args, **kwargs):
+        if not cls._INSTANCE:
+            print_d("Creating new server instance")
+            cls._INSTANCE = super().__new__(cls)
+            cls._CREATION_TIME = time.time()
+            return cls._INSTANCE
+        if time.time() - cls._CREATION_TIME > cls._MAX_CACHE_SECS:
+            print_d("Recreating stale server instance")
+            del cls._INSTANCE
+            cls._CREATION_TIME = time.time()
+            cls._INSTANCE = super().__new__(cls)
+        return cls._INSTANCE
 
     def __init__(self, transport, user=None, password=None,
                  cur_player_id=None, debug=False):
@@ -80,14 +92,10 @@ class Server(object):
         self.__genres = []
         self.__playlists = []
         self.__favorites = []
-        self._created_time = time.time()
 
     @property
     def player_names(self):
         return {p.get("name", "unknown") for p in self.players.values()}
-
-    def is_stale(self):
-        return (time.time() - self._created_time) > self._MAX_CACHE_SECS
 
     def log_in(self):
         result = self.__a_request("login %s %s" % (self.user, self.password))
@@ -110,29 +118,25 @@ class Server(object):
     def _unquote(self, response):
         return ' '.join(urllib.unquote(s) for s in response.split(' '))
 
-    def _request(self, lines, raw=False, wait=True):
+    def _request(self, lines, raw=False, wait=True) -> List[str]:
         """
         Send multiple pipelined requests to the server, if connected,
         and return their responses,
         assuming order is maintained (which seems safe).
-
-        :type lines list[str]
-        :rtype list[str]
         """
-        if not self.transport.is_connected:
-            return []
         if not (lines and len(lines)):
             return []
         lines = [l.rstrip() for l in lines]
 
         first_word = lines[0].split()[0]
         if not (self.transport.is_connected or first_word == 'login'):
-            print_d("Can't do '%s' - not connected" % first_word, self)
-            return
+            raise SqueezeboxException(
+                "Can't do '{cmd}', {transport} is not connected".format(
+                    cmd=first_word, transport=self.transport))
 
         if self._debug:
             print_d("<<<< " + "\n..<< ".join(lines))
-        request = "\n".join(lines) + "\n"
+        request = "\n".join(lines)
         raw_response = self.transport.communicate(request, wait=wait)
         if not wait:
             return []
@@ -196,7 +200,7 @@ class Server(object):
                 % (len(self.players),
                    [p['name'] for p in self.players.values()]))
         if self._debug:
-            print_d("Player(s): %s" % (self.players.values(),))
+            print_d("Player(s): %s", self.players.values())
 
     def player_request(self, line, player_id=None, raw=False, wait=True):
         """Makes a single request to a particular player (or the current)"""
@@ -315,8 +319,8 @@ class Server(object):
                        for p in self.players.keys()])
 
     def __str__(self):
-        return "Squeezebox server at {}".format(str(self.transport))
+        return "Squeezebox server over {}".format(self.transport)
 
     def __del__(self):
-        print_d("Closing {}", self)
+        print_d("Goodbye from {}", self)
         del self.transport

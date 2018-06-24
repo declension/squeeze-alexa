@@ -10,13 +10,15 @@
 #
 #   See LICENSE for full license
 
+import time
 from unittest import TestCase
 
 from pytest import raises
 
 from squeezealexa.squeezebox.server import Server, SqueezeboxPlayerSettings, \
     SqueezeboxException
-from tests.fake_ssl import FakeTransport, FAKE_LENGTH, A_REAL_STATUS
+from tests.transport.fake_transport import FakeTransport, FAKE_LENGTH, \
+    A_REAL_STATUS
 
 
 class TestSqueezeboxPlayerSettings:
@@ -39,13 +41,28 @@ class NoRefreshServer(Server):
 class TestServerNoTransport:
     def test_no_players_raises(self):
         with raises(SqueezeboxException) as e:
+            Server._INSTANCE = None
             NoRefreshServer()
         assert "no players" in str(e).lower()
 
 
 class TestServerWithTransport(TestCase):
+
     def setUp(self):
-        self.server = Server(transport=FakeTransport())
+        self.transport = FakeTransport()
+        self.server = Server(transport=self.transport)
+
+    def test_singleton(self):
+        second = Server(transport=self.transport)
+        assert second is self.server
+
+    def test_staleness_creates_new_instance(self):
+        Server._CREATION_TIME = time.time() - Server._MAX_CACHE_SECS - 1
+        second = Server(transport=self.transport)
+        assert second is not self.server
+
+    def test_debug(self):
+        Server(self.transport, debug=True)
 
     def test_unknown_default_player(self):
         transport = FakeTransport(fake_id="foo")
@@ -125,3 +142,11 @@ class TestServerWithTransport(TestCase):
 
     def test_genres(self):
         assert len(self.server.genres) == 0
+
+    def test_change_volume(self):
+        self.server.change_volume(3)
+        assert "mixer volume +3" in self.transport.all_input
+
+    def test_change_volume_zero(self):
+        self.server.change_volume(0)
+        assert "mixer volume" not in self.transport.all_input

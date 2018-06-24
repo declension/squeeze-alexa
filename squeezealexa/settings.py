@@ -10,7 +10,9 @@
 #
 #   See LICENSE for full license
 
-from os.path import dirname, join
+from os.path import join
+
+from squeezealexa import ROOT_DIR, Settings
 
 """
 This file contains settings with everything set to the defaults
@@ -18,61 +20,116 @@ At the very least you need to set SERVER_HOSTNAME, SERVER_SSL_PORT.
 """
 
 
-# --------------------------- Amazon / Alexa Config ---------------------------
+# --------------------------- App (Skill) Settings ----------------------------
 
-APPLICATION_ID = None
-"""The Skill's Amazon application ID (e.g. amznl.ask.skill.xyz...) as a string
-A value of None means verification of the request's Skill will be disabled.
-"""
+class SkillSettings(Settings):
+    APPLICATION_ID = None
+    """The Skill's Amazon application ID (e.g. "amznl.ask.skill.xyz")
+    A value of None means verification of the request's Skill will be disabled.
+    """
 
-LOCALE = 'en_US'
-"""The locale (language & region) to use for your app,
-e.g. en_GB.UTF-8, or de_DE"""
+    LOCALE = 'en_US'
+    """The locale (language & region) to use for your app,
+    e.g. en_GB.UTF-8, or de_DE"""
 
-RESPONSE_AUDIO_FILE_URL = \
-    "https://s3.amazonaws.com/declension-alexa-media/silence.mp3"
-"""Change this to your own HTTPS MP3 file, which must be accessible to Alexa"""
+    RESPONSE_AUDIO_FILE_URL = \
+        'https://s3.amazonaws.com/declension-alexa-media/silence.mp3'
+    """Change this to your own HTTPS MP3, which must be accessible to Alexa"""
 
-# ----------------------------- Squeezebox Config -----------------------------
+    USE_SPOKEN_ERRORS = True
+    """If True, Alexa will response with squeeze-alexa error information.
+    Sometimes this is useful, sometimes it's definitely not what you want"""
 
-SERVER_HOSTNAME = 'my-squeezebox-cli-proxy.example.com'
-"""The public hostname / IP of your Squeezebox server CLI proxy"""
+    CERT_DIR = join(ROOT_DIR, "etc", "certs")
+    """The directory that certs can be found in"""
 
-SERVER_SSL_PORT = 19090
-"""The above proxy server's listening port (that accepts TLS connections).
-For stunnel, this will be the same as `accept = ...`"""
 
-SERVER_USERNAME = None
-"""A string containing the Squeezebox CLI username, or None if not required."""
+# ----------------------- LMS (SqueezeServer) Settings ------------------------
 
-SERVER_PASSWORD = None
-"""A string containing the Squeezebox CLI password, or None if not required."""
+class LmsSettings(Settings):
+    CLI_PORT = 9090
+    """The LAN-side port for your Squeezeserver CLI, defaults to 9090"""
 
-DEFAULT_PLAYER = None
-"""The default Squeezebox player ID (long MAC-like string) to use"""
+    USERNAME = None
+    """A string containing the CLI username, or None if not required."""
 
-DEBUG_LMS = False
-"""Dump LMS CLI communication to log if True"""
+    PASSWORD = None
+    """A string containing the CLI password, or None if not required."""
 
-USE_SPOKEN_ERRORS = True
-"""If True, Alexa will response with squeeze-alexa error information.
-Sometimes this is useful, sometimes it's definitely not what you want"""
+    DEFAULT_PLAYER = None
+    """The default player ID (long MAC-like string) to use"""
 
-# ------------------------- TLS (SSL) Configuration ---------------------------
+    DEBUG = False
+    """Dump LMS CLI communication to log if True"""
 
-CERT_FILE = 'squeeze-alexa.pem'
-"""The PEM-format certificate filename for TLS verification,
-or None to disable"""
 
-CERT_FILE_PATH = (join(dirname(dirname(__file__)), CERT_FILE)
-                  if CERT_FILE else None)
-"""The full path to the certificate file"""
+# -------------------------- SSL Transport Settings ---------------------------
 
-CA_FILE_PATH = CERT_FILE_PATH
-"""The certificate authority file, in .pem.
-This can be the same as the CERT_FILE_PATH if you're self-certifying."""
+class SslSettings(Settings):
 
-VERIFY_SERVER_HOSTNAME = bool(CERT_FILE_PATH)
-"""Whether to verify the server's TLS certificate hostname.
-Override to False if your certificate is for a different domain than your
-SERVER_HOSTNAME."""
+    SERVER_HOSTNAME = 'my-squeezebox-cli-proxy.example.com'
+    """The public hostname / IP of your Squeezebox server CLI proxy"""
+
+    PORT = 19090
+    """The above proxy server's listening port (that accepts TLS connections).
+    For stunnel, this will be the same as `accept = ...`"""
+
+    CERT_FILE = 'squeeze-alexa.pem'
+    """The PEM-format certificate filename for TLS verification,
+    or None to disable"""
+
+    CERT_FILE_PATH = (join(SkillSettings.CERT_DIR, CERT_FILE)
+                      if CERT_FILE else None)
+    """The full path to the certificate file, usually under etc/"""
+
+    CA_FILE_PATH = CERT_FILE_PATH
+    """The certificate authority file, in .pem.
+    This can be the same as the CERT_FILE_PATH if you're self-certifying."""
+
+    VERIFY_SERVER_HOSTNAME = bool(CERT_FILE_PATH)
+    """Whether to verify the server's TLS certificate hostname.
+    Override to False if your certificate is for a different domain from your
+    SERVER_HOSTNAME."""
+
+
+# -------------------------- MQTT Transport Settings --------------------------
+
+class MqttSettings(Settings):
+
+    HOSTNAME = ''
+    """The hostname for the Internet MQTT server (for MQTT mode)
+    e.g. "xxxxxxxxxxxxx.iot.eu-west-1.amazonaws.com
+    Leaving this blank will disable MQTT mode"""
+
+    PORT = 8883
+    """The (TLS) port the above server is listening on. 8883 is default"""
+
+    CERT_DIR = SkillSettings.CERT_DIR
+    """Where the AWS IoT certificate / key files are kept"""
+
+    INTERNAL_SERVER_HOSTNAME = '192.168.1.9'
+    """The LAN-side hostname for your Squeezeserver
+    e.g. my-nas or 192.168.1.100"""
+
+    TOPIC_REQ = 'squeeze-req'
+    """The MQTT topic for incoming messages (from squeeze-alexa Lambda)"""
+
+    TOPIC_RESP = 'squeeze-resp'
+    """The MQTT topic for outgoing messages (back to squeeze-alexa Lambda)"""
+
+    @property
+    def configured(self):
+        """Whether the settings are configured"""
+        return bool(self.hostname and self.port and
+                    self.topic_req and self.topic_resp)
+
+
+# Singletons for lazy^W easy importing
+
+SSL_SETTINGS = SslSettings()
+
+SKILL_SETTINGS = SkillSettings()
+
+LMS_SETTINGS = LmsSettings()
+
+MQTT_SETTINGS = MqttSettings()

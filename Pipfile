@@ -13,11 +13,14 @@ coverage = "*"
 "flake8" = "*"
 pytest-sugar = "*"
 coveralls = "*"
+urllib3 = "*"
+pipenv-to-requirements = "*"
 
 
 [packages]
 
 fuzzywuzzy = "==0.12"
+paho-mqtt = "*"
 
 
 [requires]

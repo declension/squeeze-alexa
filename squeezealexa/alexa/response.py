@@ -10,7 +10,7 @@
 #
 #   See LICENSE for full license
 
-from squeezealexa.settings import RESPONSE_AUDIO_FILE_URL
+from squeezealexa.settings import SkillSettings
 
 
 def speech_fragment(text, title=None, reprompt_text=None, end=True):
@@ -46,7 +46,7 @@ def audio_response(speech=None, text=None, title=None):
                 'audioItem': {
                     'stream': {
                         'token': 'beep',
-                        'url': RESPONSE_AUDIO_FILE_URL,
+                        'url': SkillSettings.RESPONSE_AUDIO_FILE_URL,
                         'offsetInMilliseconds': 0
                     }
                 }

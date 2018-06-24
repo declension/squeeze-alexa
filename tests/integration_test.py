@@ -14,14 +14,8 @@ from os.path import dirname, join
 from pprint import pprint
 from unittest import TestCase
 
-import time
-
-import pytest
-
-import squeezealexa
-from squeezealexa.squeezebox.server import Server
 from squeezealexa.main import SqueezeAlexa
-from squeezealexa.transport.base import Error as TransportError
+from squeezealexa.squeezebox.server import Server
 
 SOME_PID = "zz:zz:zz"
 FAKE_ID = "ab:cd:ef:gh"
@@ -43,7 +37,6 @@ class FakeSqueeze(Server):
         self.cur_player_id = FAKE_ID
         self._genres = []
         self._playlists = []
-        self._created_time = time.time()
         self.transport = None
 
     @property
@@ -67,23 +60,6 @@ class IntegrationTests(TestCase):
         super(IntegrationTests, self).setUp()
         self.stub = FakeSqueeze()
         self.alexa = SqueezeAlexa(server=self.stub)
-
-    def test_staleness_gets_new_server(self):
-        self.alexa.get_server()
-        assert self.alexa._server
-        self.stub._created_time = time.time() - 100000
-        # Hack that global
-        squeezealexa.main.SERVER_HOSTNAME = "not.there"
-        with pytest.raises(TransportError) as e:
-            self.alexa.get_server()
-        # *Something* will go wrong, as there's no config and/or no server
-        assert str(e)
-
-    def test_get_new_server(self):
-        SqueezeAlexa._server = None
-        squeezealexa.main.SERVER_HOSTNAME = "not.there"
-        with pytest.raises(TransportError):
-            self.alexa.get_server()
 
     def test_on_pause_resume(self):
         intent = {}

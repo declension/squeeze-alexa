@@ -52,8 +52,10 @@ class FakeTransport(Transport):
         self.is_connected = True
         self.player_name = fake_name
         self.player_id = fake_id
+        self.all_input = ""
 
     def communicate(self, data, wait=True):
+        self.all_input += data
         stripped = data.rstrip('\n')
         if data.startswith('serverstatus'):
             print_d("Faking server status...")
@@ -71,5 +73,6 @@ class FakeTransport(Transport):
             return stripped + REAL_FAVES
         return stripped + ' OK\n'
 
+    @property
     def details(self):
         return "{hostname}:{port}".format(**self.__dict__)

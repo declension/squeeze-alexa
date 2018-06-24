@@ -19,7 +19,7 @@ import json
 from squeezealexa.main import handler, SqueezeAlexa
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.utils import print_d
-from tests.fake_ssl import FakeTransport
+from tests.transport.fake_transport import FakeTransport
 
 THIS_DIR = os.path.dirname(os.path.realpath(__file__))
 

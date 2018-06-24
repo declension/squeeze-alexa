@@ -88,3 +88,7 @@ metadata/audio/
 *.po~
 
 .pytest_cache
+
+*.pem
+*.crt
+*.key

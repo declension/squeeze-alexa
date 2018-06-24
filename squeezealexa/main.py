@@ -23,9 +23,7 @@ from squeezealexa.alexa.intents import *
 from squeezealexa.alexa.response import audio_response, speech_response, \
     _build_response
 from squeezealexa.alexa.utterances import Utterances
-from squeezealexa.settings import *
 from squeezealexa.squeezebox.server import Server, print_d
-from squeezealexa.transport.ssl_wrap import SslSocketTransport
 from squeezealexa.utils import english_join, sanitise_text
 
 
@@ -45,15 +43,10 @@ handler = IntentHandler()
 
 class SqueezeAlexa(AlexaHandler):
     _audio_touched = 0
-    _server = None
-    """The server instance
-    :type Server"""
 
-    def __init__(self, server=None, app_id=None):
+    def __init__(self, server: Server, app_id=None):
         super(SqueezeAlexa, self).__init__(app_id)
-        if server:
-            print_d("Overriding server for testing with {}", server)
-            SqueezeAlexa._server = server
+        self._server = server
 
     def handle(self, event, context=None):
         request = event['request']
@@ -79,31 +72,6 @@ class SqueezeAlexa(AlexaHandler):
         return speech_response("Welcome", speech_output, reprompt_text,
                                end=False)
 
-    @classmethod
-    def get_server(cls):
-        """
-        :return a Server instance
-        :rtype Server
-        """
-        if cls._server and cls._server.is_stale():
-            del cls._server
-            cls._server = None
-        if not cls._server or cls._server.is_stale():
-            sslw = SslSocketTransport(hostname=SERVER_HOSTNAME,
-                                      port=SERVER_SSL_PORT,
-                                      ca_file=CA_FILE_PATH,
-                                      cert_file=CERT_FILE_PATH,
-                                      verify_hostname=VERIFY_SERVER_HOSTNAME)
-            cls._server = Server(sslw,
-                                 user=SERVER_USERNAME,
-                                 password=SERVER_PASSWORD,
-                                 cur_player_id=DEFAULT_PLAYER,
-                                 debug=DEBUG_LMS)
-            print_d("Created {!r}", cls._server)
-        else:
-            print_d("Reusing cached {!r}", cls._server)
-        return cls._server
-
     def on_intent(self, intent_request, session):
         intent = intent_request['intent']
         intent_name = intent['name']
@@ -114,34 +82,34 @@ class SqueezeAlexa(AlexaHandler):
         intent_handler = handler.for_name(intent_name)
         if intent_handler:
             return intent_handler(self, intent, session, pid=pid)
-        return self.smart_response(
-            speech=_("Sorry, I don't know how to process a \"{intent}\"")
-                   .format(intent=intent_name),
-            text=_("Unknown intent: '{intent}'").format(intent=intent_name))
+        speech = _("Sorry, I don't know how to process a \"{intent}\"").format(
+            intent=intent_name)
+        text = _("Unknown intent: '{intent}'").format(intent=intent_name)
+        return self.smart_response(speech=speech, text=text)
 
     @handler.handle(Audio.RESUME)
     def on_resume(self, intent, session, pid=None):
-        self.get_server().resume(player_id=pid)
+        self._server.resume(player_id=pid)
         return audio_response()
 
     @handler.handle(Audio.PAUSE)
     def on_pause(self, intent, session, pid=None):
-        self.get_server().pause(player_id=pid)
+        self._server.pause(player_id=pid)
         return audio_response()
 
     @handler.handle(Audio.PREVIOUS)
     def on_previous(self, intent, session, pid=None):
-        self.get_server().previous(player_id=pid)
+        self._server.previous(player_id=pid)
         return self.smart_response(speech=_("Rewind!"))
 
     @handler.handle(Audio.NEXT)
     def on_next(self, intent, session, pid=None):
-        self.get_server().next(player_id=pid)
+        self._server.next(player_id=pid)
         return self.smart_response(speech=_("Yep, pretty lame."))
 
     @handler.handle(Custom.CURRENT)
     def on_current(self, intent, session, pid=None):
-        details = self.get_server().get_track_details(player_id=pid)
+        details = self._server.get_track_details(player_id=pid)
         title = details['current_title']
         artist = details['artist']
         if title:
@@ -169,7 +137,7 @@ class SqueezeAlexa(AlexaHandler):
             heading = _("Volume value out of range: {volume}").format(vol)
             return self.smart_response(text=heading,
                                        speech=desc)
-        self.get_server().set_volume(vol * 10, pid)
+        self._server.set_volume(vol * 10, pid)
         desc = "OK"
         vol_out = vol if (vol != int(vol)) else int(vol)
         heading = _("Set volume to {}").format(vol_out)
@@ -190,26 +158,26 @@ class SqueezeAlexa(AlexaHandler):
             desc = _("Select a volume value between 0 and 100 percent")
             heading = _("Volume value out of range: %d percent").format(vol)
             return self.smart_response(text=heading, speech=desc)
-        self.get_server().set_volume(vol, pid)
+        self._server.set_volume(vol, pid)
         desc = _("OK")
         heading = _("Set Volume to %d percent").format(vol)
         return self.smart_response(text=heading, speech=desc)
 
     @handler.handle(Custom.INC_VOL)
     def on_inc_vol(self, intent, session, pid=None):
-        self.get_server().change_volume(+12.5, player_id=pid)
+        self._server.change_volume(+12.5, player_id=pid)
         return self.smart_response(text=_("Increase Volume"),
                                    speech=_("Pumped it up."))
 
     @handler.handle(Custom.DEC_VOL)
     def on_dec_vol(self, intent, session, pid=None):
-        self.get_server().change_volume(-12.5, player_id=pid)
+        self._server.change_volume(-12.5, player_id=pid)
         return self.smart_response(text=_("Decrease Volume"),
                                    speech=_("OK, quieter now."))
 
     @handler.handle(Custom.SELECT_PLAYER)
     def on_select_player(self, intent, session, pid=None):
-        srv = self.get_server()
+        srv = self._server
         srv.refresh_status()
 
         # Do it again, yes, but not defaulting this time.
@@ -237,28 +205,28 @@ class SqueezeAlexa(AlexaHandler):
     @handler.handle(Audio.SHUFFLE_ON)
     @handler.handle(CustomAudio.SHUFFLE_ON)
     def on_shuffle_on(self, intent, session, pid=None):
-        self.get_server().set_shuffle(True, player_id=pid)
+        self._server.set_shuffle(True, player_id=pid)
         return self.smart_response(text=_("Shuffle on"),
                                    speech=_("Shuffle is now on"))
 
     @handler.handle(Audio.SHUFFLE_OFF)
     @handler.handle(CustomAudio.SHUFFLE_OFF)
     def on_shuffle_off(self, intent, session, pid=None):
-        self.get_server().set_shuffle(False, player_id=pid)
+        self._server.set_shuffle(False, player_id=pid)
         return self.smart_response(text=_("Shuffle off"),
                                    speech=_("Shuffle is now off"))
 
     @handler.handle(Audio.LOOP_ON)
     @handler.handle(CustomAudio.LOOP_ON)
     def on_loop_on(self, intent, session, pid=None):
-        self.get_server().set_repeat(True, player_id=pid)
+        self._server.set_repeat(True, player_id=pid)
         return self.smart_response(text=_("Repeat on"),
                                    speech=_("Repeat is now on"))
 
     @handler.handle(Audio.LOOP_OFF)
     @handler.handle(CustomAudio.LOOP_OFF)
     def on_loop_off(self, intent, session, pid=None):
-        self.get_server().set_repeat(False, player_id=pid)
+        self._server.set_repeat(False, player_id=pid)
         return self.smart_response(text=_("Repeat Off"),
                                    speech=_("Repeat is now off"))
 
@@ -266,7 +234,7 @@ class SqueezeAlexa(AlexaHandler):
     def on_player_off(self, intent, session, pid=None):
         if not pid:
             return self.on_all_off(intent, session)
-        server = self.get_server()
+        server = self._server
         server.set_power(on=False, player_id=pid)
         player = server.players[pid]
         text = _("Switched {} off").format(player.name)
@@ -277,7 +245,7 @@ class SqueezeAlexa(AlexaHandler):
     def on_player_on(self, intent, session, pid=None):
         if not pid:
             return self.on_all_on(intent, session)
-        server = self.get_server()
+        server = self._server
         server.set_power(on=True, player_id=pid)
         player = server.players[pid]
         speech = "{player} is now on".format(player=player.name)
@@ -289,19 +257,19 @@ class SqueezeAlexa(AlexaHandler):
 
     @handler.handle(Power.ALL_OFF)
     def on_all_off(self, intent, session, pid=None):
-        self.get_server().set_all_power(on=False)
+        self._server.set_all_power(on=False)
         return self.smart_response(text=_("Players all off"),
                                    speech=_("Silence."))
 
     @handler.handle(Power.ALL_ON)
     def on_all_on(self, intent, session, pid=None):
-        self.get_server().set_all_power(on=True)
+        self._server.set_all_power(on=True)
         return self.smart_response(text=_("All On."),
                                    speech=_("Ready to rock"))
 
     @handler.handle(Play.PLAYLIST)
     def on_play_playlist(self, intent, session, pid=None):
-        server = self.get_server()
+        server = self._server
         try:
             slot = intent['slots']['Playlist']['value']
             print_d("Extracted playlist slot: {}".format(slot))
@@ -333,7 +301,7 @@ class SqueezeAlexa(AlexaHandler):
 
     @handler.handle(Play.RANDOM_MIX)
     def on_play_random_mix(self, intent, session, pid=None):
-        server = self.get_server()
+        server = self._server
         try:
             slots = [v.get('value') for k, v in intent['slots'].items()
                      if k.endswith('Genre')]
@@ -368,6 +336,7 @@ class SqueezeAlexa(AlexaHandler):
                     return {g}
             return {g for g, c in res
                     if g and int(c) >= MinConfidences.MULTI_GENRE}
+
         # Grr where's my foldl
         results = set()
         for slot in slots:
@@ -384,7 +353,7 @@ class SqueezeAlexa(AlexaHandler):
         return self.on_session_ended(intent, session)
 
     def player_id_from(self, intent, defaulting=True):
-        srv = self.get_server()
+        srv = self._server
         try:
             player_name = intent['slots']['Player']['value']
         except KeyError:
