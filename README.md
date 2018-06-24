@@ -5,17 +5,19 @@ squeeze-alexa
 [![Coverage Status](https://coveralls.io/repos/github/declension/squeeze-alexa/badge.svg?branch=master)](https://coveralls.io/github/declension/squeeze-alexa?branch=master)
 [![Join the chat at https://gitter.im/squeeze-alexa/Lobby](https://badges.gitter.im/squeeze-alexa/Lobby.svg)](https://gitter.im/squeeze-alexa/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-`squeeze-alexa` is an Amazon Alexa Skill integrating with the Logitech Media Server ("squeezebox"). See the original [announcement blog post](http://declension.net/posts/2016-11-30-alexa-meets-squeezebox/), and the [follow-up with videos](http://declension.net/posts/2017-01-03-squeeze-alexa-demos/).
+`squeeze-alexa` is an Amazon Alexa Skill integrating with the Logitech Media Server ("squeezebox") using a NAS or home server.
+See the original [announcement blog post](http://declension.net/posts/2016-11-30-alexa-meets-squeezebox/),
+and the [follow-up with videos](http://declension.net/posts/2017-01-03-squeeze-alexa-demos/).
 
-This is still in beta, so feedback and help with documenting welcome - please just raise an issue first.
 
-### Aims
+### Aims / Features
 
  * Intuitive voice control over common music scenarios
  * Low latency (given that it's a cloud service), i.e. fast at reacting to your commands.
  * Decent security, remaining under your own control
  * Extensive support for choosing songs by (multiple) genres, and playlists
- * Helpful, conversational responses / interaction.
+ * Helpful, conversational responses / interaction in English (:new: and German)
+ * :new: Support a variety of networks including restrictive firewalls (or 3G / 4G broadband with CGNAT)
 
 
 ### Things it is not
@@ -52,6 +54,10 @@ Most commands can take a player name, or will remember the default / last player
 #### Feedback
  * _Alexa, ask Squeezebox what's playing \[in the Kitchen\]_
 
+#### Auf Deutsch
+* _Alexa, was ist das für ein Lied?_
+* _Alexa, alles ausschalten_
+* etc...
 
 I want!
 -------
