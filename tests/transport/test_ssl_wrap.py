@@ -86,7 +86,7 @@ class TestSslWrap(TestCase):
         with pytest.raises(TransportError) as exc:
             SslSocketTransport('', port=0, cert_file="not.there",
                                ca_file='ca.not.there')
-        assert "can't find 'ca.not.there'" in exc.value.message.lower()
+        assert "ca 'ca.not.there'" in exc.value.message.lower()
 
     def test_bad_hostname(self):
         with pytest.raises(TransportError) as exc:

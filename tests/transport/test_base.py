@@ -11,8 +11,11 @@
 #   See LICENSE for full license
 
 import pytest
+from pytest import raises
 
+from squeezealexa.settings import MqttSettings, SslSettings
 from squeezealexa.transport.base import check_listening, Error
+from squeezealexa.transport.configured import create_transport
 from tests.transport.base import TimeoutServer
 
 
@@ -27,3 +30,19 @@ def test_check_listening():
         s = str(e)
         assert ("on localhost:%d" % wrong_port) in s
         assert "OHNOES" in s
+
+
+def test_create_transport_uses_full_ca_path():
+    ssls = SslSettings()
+    ssls.ca_file_path = "/foo/bar"
+    with raises(Error) as e:
+        create_transport(ssls, MqttSettings())
+    assert ("CA '%s'" % ssls.ca_file_path) in str(e)
+
+
+def test_create_transport_uses_cert_path():
+    ssls = SslSettings()
+    ssls.cert_file_path = "/foo/bar"
+    with raises(Error) as e:
+        create_transport(ssls, MqttSettings())
+    assert ("cert '%s'" % ssls.cert_file_path) in str(e)

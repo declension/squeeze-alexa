@@ -20,5 +20,5 @@ def create_transport(ssl_config=SSL_SETTINGS, mqtt_settings=MQTT_SETTINGS):
     return SslSocketTransport(hostname=s.server_hostname,
                               port=s.port,
                               ca_file=s.ca_file_path,
-                              cert_file=s.cert_file,
+                              cert_file=s.cert_file_path,
                               verify_hostname=s.verify_server_hostname)
