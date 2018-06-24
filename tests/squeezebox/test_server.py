@@ -13,16 +13,43 @@
 import time
 from unittest import TestCase
 
-from squeezealexa.squeezebox.server import Server, SqueezeboxPlayerSettings
-from tests.transport.fake_transport import *
+from pytest import raises
+
+from squeezealexa.squeezebox.server import Server, SqueezeboxPlayerSettings, \
+    SqueezeboxException
+from tests.transport.fake_transport import FakeTransport, FAKE_LENGTH, \
+    A_REAL_STATUS
 
 
-def test_settings():
-    sps = SqueezeboxPlayerSettings({})
-    assert "Unidentified Squeezebox player" in str(sps)
+class TestSqueezeboxPlayerSettings:
+    def test_raises_if_no_playerid_found(self):
+        with raises(SqueezeboxException) as e:
+            SqueezeboxPlayerSettings({})
+        assert "couldn't find a playerid" in str(e).lower()
+
+    def test_settings(self):
+        sps = SqueezeboxPlayerSettings({})
+        assert "Unidentified Squeezebox player" in str(sps)
 
 
-class TestServer(TestCase):
+class NoRefreshServer(Server):
+    """A normal server, that has no transport never returns any players"""
+
+    def __init__(self, user=None, password=None, cur_player_id=None):
+        super().__init__(None, user, password, cur_player_id, False)
+
+    def refresh_status(self):
+        self.players = {}
+
+
+class TestServerNoTransport:
+    def test_no_players_raises(self):
+        with raises(SqueezeboxException) as e:
+            NoRefreshServer()
+        assert "no players" in str(e).lower()
+
+
+class TestServerWithTransport(TestCase):
 
     def setUp(self):
         self.transport = FakeTransport()
@@ -39,6 +66,11 @@ class TestServer(TestCase):
 
     def test_debug(self):
         Server(self.transport, debug=True)
+
+    def test_unknown_default_player(self):
+        transport = FakeTransport(fake_id="foo")
+        self.server = Server(transport=transport, cur_player_id="GONE")
+        assert self.server.cur_player_id == "foo"
 
     def test_get_current(self):
         assert self.server.get_status()['genre']
@@ -69,6 +101,34 @@ class TestServer(TestCase):
                     'connected': False, 'isplayer': True,
                     'sn player count': 0, 'other player count': 0}
         assert next(groups) == expected
+
+    def test_groups_multiple(self):
+        raw = """BLAH
+        playerindex%3A0 playerid%3A00%3A04%3A20%3A17%3A6f%3Ad1
+        uuid%3A968b401ba4791d3fadd152bbac2f1dab ip%3A192.168.1.35%3A23238
+        name%3AUpstairs%20Music seq_no%3A0 model%3Areceiver
+        modelname%3ASqueezebox%20Receiver power%3A0 isplaying%3A0
+        displaytype%3Anone isplayer%3A1 canpoweroff%3A1 connected%3A1
+        firmware%3A77
+        playerindex%3A2 playerid%3A40%3A16%3A7e%3Aad%3A87%3A07 uuid%3A
+        ip%3A192.168.1.37%3A54652 name%3AStudy seq_no%3A0 model%3Asqueezelite
+        modelname%3ASqueezeLite power%3A0 isplaying%3A0
+        displaytype%3Anone isplayer%3A1 canpoweroff%3A1 connected%3A1
+        firmware%3Av1.8 sn%20player%20count%3A0 other%20player%20count%3A0
+""".replace('\n', '')
+        groups = self.server._groups(raw, 'playerid')
+        players = list(groups)
+        assert len(players) == 2
+        first = players[0]
+        assert first['playerid'] == "00:04:20:17:6f:d1"
+        assert players[1]['name'] == "Study"
+        for data in groups:
+            assert 'playerid' in data
+
+    def test_groups_dodgy(self):
+        raw = "blah bar%3Abaz"
+        groups = list(self.server._groups(raw, start="id"))
+        assert not groups
 
     def test_groups_status(self):
         data = next(self.server._groups(A_REAL_STATUS))

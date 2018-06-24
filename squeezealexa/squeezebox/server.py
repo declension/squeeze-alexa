@@ -13,8 +13,7 @@
 import time
 
 from typing import List
-
-from squeezealexa.utils import with_example, print_d, stronger
+from squeezealexa.utils import with_example, print_d, stronger, print_w
 
 import urllib.request as urllib
 
@@ -26,8 +25,14 @@ class SqueezeboxException(Exception):
 class SqueezeboxPlayerSettings(dict):
     """Encapsulates player settings"""
 
+    def __init__(self, data: dict):
+        super().__init__(data)
+        if 'playerid' not in data:
+            raise SqueezeboxException(
+                "Couldn't find a playerid in {}".format(data))
+
     @property
-    def id(self):
+    def id(self) -> str:
         return self['playerid']
 
     def __getattr__(self, key):
@@ -75,8 +80,19 @@ class Server(object):
             print_d("Authenticated with %s!" % self)
         self.players = {}
         self.refresh_status()
-        self.cur_player_id = pid = cur_player_id or list(self.players)[0]
-        print_d("Default player is now %s" % (self.players[pid],))
+        players = list(self.players.values())
+        if not players:
+            raise SqueezeboxException("Uh-oh. No players found.")
+        if not cur_player_id:
+            self.cur_player_id = players[0].id
+        elif cur_player_id not in self.players:
+            print_w("Couldn't find player {id} (found: {all}). "
+                    "Check your DEFAULT_PLAYER config.",
+                    id=cur_player_id, all=", ".join(list(self.players.keys())))
+            self.cur_player_id = players[0].id
+        else:
+            self.cur_player_id = cur_player_id
+        print_d("Current player is now: {}", self.players[self.cur_player_id])
         self.__genres = []
         self.__playlists = []
         self.__favorites = []
@@ -158,20 +174,22 @@ class Server(object):
         return [d for d in demunged if len(d) == 2]
 
     def _groups(self, response, start=None, extra_bools=None):
-        """Returns a group of dicts from `response`.
+        """Returns a series of dicts from `response`.
         If `start` is specified, items prior to this will be discarded,
-        and each group will be starting with this.
+        and each dict will be grouped starting with this key.
         `extra_bools` allows custom keys to be booleaned"""
-        group = []
+        groups = []
         for k, v in self.__pairs_from(response):
             if k == start:
-                if group:
-                    yield dict(group)
-                group = [(k, stronger(k, v, extra_bools))]
+                if groups:
+                    yield dict(groups)
+                # New group starts here
+                groups = [(k, stronger(k, v, extra_bools))]
             else:
-                if group or not start:
-                    group.append((k, stronger(k, v, extra_bools)))
-        yield dict(group)
+                if groups or not start:
+                    groups.append((k, stronger(k, v, extra_bools)))
+        if groups:
+            yield dict(groups)
 
     def refresh_status(self):
         """ Updates the list of the Squeezebox players available and other
