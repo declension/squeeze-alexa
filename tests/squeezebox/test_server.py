@@ -27,10 +27,6 @@ class TestSqueezeboxPlayerSettings:
             SqueezeboxPlayerSettings({})
         assert "couldn't find a playerid" in str(e).lower()
 
-    def test_settings(self):
-        sps = SqueezeboxPlayerSettings({})
-        assert "Unidentified Squeezebox player" in str(sps)
-
 
 class NoRefreshServer(Server):
     """A normal server, that has no transport never returns any players"""
@@ -45,6 +41,7 @@ class NoRefreshServer(Server):
 class TestServerNoTransport:
     def test_no_players_raises(self):
         with raises(SqueezeboxException) as e:
+            Server._INSTANCE = None
             NoRefreshServer()
         assert "no players" in str(e).lower()
 
