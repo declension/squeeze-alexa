@@ -13,7 +13,7 @@
 
 class Error(Exception):
 
-    def __init__(self, msg, e):
+    def __init__(self, msg, e=None):
         super(Error, self).__init__(msg)
         self.message = msg
         self.__cause__ = e

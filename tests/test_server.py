@@ -12,13 +12,45 @@
 
 from unittest import TestCase
 
-from squeezealexa.squeezebox.server import Server
+from pytest import raises
+
+from squeezealexa.squeezebox.server import Server, SqueezeboxPlayerSettings, \
+    SqueezeboxException
 from tests.fake_ssl import FakeTransport, FAKE_LENGTH, A_REAL_STATUS
 
 
-class TestServer(TestCase):
+class TestSqueezeboxPlayerSettings:
+    def test_raises_if_no_playerid_found(self):
+        with raises(SqueezeboxException) as e:
+            SqueezeboxPlayerSettings({})
+        assert "couldn't find a playerid" in str(e).lower()
+
+
+class NoRefreshServer(Server):
+    """A normal server, that has no transport never returns any players"""
+
+    def __init__(self, user=None, password=None, cur_player_id=None):
+        super().__init__(None, user, password, cur_player_id, False)
+
+    def refresh_status(self):
+        self.players = {}
+
+
+class TestServerNoTransport:
+    def test_no_players_raises(self):
+        with raises(SqueezeboxException) as e:
+            NoRefreshServer()
+        assert "no players" in str(e).lower()
+
+
+class TestServerWithTransport(TestCase):
     def setUp(self):
         self.server = Server(transport=FakeTransport())
+
+    def test_unknown_default_player(self):
+        transport = FakeTransport(fake_id="foo")
+        self.server = Server(transport=transport, cur_player_id="GONE")
+        assert self.server.cur_player_id == "foo"
 
     def test_get_current(self):
         assert self.server.get_status()['genre']
