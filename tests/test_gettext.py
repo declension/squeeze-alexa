@@ -36,6 +36,12 @@ def test_binding_uses_settings_locale():
         assert _("favorites") == "favourites"
 
 
+def test_some_german_works():
+    _ = set_up_gettext("de_DE.UTF-8")
+    assert _("favorites") == "Favoriten"
+    assert _("Playing mix of {genres}") == "Spiele eine Mischung aus {genres}"
+
+
 class NewLocale(object):
 
     def __init__(self, loc):
