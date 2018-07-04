@@ -132,7 +132,12 @@ class SslSocketTransport(Transport):
                 eof = response.count("\n") == num_lines or not response
             return response
         except socket.error as e:
-            print_d("Couldn't communicate with Squeezebox ({!r})", e)
+            if 'read operation timed out' in str(e):
+                raise Error("Timed out waiting for CLI response. "
+                            "Perhaps the tunnel endpoint is incorrect, "
+                            "or the LMS CLI is down?")
+            else:
+                print_d("Couldn't communicate with Squeezebox ({!r})", e)
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
                 self.is_connected = False
