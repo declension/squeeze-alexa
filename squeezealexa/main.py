@@ -324,6 +324,40 @@ class SqueezeAlexa(AlexaHandler):
                 return self.smart_response(text=text, speech=speech)
         raise ValueError("Don't understand intent '{}'".format(intent))
 
+    @handler.handle(Play.ARTIST)
+    def on_play_artist(self, intent, session, pid=None):
+        server = self._server
+        try:
+            artist = intent['slots']['Artist']['value']
+            print_d("Extracted artist slot: {}".format(artist))
+        except KeyError:
+            print_d("Couldn't process artist from: {}", intent)
+            return speech_response(
+                text=_("Couldn't process that artist. "))
+        else:
+            server.play_artist(artist, player_id=pid)
+            artist_name = sanitise_text(artist)
+            text = _("Playing albums by \"{artist_name}\" ".format(artist_name=artist_name))
+            return self.smart_response(text=text, speech=text)
+        raise ValueError("Don't understand intent '{}'".format(intent))
+
+    @handler.handle(Play.ALBUM)
+    def on_play_album(self, intent, session, pid=None):
+        server = self._server
+        try:
+            album = intent['slots']['Album']['value']
+            print_d("Extracted album slot: {}".format(album))
+        except KeyError:
+            print_d("Couldn't process album from: {}", intent)
+            return speech_response(
+                text=_("Couldn't process that album. "))
+        else:
+            server.play_album(album, player_id=pid)
+            album_name = sanitise_text(album)
+            text = _("Playing \"album\" ".format(album_name=album_name))
+            return self.smart_response(text=text, speech=text)
+        raise ValueError("Don't understand intent '{}'".format(intent))
+
     def _genres_from_slots(self, slots, genres):
         def genres_from(g):
             if not g:

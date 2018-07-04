@@ -23,8 +23,8 @@ class Audio(object):
 
 
 class Play(object):
-    RANDOM_MIX, PLAYLIST = ("Play%sIntent" % s
-                            for s in ["RandomMix", "Playlist"])
+    RANDOM_MIX, PLAYLIST, ARTIST, ALBUM = ("Play%sIntent" % s
+                            for s in ["RandomMix", "Playlist", "Artist", "Album"])
 
 
 class CustomAudio(object):

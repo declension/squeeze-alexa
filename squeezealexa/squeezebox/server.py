@@ -223,6 +223,22 @@ class Server(object):
         pid = player_id or self.cur_player_id
         return self._request(["%s %s" % (pid, com) for com in commands])
 
+    def play_artist(self, artist, player_id=None):
+        """Adds then plays the albums of the specified artist"""
+        commands = (["playlist clear"] +
+                    ["playlist addalbum * %s *" % urllib.quote(artist)] +
+                    ["play 2"])
+        pid = player_id or self.cur_player_id
+        return self._request(["%s %s" % (pid, com) for com in commands])
+
+    def play_album(self, album, player_id=None):
+        """Adds then plays the specified album"""
+        commands = (["playlist clear"] +
+                    ["playlist addalbum * * %s" % urllib.quote(album)] +
+                    ["play 2"])
+        pid = player_id or self.cur_player_id
+        return self._request(["%s %s" % (pid, com) for com in commands])
+
     def get_track_details(self, player_id=None):
         keys = ["genre", "artist", "current_title"]
         pid = player_id or self.cur_player_id
