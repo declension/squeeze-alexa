@@ -49,11 +49,7 @@
         },
         {
           "name": "AMAZON.ShuffleOffIntent",
-          "samples": [
-            "shuffle off",
-            "turn shuffle off",
-            "turn random off"
-          ]
+          "samples": []
         },
         {
           "name": "IncreaseVolumeIntent",
@@ -470,7 +466,7 @@
             {"name": {"value": "Melancholy"}},
             {"name": {"value": "Smooth"}},
             {"name": {"value": "Sexy"}},
-            {"name": {"value": ""}},
+
             {"name": {"value": "Weekend"}},
             {"name": {"value": "Sunday Morning"}},
             {"name": {"value": "Party"}},
@@ -487,8 +483,8 @@
             {"name": {"value": "Easter"}},
             {"name": {"value": "Thanksgiving"}},
             {"name": {"value": "Best of 2016"}},
-            {"name": {"value": ""}},
-            {"name": {"value": ""}},
+
+
             {"name": {"value": "Dinner Jazz"}},
             {"name": {"value": "Driving"}},
             {"name": {"value": "Night time"}},
@@ -498,14 +494,14 @@
             {"name": {"value": "Beach Bar"}},
             {"name": {"value": "Thank God It's Friday"}},
             {"name": {"value": "Break-up songs"}},
-            {"name": {"value": ""}},
-            {"name": {"value": ""}},
+
+
             {"name": {"value": "Rocking"}},
             {"name": {"value": "Rock N Roll"}},
             {"name": {"value": "Soulful"}},
             {"name": {"value": "Bluesy"}},
             {"name": {"value": "Acoustic Songs"}},
-            {"name": {"value": ""}},
+
             {"name": {"value": "Classic HipHop"}},
             {"name": {"value": "Oldschool HipHop"}},
             {"name": {"value": "Gangster"}},
@@ -514,10 +510,10 @@
             {"name": {"value": "80s"}},
             {"name": {"value": "70s"}},
             {"name": {"value": "Noughties"}},
-            {"name": {"value": ""}},
+
             {"name": {"value": "Piano Music"}},
             {"name": {"value": "Guitar Music"}},
-            {"name": {"value": ""}},
+
             {"name": {"value": "Choral"}},
             {"name": {"value": "Opera"}},
             {"name": {"value": "Classical Music"}},
@@ -526,17 +522,17 @@
             {"name": {"value": "Chopin"}},
             {"name": {"value": "Beethoven"}},
             {"name": {"value": "Debussy"}},
-            {"name": {"value": ""}},
+
             {"name": {"value": "Metal"}},
             {"name": {"value": "Metal Mayhem"}},
             {"name": {"value": "Classic Metal"}},
             {"name": {"value": "Feeling Blue"}},
-            {"name": {"value": ""}},
+
             {"name": {"value": "Cardio"}},
             {"name": {"value": "Workout"}},
             {"name": {"value": "Running"}},
             {"name": {"value": "Gym Songs"}},
-            {"name": {"value": ""}},
+
             {"name": {"value": "Greatest songs ever"}},
             {"name": {"value": "Top of the charts"}},
             {"name": {"value": "Angry Shit"}},
