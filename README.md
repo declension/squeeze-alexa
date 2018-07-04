@@ -7,7 +7,7 @@ squeeze-alexa
 
 `squeeze-alexa` is an Amazon Alexa Skill integrating with the Logitech Media Server ("squeezebox"). See the original [announcement blog post](http://declension.net/posts/2016-11-30-alexa-meets-squeezebox/), and the [follow-up with videos](http://declension.net/posts/2017-01-03-squeeze-alexa-demos/).
 
-This is still in beta, so feedback and help with documenting welcome - please just raise an issue first.
+:note: Note **the `1.x` branch is no longer actively developed**. Please migrate to the latest on [`master`](https://github.com/declension/squeeze-alexa).
 
 ### Aims
 
