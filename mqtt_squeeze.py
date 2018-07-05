@@ -1,4 +1,16 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+#   Copyright 2018 Nick Boultbee
+#   This file is part of squeeze-alexa.
+#
+#   squeeze-alexa is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   See LICENSE for full license
+
 
 import socket
 import sys
@@ -57,6 +69,10 @@ def connect_cli():
 
 
 if __name__ == "__main__":
+
+    if not MQTT_SETTINGS.configured:
+        print("MQTT transport not configured. Check your settings")
+        exit(1)
     try:
         telnet = connect_cli()
     except socket.timeout as e:
@@ -72,7 +88,6 @@ if __name__ == "__main__":
 
         # Continue the network loop
         client.loop_forever(retry_first_connection=True)
-
     finally:
         if telnet:
             telnet.close()
