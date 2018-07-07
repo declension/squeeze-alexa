@@ -1,0 +1,246 @@
+#: squeezealexa/main.py:69
+msgid "Squeezebox est en ligne. Merci d'essayer quelques commandes."
+msgstr ""
+
+#: squeezealexa/main.py:70
+msgid "Essayez reprise, pause, suivant, précédent, joue un peu de jazz ou demandez à Squeezebox de monter ou baisser le son"
+msgstr ""
+
+#: squeezealexa/main.py:85
+#, python-brace-format
+msgid "Désolé, Je ne sais pas comment traiter un \"{intent}\""
+msgstr ""
+
+#: squeezealexa/main.py:87
+#, python-brace-format
+msgid "Intention inconnue: '{intent}'"
+msgstr ""
+
+#: squeezealexa/main.py:103
+msgid "Rembobinage !"
+msgstr ""
+
+#: squeezealexa/main.py:108
+msgid "Ouais, c'est plutôt nul."
+msgstr ""
+
+#: squeezealexa/main.py:116
+#, python-brace-format
+msgid "En train de jouer : \"{title}\""
+msgstr ""
+
+#: squeezealexa/main.py:118
+#, python-brace-format
+msgid ", par {artist}"
+msgstr ""
+
+#: squeezealexa/main.py:119
+#, python-brace-format
+msgid "En cours de lecture : \"{title}\""
+msgstr ""
+
+#: squeezealexa/main.py:121
+msgid "Aucune lecture en cours.."
+msgstr ""
+
+#: squeezealexa/main.py:132 squeezealexa/main.py:136
+msgid "Sélectionnez une valeur de volume entre 0 et 10"
+msgstr ""
+
+#: squeezealexa/main.py:133
+msgid "Value de volume invalide"
+msgstr ""
+
+#: squeezealexa/main.py:137
+#, python-brace-format
+msgid "Valeur de volume hors plage : {volume}"
+msgstr ""
+
+#: squeezealexa/main.py:143
+#, python-brace-format
+msgid "Régler le volume sur {volume}"
+msgstr ""
+
+#: squeezealexa/main.py:155
+msgid "Sélectionnez un volume entre 0 et 100 pourcent"
+msgstr ""
+
+#: squeezealexa/main.py:156
+msgid "Volume invalide"
+msgstr ""
+
+#: squeezealexa/main.py:159
+msgid "Sélectionnez une valeur de volume entre 0 et 100 pourcent"
+msgstr ""
+
+#: squeezealexa/main.py:160
+#, python-brace-format
+msgid "Valeur de volume hors plage : {volume} pourcent"
+msgstr ""
+
+#: squeezealexa/main.py:164
+msgid "OK"
+msgstr ""
+
+#: squeezealexa/main.py:165
+#, python-brace-format
+msgid "Régler le volume sur {percent} pourcent"
+msgstr ""
+
+#: squeezealexa/main.py:171
+msgid "Augmente le volume"
+msgstr ""
+
+#: squeezealexa/main.py:172
+msgid "Augmente le."
+msgstr ""
+
+#: squeezealexa/main.py:177
+msgid "Baisse le volume"
+msgstr ""
+
+#: squeezealexa/main.py:178
+msgid "OK, plus faible maintenant."
+msgstr ""
+
+#: squeezealexa/main.py:190
+#, python-brace-format
+msgid "{player} sélectionné"
+msgstr ""
+
+#: squeezealexa/main.py:191
+#, python-brace-format
+msgid "Lecteur {player} sélectionné"
+msgstr ""
+
+#: squeezealexa/main.py:194
+#, python-brace-format
+msgid "Je n'ai trouvé que ces lecteurs : {players}. Pouvez-vous essayer à nouveau ?"
+msgstr ""
+
+#: squeezealexa/main.py:197
+#, python-brace-format
+msgid "Vous pouvez sélectionner un lecteur en disant \"{utterance}\" et le nom du lecteur."
+msgstr ""
+
+#: squeezealexa/main.py:202
+#, python-brace-format
+msgid "Aucun lecteur nommé \"{name}\""
+msgstr ""
+
+#: squeezealexa/main.py:212
+msgid "Lecture aléatoire activée"
+msgstr ""
+
+#: squeezealexa/main.py:213
+msgid "La lecture aléatoire est maintenant activée"
+msgstr ""
+
+#: squeezealexa/main.py:219
+msgid "Lecture aléatoire désactivée"
+msgstr ""
+
+#: squeezealexa/main.py:220
+msgid "La lecture aléatoire est maintenant désactivée"
+msgstr ""
+
+#: squeezealexa/main.py:226
+msgid "Répétition activée"
+msgstr ""
+
+#: squeezealexa/main.py:227
+msgid "La répétition est maintenant activée"
+msgstr ""
+
+#: squeezealexa/main.py:233
+msgid "Répétition désactivée"
+msgstr ""
+
+#: squeezealexa/main.py:234
+msgid "La répétition est maintenant désactivée"
+msgstr ""
+
+#: squeezealexa/main.py:243
+#, python-brace-format
+msgid "Extinction de {player}"
+msgstr ""
+
+#: squeezealexa/main.py:244
+#, python-brace-format
+msgid "{player} est maintenant éteint"
+msgstr ""
+
+#: squeezealexa/main.py:258
+#, python-brace-format
+msgid "Allumage de {player}"
+msgstr ""
+
+#: squeezealexa/main.py:264
+msgid "Les lecteurs sont tous éteints"
+msgstr ""
+
+#: squeezealexa/main.py:265
+msgid "Silence."
+msgstr ""
+
+#: squeezealexa/main.py:270
+msgid "Tous allumés."
+msgstr ""
+
+#: squeezealexa/main.py:271
+msgid "Ready to rock"
+msgstr ""
+
+#: squeezealexa/main.py:282
+msgid "Il n'y a pas de listes de lecture"
+msgstr ""
+
+#: squeezealexa/main.py:284
+#, python-brace-format
+msgid "Je n'ai pas entendu de liste de lecture. Voulez-vous essayer la liste de lecture \"{name}\" ?"
+msgstr ""
+
+#: squeezealexa/main.py:289
+msgid "Aucune liste de lecture Squeezebox trouvée"
+msgstr ""
+
+#: squeezealexa/main.py:298 squeezealexa/main.py:299
+#, python-brace-format
+msgid "Joue la liste de lecture \"{name}\""
+msgstr ""
+
+#: squeezealexa/main.py:301
+#, python-brace-format
+msgid "Je n'ai pas trouvé de liste de lecture qui contient \"{name}\". Que pensez-vous de la liste de lecture \"{suggestion}\" ?"
+msgstr ""
+
+#: squeezealexa/main.py:319
+#, python-brace-format
+msgid "Joue un mélange de {genres}"
+msgstr ""
+
+#: squeezealexa/main.py:322
+msgid "ou"
+msgstr ""
+
+#: squeezealexa/main.py:323
+#, python-brace-format
+msgid "Je ne comprends pas la demande de genre {genres}"
+msgstr ""
+
+#: squeezealexa/main.py:325
+#, python-brace-format
+msgid "Impossible de trouver les genres : {genres}"
+msgstr ""
+
+#: squeezealexa/main.py:376
+msgid "Hasta la vista. Baby."
+msgstr ""
+
+#: squeezealexa/i18n.py:38
+msgid "favoris"
+msgstr ""
+
+#: squeezealexa/utils.py:38
+msgid "et"
+msgstr ""
