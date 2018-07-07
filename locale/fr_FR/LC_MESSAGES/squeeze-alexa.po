@@ -1,3 +1,8 @@
+msgid ""
+msgstr ""
+"Language: fr_FR\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+
 #: squeezealexa/main.py:69
 msgid "Squeezebox est en ligne. Merci d'essayer quelques commandes."
 msgstr ""
