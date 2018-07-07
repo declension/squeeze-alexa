@@ -11,6 +11,7 @@
 #   See LICENSE for full license
 
 from pprint import pprint
+from typing import Any, Dict
 from unittest import TestCase
 
 from squeezealexa.main import SqueezeAlexa
@@ -22,8 +23,8 @@ FAKE_ID = "ab:cd:ef:gh"
 A_PLAYLIST = 'Moody Bluez'
 
 
-def resp(text, pid=FAKE_ID):
-    return "%s %s" % (pid, text)
+def resp(text: str, pid: str = FAKE_ID) -> str:
+    return ' '.join([pid, text])
 
 
 class FakeSqueeze(Server):
@@ -50,6 +51,16 @@ class FakeSqueeze(Server):
             pprint(lines)
         self.lines += lines
         return lines
+
+
+def one_slot_intent(slot: str, value: Any) -> Dict[str, Any]:
+    return {'slots': {slot: {'name': slot,
+                             'value': str(value),
+                             'confirmationStatus': 'NONE'}}}
+
+
+def speech_in(response):
+    return response['response']['outputSpeech']['text']
 
 
 class IntegrationTests(TestCase):
@@ -87,16 +98,14 @@ class IntegrationTests(TestCase):
         assert len(self.stub.lines) <= 4 + 3
 
     def test_on_playlist_play_without_playlists(self):
-        intent = {'slots': {'Playlist': {'name': 'Playlist',
-                                         'value': 'Moody Blues'}}}
+        intent = one_slot_intent('Playlist', 'Moody Blues')
         response = self.alexa.on_play_playlist(intent, FAKE_ID)
-        speech = response['response']['outputSpeech']['text']
+        speech = speech_in(response)
         assert "No Squeezebox playlists" in speech
 
     def test_on_playlist_play(self):
         self.stub._playlists = ['Black Friday', A_PLAYLIST, 'Happy Mondays']
-        intent = {'slots': {'Playlist': {'name': 'Playlist',
-                                         'value': 'Mood Blues'}}}
+        intent = one_slot_intent('Playlist', 'Mood Blues')
 
         response = self.alexa.on_play_playlist(intent, FAKE_ID)
         last_cmd = self.stub.lines[-1]
@@ -107,14 +116,13 @@ class IntegrationTests(TestCase):
         assert len(self.stub.lines) <= 4 + 3
 
     def test_set_invalid_volume(self):
-        intent = {'slots': {'Volume': {'name': 'Volume', 'value': 11}}}
+        intent = one_slot_intent('Volume', 11)
         response = self.alexa.on_set_vol(intent, FAKE_ID)
-        speech = response['response']['outputSpeech']['text']
+        speech = speech_in(response)
         assert " between 0 and 10" in speech.lower()
 
     def test_set_invalid_percent_volume(self):
-        intent = {'slots': {'Volume': {'name': 'Volume',
-                                       'value': 999}}}
+        intent = one_slot_intent('Volume', 999)
         response = self.alexa.on_set_vol_percent(intent, FAKE_ID)
-        speech = response['response']['outputSpeech']['text']
+        speech = speech_in(response)
         assert " between 0 and 100" in speech.lower()
