@@ -105,3 +105,16 @@ class IntegrationTests(TestCase):
         content = response['response']['card']['content']
         assert content.startswith('Playing "%s" playlist' % A_PLAYLIST)
         assert len(self.stub.lines) <= 4 + 3
+
+    def test_set_invalid_volume(self):
+        intent = {'slots': {'Volume': {'name': 'Volume', 'value': 11}}}
+        response = self.alexa.on_set_vol(intent, FAKE_ID)
+        speech = response['response']['outputSpeech']['text']
+        assert " between 0 and 10" in speech.lower()
+
+    def test_set_invalid_percent_volume(self):
+        intent = {'slots': {'Volume': {'name': 'Volume',
+                                       'value': 999}}}
+        response = self.alexa.on_set_vol_percent(intent, FAKE_ID)
+        speech = response['response']['outputSpeech']['text']
+        assert " between 0 and 100" in speech.lower()

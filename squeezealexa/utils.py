@@ -24,6 +24,8 @@ Unicode = str
 
 
 def print_d(template, *args, **kwargs):
+    if args and not kwargs:
+        raise ValueError("Use only named parameters please")
     text = template.format(*args, **kwargs)
     print(text)
     return text
@@ -96,4 +98,6 @@ def wait_for(func, timeout=3, what=None, context=None):
     while not func(context):
         sleep(0.1)
         if time() - t > timeout:
-            raise Exception("Timed out {} in {}".format(what, str(context)))
+            msg = "Timed out {task} in {context}".format(task=what,
+                                                         context=str(context))
+            raise Exception(msg)

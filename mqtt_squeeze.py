@@ -54,7 +54,7 @@ def on_message(client, userdata, message):
     rsp = b'\n'.join(resp_lines)
     if rsp:
         if DEBUG:
-            print_d("<<< {}", rsp.decode('utf-8'))
+            print_d("<<< {msg}", msg=rsp.decode('utf-8'))
         client.publish(MQTT_SETTINGS.topic_resp, rsp, qos=1)
     else:
         print_d("No reply")
@@ -76,8 +76,8 @@ if __name__ == "__main__":
     try:
         telnet = connect_cli()
     except socket.timeout as e:
-        print_w("Couldn't connect to Squeeze CLI using {} ({})",
-                MQTT_SETTINGS, e)
+        print_w("Couldn't connect to Squeeze CLI using {settings} ({err})",
+                settings=MQTT_SETTINGS, err=e)
         exit(3)
     else:
         client = CustomClient(MQTT_SETTINGS)

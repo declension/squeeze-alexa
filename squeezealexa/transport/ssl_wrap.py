@@ -40,14 +40,14 @@ class SslSocketTransport(Transport):
                 context.check_hostname = verify_hostname
                 context.load_cert_chain(cert_file)
         except ssl.SSLError as e:
-            raise Error("Problem with Cert / CA (+key) files ({} / {}). "
-                        "Does it include the private key?"
-                        .format(cert_file, ca_file), e)
+            self._die("Problem with Cert / CA (+key) files ({cert} / {ca}). "
+                      "Does it include the private key?",
+                      cert=cert_file, ca=ca_file, err=e)
         except IOError as e:
             if 'No such file or directory' in e.strerror:
                 self._die("Can't find cert '{cert_file}' or CA '{ca_file}'. "
-                          "Check CERT_FILE / CA_FILE_PATH in settings"
-                          .format(ca_file=ca_file, cert_file=cert_file))
+                          "Check CERT_FILE / CA_FILE_PATH in settings",
+                          ca_file=ca_file, cert_file=cert_file)
             self._die("could be mismatched certificate files, "
                       "or wrong hostname in cert."
                       "Check CERT_FILE and certs on server too.", e)
@@ -62,37 +62,35 @@ class SslSocketTransport(Transport):
             self._ssl_sock.connect((hostname, port))
         except socket.gaierror as e:
             if "Name or service not know" in e.strerror:
-                self._die("unknown host ({}) - check SERVER_HOSTNAME"
-                          .format(hostname), e)
-            self._die("Couldn't connect to %s with TLS" % (self,), e)
+                self._die("unknown host ({host}) - check SERVER_HOSTNAME",
+                          host=hostname, err=e)
+            self._die("Couldn't connect to {host} with TLS", host=self, err=e)
         except IOError as e:
             err_str = e.strerror or str(e)
             if 'Connection refused' in err_str:
-                self._die("nothing listening on {}. "
-                          "Check settings, or (re)start server.".format(self))
+                self._die("nothing listening on {this}. "
+                          "Check settings, or (re)start server.", this=self)
             elif 'WRONG_VERSION_NUMBER' in err_str:
-                self._die('probably not TLS on port {} - '
-                          'wrong SERVER_PORT maybe?'.format(port),
-                          e)
+                self._die('probably not TLS on port {port} - '
+                          'wrong SERVER_PORT maybe?', port=port, err=e)
             elif 'Connection reset by peer' in err_str:
                 self._die("server killed the connection - handshake error? "
                           "Check the SSL tunnel logs")
             elif 'CERTIFICATE_VERIFY_FAILED' in err_str:
                 self._die("Cert not trusted by / from server. "
                           "Is your CA correct? Is the cert expired? "
-                          "Is the cert for the right hostname ({})?"
-                          .format(hostname), e)
+                          "Is the cert for the right hostname ({host})?",
+                          host=hostname, err=e)
             elif 'timed out' in err_str:
-                msg = ("Couldn't connect to port {port} on {host} - "
-                       "check the server setup and the firewall."
-                       ).format(host=self.hostname, port=self.port)
-                self._die(msg)
-            self._die("Connection problem ({}: {})".format(type(e).__name__,
-                                                           err_str))
+                self._die("Couldn't connect to port {port} on {host} - "
+                          "check the server setup and the firewall.",
+                          host=self.hostname, port=self.port)
+            self._die("Connection problem ({type}: {err})",
+                      type=type(e).__name__, err=err_str)
 
         peer_cert = self._ssl_sock.getpeercert()
         if peer_cert is None:
-            self._die("No certificate configured at {}".format(self))
+            self._die("No certificate configured at {details}", details=self)
         elif not peer_cert:
             print_w("Unvalidated server cert at {}", self)
         else:
@@ -101,11 +99,11 @@ class SslSocketTransport(Transport):
                 data = {k: v for d in subject_data for k, v in d}
             except Exception:
                 data = subject_data
-            print_d("Validated cert for {}", data)
+            print_d("Validated cert for {data}", data=data)
         self.is_connected = True
 
-    def _die(self, msg, e=None):
-        raise Error(msg, e)
+    def _die(self, msg, err=None, **kwargs):
+        raise Error(msg.format(**kwargs), err)
 
     @staticmethod
     def __harden_context(context):
@@ -137,7 +135,8 @@ class SslSocketTransport(Transport):
                             "Perhaps the tunnel endpoint is incorrect, "
                             "or the LMS CLI is down?")
             else:
-                print_d("Couldn't communicate with Squeezebox ({!r})", e)
+                print_d("Couldn't communicate with Squeezebox ({error!r})",
+                        error=e)
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
                 self.is_connected = False
@@ -150,6 +149,6 @@ class SslSocketTransport(Transport):
         return "{hostname}:{port} over SSL".format(**self.__dict__)
 
     def __del__(self):
-        print_d("Closing {}", self)
+        print_d("Closing {who}", who=self)
         if hasattr(self, '_ssl_sock'):
             self._ssl_sock.close()

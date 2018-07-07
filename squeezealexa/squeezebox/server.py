@@ -29,7 +29,7 @@ class SqueezeboxPlayerSettings(dict):
         super().__init__(data)
         if 'playerid' not in data:
             raise SqueezeboxException(
-                "Couldn't find a playerid in {}".format(data))
+                "Couldn't find a playerid in {data}".format(data=data))
 
     @property
     def id(self) -> str:
@@ -88,7 +88,8 @@ class Server(object):
             self.cur_player_id = players[0].id
         else:
             self.cur_player_id = cur_player_id
-        print_d("Current player is now: {}", self.players[self.cur_player_id])
+        print_d("Current player is now: {player}",
+                player=self.players[self.cur_player_id])
         self.__genres = []
         self.__playlists = []
         self.__favorites = []
@@ -196,11 +197,11 @@ class Server(object):
         for data in self._groups(response, 'playerid',
                                  extra_bools=['power', 'connected']):
             self.players[data['playerid']] = SqueezeboxPlayerSettings(data)
-        print_d("Found %d player(s): %s"
-                % (len(self.players),
-                   [p['name'] for p in self.players.values()]))
+        print_d("Found {total} player(s): {players}",
+                total=len(self.players),
+                players=[p['name'] for p in self.players.values()])
         if self._debug:
-            print_d("Player(s): %s", self.players.values())
+            print_d("Player(s): {players}", players=self.players.values())
 
     def player_request(self, line, player_id=None, raw=False, wait=True):
         """Makes a single request to a particular player (or the current)"""
@@ -319,8 +320,8 @@ class Server(object):
                        for p in self.players.keys()])
 
     def __str__(self):
-        return "Squeezebox server over {}".format(self.transport)
+        return "Squeezebox server over {transport}".format(**self.__dict__)
 
     def __del__(self):
-        print_d("Goodbye from {}", self)
+        print_d("Goodbye from {what}", what=self)
         del self.transport

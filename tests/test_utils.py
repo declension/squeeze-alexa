@@ -86,7 +86,7 @@ class TestLogging(TestCase):
         assert actual == "bar - 3.1"
 
     def test_print_w(self):
-        assert "Exception" in print_w("{!r}", Exception("bar"))
+        assert "Exception" in print_w("{ex!r}", ex=Exception("bar"))
 
 
 class FakeSettings(Settings):

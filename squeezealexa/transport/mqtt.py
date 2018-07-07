@@ -63,7 +63,7 @@ class CustomClient(Client):
                 base=self.settings.cert_dir, glob=rel_glob))
 
     def __del__(self):
-        print_d("Disconnecting {}", self)
+        print_d("Disconnecting {what}", what=self)
         self.disconnect()
         self.loop_stop()
 
@@ -78,8 +78,8 @@ class MqttTransport(Transport):
     def __init__(self, client: Client, req_topic: str, resp_topic: str):
         def subscribed(client, userdata, mind, granted_qos):
             self.is_connected = True
-            print_d("MQTT/TLS transport to {} initialised. (@QoS {})",
-                    client, granted_qos)
+            print_d("MQTT/TLS transport to {client} initialised. (@QoS {qos})",
+                    client=client, qos=granted_qos)
 
         super().__init__()
         self.client = client
@@ -91,8 +91,8 @@ class MqttTransport(Transport):
 
     def start(self):
         def connected(client, userdata, flags, rc):
-            print_d("Connected to {}. Subscribing to {}",
-                    self.client, self.resp_topic)
+            print_d("Connected to {client}. Subscribing to {topic}",
+                    client=self.client, topic=self.resp_topic)
             self.client.subscribe(self.resp_topic, qos=1)
 
         self.client.on_connect = connected
@@ -105,7 +105,7 @@ class MqttTransport(Transport):
 
     @property
     def details(self):
-        return "MQTT to {}".format(self.client)
+        return "MQTT to {client}".format(client=self.client)
 
     def communicate(self, raw: str, wait=True) -> str:
         data = raw.strip() + '\n'
@@ -117,7 +117,9 @@ class MqttTransport(Transport):
             return None
         ret.wait_for_publish()
         if ret.rc != MQTT_ERR_SUCCESS:
-            raise Error("Error publishing message: {}", error_string(ret.rc))
+            msg = "Error publishing message: {err}".format(
+                err=error_string(ret.rc))
+            raise Error(msg)
         print_d("Published to {topic} OK. Waiting for {num} line(s)...",
                 topic=self.req_topic, num=num_lines)
 
@@ -130,5 +132,5 @@ class MqttTransport(Transport):
 
     def __del__(self):
         super().__del__()
-        print_d("Killing {}", self)
+        print_d("Killing {what}", what=self)
         del self.client
