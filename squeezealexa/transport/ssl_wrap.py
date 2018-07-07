@@ -92,7 +92,7 @@ class SslSocketTransport(Transport):
         if peer_cert is None:
             self._die("No certificate configured at {details}", details=self)
         elif not peer_cert:
-            print_w("Unvalidated server cert at {}", self)
+            print_w("Unvalidated server cert at {details}", details=self)
         else:
             subject_data = peer_cert['subject']
             try:

@@ -49,9 +49,10 @@ class CustomClient(Client):
                               port=port,
                               keepalive=keepalive, bind_address=bind_address)
         if MQTT_ERR_SUCCESS == ret:
-            print_d("Connecting to {}", self.settings)
+            print_d("Connecting to {settings}", settings=self.settings)
             return ret
-        raise Error("Couldn't connect to {}".format(self.settings))
+        raise Error("Couldn't connect to {settings}".format(
+            settings=self.settings))
 
     def _conf_file_of(self, rel_glob: str) -> str:
         full_glob = os.path.join(self.settings.cert_dir, rel_glob)

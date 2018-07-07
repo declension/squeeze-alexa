@@ -16,6 +16,7 @@ import re
 import unicodedata
 import sys
 from time import time, sleep
+from typing import Collection
 
 from squeezealexa.i18n import _
 
@@ -70,10 +71,17 @@ def sanitise_text(text):
     return re.sub(r'\s{2,}', ' ', no_punc)
 
 
-def with_example(template, collection):
-    msg = template % len(collection)
+def with_example(template: str, collection: Collection[str]) -> str:
+    """Takes a template string with `{num}` in it and gives a length
+    and an example, if possible."""
+    if "{num}" not in template:
+        raise ValueError("Need {num} in the template")
+    total = len(collection)
+    msg = template.format(num=total)
     if collection:
-        msg += " (e.g. \"%s\")" % random.choice(list(collection))
+        extra = ' ({eg}"{item}")'.format(eg='e.g. ' if total > 1 else '',
+                                         item=random.choice(list(collection)))
+        msg += extra
     return msg
 
 

@@ -34,7 +34,7 @@ class AllIntentHandlingTest(TestCase):
         server = Server(transport=fake_output)
         alexa = SqueezeAlexa(server=server)
         for name, func in handler._handlers.items():
-            print_d(">>> Testing %s() <<<" % func.__name__)
+            print_d(">>> Testing function() <<<", function=func.__name__)
             session = {'sessionId': None}
             intent = {'requestId': 'abcd', 'slots': {}}
             raw = func(alexa, intent, session, None)

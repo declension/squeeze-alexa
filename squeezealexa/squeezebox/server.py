@@ -237,7 +237,7 @@ class Server(object):
             resp = self.__a_request("genres 0 255", raw=True)
             self.__genres = [v for k, v in self.__pairs_from(resp)
                              if k == 'genre']
-            print_d(with_example("Loaded %d LMS genres", self.__genres))
+            print_d(with_example("Loaded {num} LMS genres", self.__genres))
         return self.__genres
 
     @property
@@ -246,7 +246,8 @@ class Server(object):
             resp = self.__a_request("playlists 0 255", raw=True)
             self.__playlists = [v for k, v in self.__pairs_from(resp)
                                 if k == 'playlist']
-            print_d(with_example("Loaded %d LMS playlists", self.__playlists))
+            print_d(with_example("Loaded {num} LMS playlists",
+                                 self.__playlists))
         return self.__playlists
 
     @property
@@ -257,7 +258,7 @@ class Server(object):
             self.__favorites = {d['name']: d
                                 for d in self._groups(resp, 'name')
                                 if d['isaudio']}
-            print_d(with_example("Loaded %d LMS faves", self.__favorites))
+            print_d(with_example("Loaded {num} LMS faves", self.__favorites))
         return self.__favorites
 
     def get_status(self, player_id=None):
