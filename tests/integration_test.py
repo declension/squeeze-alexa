@@ -10,17 +10,15 @@
 #
 #   See LICENSE for full license
 
-from os.path import dirname, join
 from pprint import pprint
 from unittest import TestCase
 
 from squeezealexa.main import SqueezeAlexa
 from squeezealexa.squeezebox.server import Server
+from tests.utils import GENRES
 
 SOME_PID = "zz:zz:zz"
 FAKE_ID = "ab:cd:ef:gh"
-ROOT = dirname(dirname(__file__))
-GENRES = open(join(ROOT, 'metadata/slots/genres.txt')).read().splitlines()
 A_PLAYLIST = 'Moody Bluez'
 
 
