@@ -35,7 +35,7 @@ For Synology, I've chosen `/volume1/mqtt-squeeze`
 On Linux, this might be SysV (traditional), [Upstart](https://en.wikipedia.org/wiki/Upstart), or [systemd](https://en.wikipedia.org/wiki/Systemd) (most modern Linux).
 
 #### Using Upstart on Synology
-For convenience find [an Upstart script suitable for Synology](../etc/upstart/mqtt-squeeze.conf).
+For convenience find [an Upstart script suitable for Synology](example-config/upstart/mqtt-squeeze.conf).
 You can then start it with:
 `sudo start mqtt-squeeze`
 
