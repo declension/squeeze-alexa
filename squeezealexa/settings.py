@@ -128,7 +128,6 @@ class MqttSettings(Settings):
         self.topic_req = topic_req
         self.topic_resp = topic_resp
 
-
     @property
     def configured(self):
         """Whether the settings are configured"""

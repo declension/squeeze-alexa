@@ -20,7 +20,7 @@ from paho.mqtt.client import Client, MQTT_ERR_SUCCESS, error_string, \
 
 from squeezealexa.settings import MqttSettings
 from squeezealexa.transport.base import Transport, Error, check_listening
-from squeezealexa.utils import print_d, wait_for, print_w
+from squeezealexa.utils import print_d, wait_for
 
 BASE = realpath(join(dirname(__file__), "..", ".."))
 
