@@ -13,8 +13,10 @@
 import os
 from squeezealexa.i18n import _, set_up_gettext, available_translations
 
+UNSUPPORTED_LOCALE = "ku.UTF-8"
 AN_UNTRANSLATED_STRING = 'foobar baz'
-REQUIRED_TRANSLATIONS = ['Currently playing: "{title}"',
+REQUIRED_TRANSLATIONS = ['favorites',
+                         'Currently playing: "{title}"',
                          'Playing mix of {genres}',
                          'Shuffle is now off']
 
@@ -29,7 +31,7 @@ def test_binding_respects_language():
 
 
 def test_gettext_uses_fallback():
-    _ = set_up_gettext("fr_FR.UTF-8")
+    _ = set_up_gettext(UNSUPPORTED_LOCALE)
     assert _("favorites") == "favorites"
 
 
@@ -43,6 +45,13 @@ def test_some_german_works():
     _ = set_up_gettext("de_DE.UTF-8")
     assert _("favorites") == "Favoriten"
     assert _("Playing mix of {genres}") == "Spiele eine Mischung aus {genres}"
+
+
+def test_some_french_works():
+    _ = set_up_gettext("fr.UTF-8")
+    assert _("favorites") == "favoris"
+    french = "La lecture aléatoire est maintenant désactivée"
+    assert _("Shuffle is now off") == french
 
 
 class TestTranslations:
