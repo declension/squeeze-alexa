@@ -9,7 +9,6 @@
 #   (at your option) any later version.
 #
 #   See LICENSE for full license
-
 from datetime import datetime
 
 import pytest
@@ -19,16 +18,6 @@ from squeezealexa.settings import MqttSettings
 from squeezealexa.transport.base import Error
 from squeezealexa.transport.mqtt import MqttTransport, CustomClient
 
-
-# def test_real_publish():
-#     client = CustomClient(MQTT_SETTINGS)
-#     t = MqttTransport(client,
-#                       req_topic=MQTT_SETTINGS.topic_req,
-#                       resp_topic=MQTT_SETTINGS.topic_resp)
-#     msg = "TEST MESSAGE at %s\n" % datetime.now()
-#     ret = t.communicate(msg)
-#     assert ret
-#
 
 class NoTlsCustomClient(CustomClient):
     def _configure_tls(self):

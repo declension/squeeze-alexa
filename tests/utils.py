@@ -10,9 +10,9 @@
 #
 #   See LICENSE for full license
 
-from os.path import dirname, join
-
+from os.path import dirname, join, realpath
 
 ROOT = dirname(dirname(__file__))
 EN_GENRES = join(ROOT, 'metadata/intents/v0/locale/en_GB/slots/genres.txt')
 GENRES = open(EN_GENRES).read().splitlines()
+TEST_DATA_DIR = realpath(join(dirname(__file__), 'data'))
