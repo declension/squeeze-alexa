@@ -18,7 +18,7 @@ from paho.mqtt.client import MQTT_ERR_INVAL, MQTTMessage, Client
 
 from squeezealexa.settings import MqttSettings
 from squeezealexa.transport.configured import create_transport
-from squeezealexa.transport.mqtt import MqttTransport, CustomClient
+from squeezealexa.transport.mqtt import CustomClient
 from squeezealexa.utils import wait_for
 from tests.utils import TEST_DATA_DIR
 
