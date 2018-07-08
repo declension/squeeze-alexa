@@ -11,9 +11,12 @@
 #   See LICENSE for full license
 
 import os
-from squeezealexa.i18n import _, set_up_gettext
+from squeezealexa.i18n import _, set_up_gettext, available_translations
 
-AN_UNTRANSLATED_STRING = "foobar baz"
+AN_UNTRANSLATED_STRING = 'foobar baz'
+REQUIRED_TRANSLATIONS = ['Currently playing: "{title}"',
+                         'Playing mix of {genres}',
+                         'Shuffle is now off']
 
 
 def test_gettext_basic():
@@ -40,6 +43,23 @@ def test_some_german_works():
     _ = set_up_gettext("de_DE.UTF-8")
     assert _("favorites") == "Favoriten"
     assert _("Playing mix of {genres}") == "Spiele eine Mischung aus {genres}"
+
+
+class TestTranslations:
+    def test_all_langs(self):
+        langs = available_translations()
+        assert 'en_GB' in langs
+        assert len(langs) >= 2
+
+    def test_each_lang(self):
+        langs = set(available_translations()) - {'en_GB'}
+        for lang in langs:
+            translate = set_up_gettext(lang)
+            for text in REQUIRED_TRANSLATIONS:
+                translated = translate(text)
+                assert translated
+                msg = "'{text}' is untranslated for {lang}".format(**locals())
+                assert translated != text, msg
 
 
 class NewLocale(object):
