@@ -1,0 +1,101 @@
+
+IncreaseVolumeIntent augmente le volume
+IncreaseVolumeIntent augmente le volume de {Player}
+IncreaseVolumeIntent augmente le volume dans {Player}
+IncreaseVolumeIntent monte le volume dans {Player}
+IncreaseVolumeIntent monte le volume de {Player}
+IncreaseVolumeIntent monte le volume
+
+DecreaseVolumeIntent diminue le volume
+DecreaseVolumeIntent diminue le volume de {Player}
+DecreaseVolumeIntent diminue le volume dans {Player}
+DecreaseVolumeIntent baisse le volume dans {Player}
+DecreaseVolumeIntent baisse le volume de {Player}
+DecreaseVolumeIntent baisse le volume
+
+SetVolumeIntent régle le volume à {Volume}
+SetVolumeIntent régle le volume de {Player} à {Volume}
+SetVolumeIntent régle le volume dans {Player} à {Volume}
+SetVolumeIntent régle le volume à {Volume} dans {Player}
+
+SetVolumePercentIntent régle le volume à {Volume} pourcent
+SetVolumePercentIntent régle le volume de {Player} à {Volume} pourcent
+SetVolumePercentIntent régle le volume dans {Player} à {Volume} pourcent
+SetVolumePercentIntent régle le volume à {Volume} pourcent dans {Player}
+
+NowPlayingIntent quelle est cette chanson
+NowPlayingIntent quelle chanson est-ce
+NowPlayingIntent qu'est ce qui ce joue
+NowPlayingIntent qu'est ce qui est en train de se jouer
+NowPlayingIntent qu'est ce qui ce joue dans {Player}
+NowPlayingIntent qu'est ce qui ce joue dans le lecteur {Player}
+NowPlayingIntent qu'est ce qui est en train de ce jouer dans le lecteur {Player}
+NowPlayingIntent qu'est ce qu'on écoute dans {Player}
+NowPlayingIntent qu'est ce que nous écoutons dans {Player}
+
+
+SelectPlayerIntent séléctionne {Player}
+SelectPlayerIntent séléctionne le lecteur {Player}
+SelectPlayerIntent choisie {Player}
+SelectPlayerIntent choisie le lecteur {Player}
+SelectPlayerIntent select {Player} player
+SelectPlayerIntent select player {Player}
+
+ShuffleOnIntent aléatoire activé
+ShuffleOnIntent active l'aléatoire
+ShuffleOnIntent aléatoire
+ShuffleOnIntent active le mode aléatoire
+ShuffleOffIntent aléatoire désactivé
+ShuffleOffIntent désactive l'aléatoire
+ShuffleOffIntent désactive le mode aléatoire
+
+LoopOnIntent répétition activée
+LoopOnIntent active le mode répétition
+LoopOnIntent active la répétition
+
+LoopOffIntent répétition désactivé
+LoopOffIntent désactive le mode répétition
+LoopOffIntent désactive la répétition
+
+TurnOffPlayerIntent éteint le lecteur {Player}
+TurnOffPlayerIntent éteint lecteur {Player}
+TurnOffPlayerIntent éteint {Player}
+
+
+TurnOnPlayerIntent allume {Player}
+TurnOnPlayerIntent allume le lecteur {Player}
+TurnOnPlayerIntent allume lecteur {Player}
+
+AllOffIntent éteint tout
+AllOffIntent éteint tous les lecteurs
+AllOffIntent éteint les lecteurs
+
+AllOnIntent allume tout
+AllOnIntent allume tous les lecteurs
+AllOnIntent allume les lecteurs
+
+PlayRandomMixIntent joue du {Genre}
+PlayRandomMixIntent joue de la {Genre}
+PlayRandomMixIntent joue de la {Genre} et du {SecondaryGenre}
+PlayRandomMixIntent joue de la {Genre} et de la {SecondaryGenre}
+PlayRandomMixIntent joue du {Genre} et du {SecondaryGenre}
+PlayRandomMixIntent joue du {Genre} et de la {SecondaryGenre}
+PlayRandomMixIntent joue {Genre} et {SecondaryGenre}
+
+PlayRandomMixIntent joue de la {Genre} de la {SecondaryGenre} et de la {TertiaryGenre}
+PlayRandomMixIntent joue du {Genre} du {SecondaryGenre} et du {TertiaryGenre}
+PlayRandomMixIntent joue du {Genre} du {SecondaryGenre} et de la {TertiaryGenre}
+PlayRandomMixIntent joue du {Genre} de la {SecondaryGenre} et de la {TertiaryGenre}
+
+PlayRandomMixIntent joue un mélange de {Genre} et de {SecondaryGenre}
+PlayRandomMixIntent joue un mélange de {Genre} et {SecondaryGenre}
+PlayRandomMixIntent joue une mélange de {Genre} {SecondaryGenre} et {TertiaryGenre}
+PlayRandomMixIntent joue une mélange de {Genre} {SecondaryGenre} et de {TertiaryGenre}
+
+PlayPlaylistIntent joue ma liste de lecture {Playlist}
+PlayPlaylistIntent joue ma liste de lecture {Playlist} sur {Player}
+PlayPlaylistIntent joue ma liste de lecteur {Playlist} dans {Player}
+
+PlayPlaylistIntent joue la liste de lecture {Playlist}
+PlayPlaylistIntent joue la liste de lecture {Playlist} sur {Player}
+PlayPlaylistIntent joue la liste de lecture {Playlist} dans {Player}
