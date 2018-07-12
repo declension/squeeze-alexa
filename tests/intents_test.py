@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -20,8 +20,10 @@ from squeezealexa.main import handler, SqueezeAlexa
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.utils import print_d
 from tests.transport.fake_transport import FakeTransport
+from tests.utils import ROOT
 
-THIS_DIR = os.path.dirname(os.path.realpath(__file__))
+INTENTS_V0_PATH = os.path.join(ROOT,
+                               'metadata/intents/v0/intents.json')
 
 
 class AllIntentHandlingTest(TestCase):
@@ -32,7 +34,7 @@ class AllIntentHandlingTest(TestCase):
         server = Server(transport=fake_output)
         alexa = SqueezeAlexa(server=server)
         for name, func in handler._handlers.items():
-            print_d(">>> Testing %s() <<<" % func.__name__)
+            print_d(">>> Testing function() <<<", function=func.__name__)
             session = {'sessionId': None}
             intent = {'requestId': 'abcd', 'slots': {}}
             raw = func(alexa, intent, session, None)
@@ -40,7 +42,7 @@ class AllIntentHandlingTest(TestCase):
             assert 'directives' in response or 'outputSpeech' in response
             assert 'shouldEndSession' in response
 
-    def test_intents_json(self):
-        with open(os.path.join(THIS_DIR, '../metadata/intents.json')) as f:
+    def test_intents_v0_json(self):
+        with open(INTENTS_V0_PATH) as f:
             j = json.load(f)
             assert j["intents"]

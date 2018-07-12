@@ -62,13 +62,14 @@ class TestSanitise(TestCase):
 
 class TestWithExample(TestCase):
     def test_with_example_zero(self):
-        assert with_example("%d words", []) == "0 words"
+        assert with_example("{num} words", []) == "0 words"
 
     def test_with_example(self):
-        assert with_example("%d words", ['one']) == '1 words (e.g. "one")'
+        output = with_example("{num} words", ['one', 'two'])
+        assert output.startswith('2 words (e.g. "')
 
     def test_with_example_dict(self):
-        assert with_example("%d words", {1: 'one'}) == '1 words (e.g. "1")'
+        assert with_example("{num} words", {1: 'one'}) == '1 words ("1")'
 
 
 class TestStrong(TestCase):
@@ -86,7 +87,7 @@ class TestLogging(TestCase):
         assert actual == "bar - 3.1"
 
     def test_print_w(self):
-        assert "Exception" in print_w("{!r}", Exception("bar"))
+        assert "Exception" in print_w("{ex!r}", ex=Exception("bar"))
 
 
 class FakeSettings(Settings):

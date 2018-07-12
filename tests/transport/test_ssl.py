@@ -50,6 +50,11 @@ class TestSslWrap(TestCase):
             response = sslw.communicate('HELLO')
             assert response == response_for("HELLO")
 
+    def test_with_real_server_no_wait(self):
+        with ServerResource() as server:
+            sslw = self._working_transport(server)
+            assert sslw.communicate('HELLO', wait=False) is None
+
     def test_with_real_server_failing_socket(self):
         with ServerResource() as server:
             transport = self._working_transport(server)

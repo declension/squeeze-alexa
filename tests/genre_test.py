@@ -10,14 +10,10 @@
 #
 #   See LICENSE for full license
 
-from os.path import dirname
 from unittest import TestCase
-from os import path
 
 from squeezealexa.main import SqueezeAlexa
-
-ROOT = dirname(dirname(__file__))
-GENRES = open(path.join(ROOT, 'metadata/slots/genres.txt')).read().splitlines()
+from tests.utils import GENRES
 
 
 class GenreTest(TestCase):

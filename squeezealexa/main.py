@@ -52,20 +52,20 @@ class SqueezeAlexa(AlexaHandler):
         request = event['request']
         req_type = request['type']
         if req_type.startswith('AudioPlayer'):
-            print_d("Ignoring {} callback {}",
-                    request['type'], request['requestId'])
+            print_d("Ignoring {type} callback {id}",
+                    type=request['type'], id=request['requestId'])
             self.touch_audio()
             return _build_response({})
         return super(SqueezeAlexa, self).handle(event, context)
 
     def on_session_started(self, request, session):
-        print_d("Starting new session {} for request {}",
-                session['sessionId'], request['requestId'])
+        print_d("Starting new session {session} for request {request}",
+                session=session['sessionId'], request=request['requestId'])
 
     def on_launch(self, launch_request, session):
 
-        print_d("Entering interactive mode for sessionId={}",
-                session['sessionId'])
+        print_d("Entering interactive mode for sessionId={id}",
+                id=session['sessionId'])
         speech_output = _("Squeezebox is online. Please try some commands.")
         reprompt_text = _("Try resume, pause, next, previous, play some jazz, "
                           "or ask Squeezebox to turn it up or down")
@@ -113,10 +113,10 @@ class SqueezeAlexa(AlexaHandler):
         title = details['current_title']
         artist = details['artist']
         if title:
-            desc = _("Currently playing: \"{}\"").format(title)
+            desc = _("Currently playing: \"{title}\"").format(title=title)
             if artist:
-                desc += (", by {}".format(artist))
-            heading = _("Now playing: \"{}\"").format(title)
+                desc += _(", by {artist}").format(artist=artist)
+            heading = _("Now playing: \"{title}\"").format(title=title)
         else:
             desc = _("Nothing playing.")
             heading = None
@@ -126,21 +126,21 @@ class SqueezeAlexa(AlexaHandler):
     def on_set_vol(self, intent, session, pid=None):
         try:
             vol = float(intent['slots']['Volume']['value'])
-            print_d("Extracted volume slot: {:1f}", vol)
+            print_d("Extracted volume slot: {vol:1f}", vol=vol)
         except KeyError:
-            print_d("Couldn't process volume from: {!s}", intent)
+            print_d("Couldn't process volume from: {intent}", intent=intent)
             desc = _("Select a volume value between 0 and 10")
             heading = _("Invalid volume value")
             return self.smart_response(text=heading, speech=desc)
         if (vol > 10) or (vol < 0):
             desc = _("Select a volume value between 0 and 10")
-            heading = _("Volume value out of range: {volume}").format(vol)
-            return self.smart_response(text=heading,
-                                       speech=desc)
+            heading = _("Volume value out of range: {volume}").format(
+                volume=vol)
+            return self.smart_response(text=heading, speech=desc)
         self._server.set_volume(vol * 10, pid)
         desc = "OK"
         vol_out = vol if (vol != int(vol)) else int(vol)
-        heading = _("Set volume to {}").format(vol_out)
+        heading = _("Set volume to {volume}").format(volume=vol_out)
         return self.smart_response(text=heading,
                                    speech=desc)
 
@@ -148,19 +148,21 @@ class SqueezeAlexa(AlexaHandler):
     def on_set_vol_percent(self, intent, session, pid=None):
         try:
             vol = int(float(intent['slots']['Volume']['value']))
-            print_d("Extracted volume slot: %d".format(vol))
+            print_d("Extracted volume slot: {volume}", volume=vol)
         except KeyError:
-            print_d("Couldn't process volume from: {}", intent)
-            desc = _("Select a volume value between 0 and 100 percent")
-            heading = _("Invalid volume value")
+            print_d("Couldn't process volume value from: {intent}",
+                    intent=intent)
+            desc = _("Select a volume between 0 and 100 percent")
+            heading = _("Invalid volume")
             return self.smart_response(text=heading, speech=desc)
         if (vol > 100) or (vol < 0):
             desc = _("Select a volume value between 0 and 100 percent")
-            heading = _("Volume value out of range: %d percent").format(vol)
+            heading = _("Volume value out of range: {volume} percent").format(
+                volume=vol)
             return self.smart_response(text=heading, speech=desc)
         self._server.set_volume(vol, pid)
         desc = _("OK")
-        heading = _("Set Volume to %d percent").format(vol)
+        heading = _("Set volume to {percent} percent").format(percent=vol)
         return self.smart_response(text=heading, speech=desc)
 
     @handler.handle(Custom.INC_VOL)
@@ -186,17 +188,18 @@ class SqueezeAlexa(AlexaHandler):
             player = srv.players[pid]
             srv.cur_player_id = player.id
             text = _("Selected {player}").format(player=player.name)
-            title = _("Selected player {}").format(player)
+            title = _("Selected player {player}").format(player=player)
             return speech_response(title=title, text=text,
                                    store={"player_id": pid})
-        speech = (_("I only found these players: {}. Could you try again?")
-                  .format(english_join(srv.player_names)))
+        speech = (_("I only found these players: {players}. "
+                    "Could you try again?")
+                  .format(players=english_join(srv.player_names)))
         reprompt = (_("You can select a player by saying \"{utterance}\" "
                       "and then the player name.")
                     .format(utterance=Utterances.SELECT_PLAYER))
         try:
             player = intent['slots']['Player']['value']
-            title = (_("No player called \"{}\"").format(player))
+            title = (_("No player called \"{name}\"").format(name=player))
         except KeyError:
             title = "Didn't recognise a player name"
         return speech_response(title, speech, reprompt_text=reprompt,
@@ -237,7 +240,7 @@ class SqueezeAlexa(AlexaHandler):
         server = self._server
         server.set_power(on=False, player_id=pid)
         player = server.players[pid]
-        text = _("Switched {} off").format(player.name)
+        text = _("Switched {player} off").format(player=player.name)
         speech = _("{player} is now off").format(player=player.name)
         return self.smart_response(title=text, text=text, speech=speech)
 
@@ -272,21 +275,21 @@ class SqueezeAlexa(AlexaHandler):
         server = self._server
         try:
             slot = intent['slots']['Playlist']['value']
-            print_d("Extracted playlist slot: {}".format(slot))
+            print_d("Extracted playlist slot: {slot}", slot=slot)
         except KeyError:
-            print_d("Couldn't process playlist from: {}", intent)
+            print_d("Couldn't process playlist from: {intent}", intent=intent)
             if not server.playlists:
                 return speech_response(text=_("There are no playlists"))
             pl = random.choice(server.playlists)
-            return speech_response(
-                text=_("Didn't hear a playlist there. "
-                       "You could try the \"{}\" playlist?").format(pl))
+            text = _("Didn't hear a playlist there. "
+                     "You could try the \"{name}\" playlist?").format(name=pl)
+            return speech_response(text=text)
         else:
             if not server.playlists:
                 return speech_response(text=_("No Squeezebox playlists found"))
             result = process.extractOne(slot, server.playlists)
-            print_d("{} was the best guess for '{}' from {}",
-                    str(result), slot, server.playlists)
+            print_d("{guess} was the best guess for '{slot}' from {choices}",
+                    guess=str(result), slot=slot, choices=server.playlists)
             if result and int(result[1]) >= MinConfidences.PLAYLIST:
                 pl = result[0]
                 server.playlist_resume(pl, player_id=pid)
@@ -305,10 +308,9 @@ class SqueezeAlexa(AlexaHandler):
         try:
             slots = [v.get('value') for k, v in intent['slots'].items()
                      if k.endswith('Genre')]
-            print_d("Extracted genre slots: {}".format(slots))
+            print_d("Extracted genre slots: {slots}", slots=slots)
         except KeyError:
-            print_d("Couldn't process genres from: {}".format(intent))
-            pass
+            print_d("Couldn't process genres from: {intent}", intent=intent)
         else:
             lms_genres = self._genres_from_slots(slots, server.genres)
             if lms_genres:
@@ -318,18 +320,20 @@ class SqueezeAlexa(AlexaHandler):
                 return self.smart_response(text=text, speech=text)
             else:
                 genres_text = english_join(slots, _("or"))
-                text = _("Don't understand requested genres {}").format(
-                    genres_text)
-                speech = _("Can't find genres: {}").format(genres_text)
+                text = _("Don't understand requested genres {genres}").format(
+                    genres=genres_text)
+                speech = _("Can't find genres: {genres}").format(
+                    genres=genres_text)
                 return self.smart_response(text=text, speech=speech)
-        raise ValueError("Don't understand intent '{}'".format(intent))
+        err_text = "Don't understand intent '{intent}'".format(intent=intent)
+        raise ValueError(err_text)
 
     def _genres_from_slots(self, slots, genres):
         def genres_from(g):
             if not g:
                 return set()
             res = process.extract(g, genres)[:MAX_GUESSES_PER_SLOT]
-            print_d("Raw genre results: {}", res)
+            print_d("Raw genre results: {data}", data=res)
             for g, c in res:
                 # Exact(ish) matches shouldn't allow other genres
                 if c > MinConfidences.SINGLE_GENRE:
@@ -361,14 +365,14 @@ class SqueezeAlexa(AlexaHandler):
         else:
             by_name = {s.name: s for s in srv.players.values()}
             result = process.extractOne(player_name, by_name.keys())
-            print_d("{} was the best guess for '{}' from {}",
-                    result, player_name, by_name.keys())
+            print_d("{guess} was the best guess for '{value}' from {choices}",
+                    guess=result, value=player_name, choices=by_name.keys())
             if result and int(result[1]) >= MinConfidences.PLAYER:
                 return by_name.get(result[0]).id
         return srv.cur_player_id if defaulting else None
 
     def on_session_ended(self, intent, session):
-        print_d("Session {} ended", session['sessionId'])
+        print_d("Session {id} ended", id=session['sessionId'])
         speech_output = _("Hasta la vista. Baby.")
         return speech_response("Session Ended", speech_output, end=True)
 

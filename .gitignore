@@ -47,6 +47,8 @@ nosetests.xml
 coverage.xml
 *,cover
 .hypothesis/
+test-results
+
 
 # Translations
 *.mo
@@ -89,6 +91,10 @@ metadata/audio/
 
 .pytest_cache
 
+# Certs (but allow test ones)
 *.pem
 *.crt
 *.key
+!tests/**/*.crt
+!tests/**/*.key
+!tests/**/*.pem

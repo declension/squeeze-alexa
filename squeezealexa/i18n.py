@@ -12,6 +12,7 @@
 
 import gettext
 from gettext import GNUTranslations
+from glob import glob
 
 from os import path
 from os.path import dirname
@@ -19,17 +20,25 @@ from os.path import dirname
 from squeezealexa.settings import SKILL_SETTINGS
 
 LOCALE_DIR = path.abspath(path.join(dirname(dirname(__file__)), 'locale'))
+DOMAIN = 'squeeze-alexa'
 # Realistically this will have to be the default, sigh.
 CODE_LOCALE = "en_US"
 
 
 def set_up_gettext(user_locale):
-    t = gettext.translation('squeeze-alexa', localedir=LOCALE_DIR,
+    t = gettext.translation(DOMAIN, localedir=LOCALE_DIR,
                             languages=[user_locale], fallback=True)
     if not isinstance(t, GNUTranslations) and user_locale != CODE_LOCALE:
-        print("No translation file found for requested locale '%s', "
-              "using default (en_US) instead." % user_locale)
+        # Can't import print_d here...
+        print("No translation file found for requested locale '{locale}', "
+              "using default ({default}) instead.".format(locale=user_locale,
+                                                          default=CODE_LOCALE))
     return t.gettext
+
+
+def available_translations():
+    files = glob(path.join(LOCALE_DIR, '*', 'LC_MESSAGES', '%s.mo' % DOMAIN))
+    return [file.split(path.sep)[-3] for file in files]
 
 
 _ = set_up_gettext(SKILL_SETTINGS.LOCALE)

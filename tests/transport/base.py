@@ -12,19 +12,17 @@
 
 import ssl
 import threading
-from os.path import dirname, join
+from os.path import join
 from socketserver import TCPServer, BaseRequestHandler
 
 from squeezealexa.utils import print_d
-
-
-TEST_DATA = join(dirname(__file__), '..', 'data')
+from tests.utils import TEST_DATA_DIR
 
 
 class CertFiles:
-    CERT_AND_KEY = join(TEST_DATA, 'cert-and-key.pem')
-    BAD_HOSTNAME = join(TEST_DATA, 'bad-hostname.pem')
-    CERT_ONLY = join(TEST_DATA, 'cert-only.pem')
+    CERT_AND_KEY = join(TEST_DATA_DIR, 'cert-and-key.pem')
+    BAD_HOSTNAME = join(TEST_DATA_DIR, 'bad-hostname.pem')
+    CERT_ONLY = join(TEST_DATA_DIR, 'cert-only.pem')
 
 
 def response_for(request):
