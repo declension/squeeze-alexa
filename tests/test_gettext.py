@@ -11,9 +11,14 @@
 #   See LICENSE for full license
 
 import os
-from squeezealexa.i18n import _, set_up_gettext
+from squeezealexa.i18n import _, set_up_gettext, available_translations
 
-AN_UNTRANSLATED_STRING = "foobar baz"
+UNSUPPORTED_LOCALE = "ku.UTF-8"
+AN_UNTRANSLATED_STRING = 'foobar baz'
+REQUIRED_TRANSLATIONS = ['favorites',
+                         'Currently playing: "{title}"',
+                         'Playing mix of {genres}',
+                         'Shuffle is now off']
 
 
 def test_gettext_basic():
@@ -26,7 +31,7 @@ def test_binding_respects_language():
 
 
 def test_gettext_uses_fallback():
-    _ = set_up_gettext("fr_FR.UTF-8")
+    _ = set_up_gettext(UNSUPPORTED_LOCALE)
     assert _("favorites") == "favorites"
 
 
@@ -40,6 +45,30 @@ def test_some_german_works():
     _ = set_up_gettext("de_DE.UTF-8")
     assert _("favorites") == "Favoriten"
     assert _("Playing mix of {genres}") == "Spiele eine Mischung aus {genres}"
+
+
+def test_some_french_works():
+    _ = set_up_gettext("fr.UTF-8")
+    assert _("favorites") == "favoris"
+    french = "La lecture aléatoire est maintenant désactivée"
+    assert _("Shuffle is now off") == french
+
+
+class TestTranslations:
+    def test_all_langs(self):
+        langs = available_translations()
+        assert 'en_GB' in langs
+        assert len(langs) >= 2
+
+    def test_each_lang(self):
+        langs = set(available_translations()) - {'en_GB'}
+        for lang in langs:
+            translate = set_up_gettext(lang)
+            for text in REQUIRED_TRANSLATIONS:
+                translated = translate(text)
+                assert translated
+                msg = "'{text}' is untranslated for {lang}".format(**locals())
+                assert translated != text, msg
 
 
 class NewLocale(object):

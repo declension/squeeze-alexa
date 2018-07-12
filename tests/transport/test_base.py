@@ -18,6 +18,8 @@ from squeezealexa.transport.base import check_listening, Error
 from squeezealexa.transport.configured import create_transport
 from tests.transport.base import TimeoutServer
 
+UNCONFIGURED_MQTT_SETTINGS = MqttSettings(hostname=None)
+
 
 def test_check_listening():
     with TimeoutServer() as server:
@@ -36,7 +38,7 @@ def test_create_transport_uses_full_ca_path():
     ssls = SslSettings()
     ssls.ca_file_path = "/foo/bar"
     with raises(Error) as e:
-        create_transport(ssls, MqttSettings())
+        create_transport(ssls, UNCONFIGURED_MQTT_SETTINGS)
     assert ("CA '%s'" % ssls.ca_file_path) in str(e)
 
 
@@ -44,5 +46,5 @@ def test_create_transport_uses_cert_path():
     ssls = SslSettings()
     ssls.cert_file_path = "/foo/bar"
     with raises(Error) as e:
-        create_transport(ssls, MqttSettings())
+        create_transport(ssls, UNCONFIGURED_MQTT_SETTINGS)
     assert ("cert '%s'" % ssls.cert_file_path) in str(e)

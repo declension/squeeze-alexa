@@ -4,14 +4,15 @@ from squeezealexa.transport.ssl_wrap import SslSocketTransport
 from squeezealexa.utils import print_d
 
 
-def create_transport(ssl_config=SSL_SETTINGS, mqtt_settings=MQTT_SETTINGS):
+def create_transport(ssl_config=SSL_SETTINGS, mqtt_settings=MQTT_SETTINGS,
+                     mqtt_client=None):
     if mqtt_settings.configured:
         s = mqtt_settings
         print_d("Found MQTT config, so setting up MQTT transport.")
-        client = CustomClient(s)
+        client = mqtt_client or CustomClient(s)
         transport = MqttTransport(client,
-                                  req_topic=s.TOPIC_REQ,
-                                  resp_topic=s.TOPIC_RESP)
+                                  req_topic=s.topic_req,
+                                  resp_topic=s.topic_resp)
         transport.start()
         return transport
 

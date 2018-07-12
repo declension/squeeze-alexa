@@ -1,4 +1,16 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+#   Copyright 2018 Nick Boultbee
+#   This file is part of squeeze-alexa.
+#
+#   squeeze-alexa is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   See LICENSE for full license
+
 
 import socket
 import sys
@@ -42,7 +54,7 @@ def on_message(client, userdata, message):
     rsp = b'\n'.join(resp_lines)
     if rsp:
         if DEBUG:
-            print_d("<<< {}", rsp.decode('utf-8'))
+            print_d("<<< {msg}", msg=rsp.decode('utf-8'))
         client.publish(MQTT_SETTINGS.topic_resp, rsp, qos=1)
     else:
         print_d("No reply")
@@ -57,11 +69,15 @@ def connect_cli():
 
 
 if __name__ == "__main__":
+
+    if not MQTT_SETTINGS.configured:
+        print("MQTT transport not configured. Check your settings")
+        exit(1)
     try:
         telnet = connect_cli()
     except socket.timeout as e:
-        print_w("Couldn't connect to Squeeze CLI using {} ({})",
-                MQTT_SETTINGS, e)
+        print_w("Couldn't connect to Squeeze CLI using {settings} ({err})",
+                settings=MQTT_SETTINGS, err=e)
         exit(3)
     else:
         client = CustomClient(MQTT_SETTINGS)
@@ -72,7 +88,6 @@ if __name__ == "__main__":
 
         # Continue the network loop
         client.loop_forever(retry_first_connection=True)
-
     finally:
         if telnet:
             telnet.close()

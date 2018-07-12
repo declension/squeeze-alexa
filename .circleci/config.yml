@@ -28,6 +28,12 @@ jobs:
           name: Tests
           command: pipenv run pytest -v --cov=squeezealexa --cov-report=term tests
 
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: test-results
+
       - run:
           name: Code Quality
           command: pipenv run flake8 --statistics .

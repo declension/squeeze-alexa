@@ -29,7 +29,7 @@ class SqueezeboxPlayerSettings(dict):
         super().__init__(data)
         if 'playerid' not in data:
             raise SqueezeboxException(
-                "Couldn't find a playerid in {}".format(data))
+                "Couldn't find a playerid in {data}".format(data=data))
 
     @property
     def id(self) -> str:
@@ -88,7 +88,8 @@ class Server(object):
             self.cur_player_id = players[0].id
         else:
             self.cur_player_id = cur_player_id
-        print_d("Current player is now: {}", self.players[self.cur_player_id])
+        print_d("Current player is now: {player}",
+                player=self.players[self.cur_player_id])
         self.__genres = []
         self.__playlists = []
         self.__favorites = []
@@ -196,11 +197,11 @@ class Server(object):
         for data in self._groups(response, 'playerid',
                                  extra_bools=['power', 'connected']):
             self.players[data['playerid']] = SqueezeboxPlayerSettings(data)
-        print_d("Found %d player(s): %s"
-                % (len(self.players),
-                   [p['name'] for p in self.players.values()]))
+        print_d("Found {total} player(s): {players}",
+                total=len(self.players),
+                players=[p['name'] for p in self.players.values()])
         if self._debug:
-            print_d("Player(s): %s", self.players.values())
+            print_d("Player(s): {players}", players=self.players.values())
 
     def player_request(self, line, player_id=None, raw=False, wait=True):
         """Makes a single request to a particular player (or the current)"""
@@ -252,7 +253,7 @@ class Server(object):
             resp = self.__a_request("genres 0 255", raw=True)
             self.__genres = [v for k, v in self.__pairs_from(resp)
                              if k == 'genre']
-            print_d(with_example("Loaded %d LMS genres", self.__genres))
+            print_d(with_example("Loaded {num} LMS genres", self.__genres))
         return self.__genres
 
     @property
@@ -261,7 +262,8 @@ class Server(object):
             resp = self.__a_request("playlists 0 255", raw=True)
             self.__playlists = [v for k, v in self.__pairs_from(resp)
                                 if k == 'playlist']
-            print_d(with_example("Loaded %d LMS playlists", self.__playlists))
+            print_d(with_example("Loaded {num} LMS playlists",
+                                 self.__playlists))
         return self.__playlists
 
     @property
@@ -272,7 +274,7 @@ class Server(object):
             self.__favorites = {d['name']: d
                                 for d in self._groups(resp, 'name')
                                 if d['isaudio']}
-            print_d(with_example("Loaded %d LMS faves", self.__favorites))
+            print_d(with_example("Loaded {num} LMS faves", self.__favorites))
         return self.__favorites
 
     def get_status(self, player_id=None):
@@ -335,8 +337,8 @@ class Server(object):
                        for p in self.players.keys()])
 
     def __str__(self):
-        return "Squeezebox server over {}".format(self.transport)
+        return "Squeezebox server over {transport}".format(**self.__dict__)
 
     def __del__(self):
-        print_d("Goodbye from {}", self)
+        print_d("Goodbye from {what}", what=self)
         del self.transport
