@@ -128,10 +128,15 @@ As a picture is worth a thousand words, here's roughly what your Lambda function
 The interaction model is the guts of how Alexa skills are invoked before they even get to your own code.
 Getting this right has been a lot of the _magic_ of building a skill like squeeze-alexa, so hang tight.
 
-##### Using the Skill Builder...
-**Recommended**: do **not** use the Beta Skills Builder GUI.
-It looks promising but I couldn't get it to work just now (2017-11).
-It also [needs a new schema](https://github.com/declension/squeeze-alexa/issues/23).
+##### Using the Skill Builder (v1) intents JSON...
+Note: This has only been tested with en_US.
+* The v1 intents is in [`metadata/intents/v1/locale/en_US`](../metadata/intents/v1/locale/en_US)
+* In your Amazon Developer portal, configure your new skill:
+    * Click on the JSON Editor under Intents
+    * Copy-paste the [intents_v1.json](../metadata/intents/v1/locale/en_US/intents_v1.json) into the JSON editor
+It should look something like this
+![Intents V1 screenshot](amazon-developer-alexa-v1-intents-screenshot-2018-7.png)
+
 
 ##### ...or using the original (v0) intents JSON
  * These are kept here in [`metadata/intents`](../metadata/intents/v0)
