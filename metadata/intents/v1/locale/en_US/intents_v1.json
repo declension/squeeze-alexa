@@ -1,0 +1,546 @@
+{
+  "interactionModel": {
+    "languageModel": {
+      "invocationName": "squeezebox",
+      "intents": [
+        {
+          "name": "AMAZON.FallbackIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.CancelIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.HelpIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.StopIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.PauseIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.ResumeIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.NextIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.PreviousIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.LoopOnIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.LoopOffIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.ShuffleOnIntent",
+          "samples": []
+        },
+        {
+          "name": "AMAZON.ShuffleOffIntent",
+          "samples": []
+        },
+        {
+          "name": "IncreaseVolumeIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "increase volume",
+            "increase {Player} volume",
+            "increase volume in {Player}",
+            "turn up the volume in {Player}",
+            "turn up {Player}",
+            "turn it up"
+          ]
+        },
+        {
+          "name": "DecreaseVolumeIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "decrease volume",
+            "decrease {Player} volume",
+            "decrease volume in {Player}",
+            "turn down the volume in {Player}",
+            "turn down {Player}",
+            "turn it down"
+          ]
+        },
+        {
+          "name": "SetVolumeIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            },
+            {
+              "name": "Volume",
+              "type": "AMAZON.NUMBER"
+            }
+          ],
+          "samples": [
+            "set volume to {Volume}",
+            "set volume {Player} to {Volume}",
+            "set volume in {Player} to {Volume}",
+            "set volume to {Volume} in {Player}"
+          ]
+        },
+        {
+          "name": "SetVolumePercentIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            },
+            {
+              "name": "Volume",
+              "type": "AMAZON.NUMBER"
+            }
+          ],
+          "samples": [
+            "set volume to {Volume} percent",
+            "set volume {Player} to {Volume} percent",
+            "set volume in {Player} to {Volume} percent",
+            "set volume to {Volume} percent in {Player}"
+          ]
+        },
+        {
+          "name": "NowPlayingIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "what song is this",
+            "what song this is",
+            "what is playing",
+            "what's playing",
+            "what is playing in the {Player}",
+            "what is playing on the {Player} player",
+            "what's playing on the {Player} player",
+            "what are we listening to in the {Player}",
+            "what we are listening to in the {Player}"
+          ]
+        },
+        {
+          "name": "SelectPlayerIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "select {Player}",
+            "select {Player} player",
+            "choose {Player}",
+            "choose {Player} player",
+            "select {Player} player",
+            "select player {Player}"
+          ]
+        },
+        {
+          "name": "TurnOnPlayerIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "turn {Player} on",
+            "turn on {Player}",
+            "turn {Player} player on",
+            "switch {Player} on",
+            "switch on {Player}",
+            "switch {Player} player on"
+          ]
+        },
+        {
+          "name": "TurnOffPlayerIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "turn {Player} off",
+            "turn off {Player}",
+            "turn {Player} player off",
+            "switch {Player} off",
+            "switch off {Player}",
+            "switch {Player} player off"
+          ]
+        },
+        {
+          "name": "PlayRandomMixIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            },
+            {
+              "name": "Genre",
+              "type": "GENRE"
+            },
+            {
+              "name": "SecondaryGenre",
+              "type": "GENRE"
+            },
+            {
+              "name": "TertiaryGenre",
+              "type": "GENRE"
+            }
+          ],
+          "samples": [
+            "play some {Genre}",
+            "play some {Genre} and {SecondaryGenre}",
+            "play some {Genre} and some {SecondaryGenre}",
+            "play some {Genre} some {SecondaryGenre} and some {TertiaryGenre}",
+            "play a mix of {Genre} and {SecondaryGenre}",
+            "play a mix of {Genre} {SecondaryGenre} and {TertiaryGenre}"
+          ]
+        },
+        {
+          "name": "PlayPlaylistIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            },
+            {
+              "name": "Playlist",
+              "type": "PLAYLIST"
+            }
+          ],
+          "samples": [
+            "play my {Playlist} playlist",
+            "play my {Playlist} playlist on {Player}",
+            "play my {Playlist} playlist in {Player}"
+          ]
+        }
+      ],
+      "types": [
+        {
+          "name": "PLAYER",
+          "values": [
+            {"name": {"value": "Upstairs"}},
+            {"name": {"value": "Downstairs"}},
+
+            {"name": {"value": "Upstairs Music"}},
+            {"name": {"value": "Downstairs Music"}},
+
+            {"name": {"value": "Kitchenette"}},
+            {"name": {"value": "Hall"}},
+            {"name": {"value": "Hallway"}},
+            {"name": {"value": "Alley"}},
+            {"name": {"value": "Master Bedroom"}},
+            {"name": {"value": "Spare Bedroom"}},
+            {"name": {"value": "Spare Room"}},
+            {"name": {"value": "Master Bathroom"}},
+            {"name": {"value": "Guest Bathroom"}},
+
+            {"name": {"value": "Bedroom"}},
+            {"name": {"value": "Bedroom Music"}},
+
+            {"name": {"value": "Kitchen"}},
+            {"name": {"value": "Kitchen Music"}},
+
+            {"name": {"value": "Study"}},
+            {"name": {"value": "Study Music"}},
+
+            {"name": {"value": "Living Room"}},
+            {"name": {"value": "Living Room Music"}},
+
+            {"name": {"value": "Sitting Room"}},
+            {"name": {"value": "Sitting Room Music"}},
+
+            {"name": {"value": "Lounge"}},
+            {"name": {"value": "Lounge Music"}},
+
+            {"name": {"value": "Bathroom"}},
+            {"name": {"value": "Bathroom Music"}},
+
+            {"name": {"value": "Attic"}},
+            {"name": {"value": "Attic Music"}},
+
+            {"name": {"value": "Basement"}},
+            {"name": {"value": "Basement Music"}},
+
+            {"name": {"value": "Cellar"}},
+            {"name": {"value": "Cellar Music"}}
+          ]
+        },
+        {
+          "name": "GENRE",
+          "values": [
+            {"name": {"value": "Blues"}},
+            {"name": {"value": "Classic Rock"}},
+            {"name": {"value": "Country"}},
+            {"name": {"value": "Dance"}},
+            {"name": {"value": "Disco"}},
+            {"name": {"value": "Funk"}},
+            {"name": {"value": "Grunge"}},
+            {"name": {"value": "Hip Hop"}},
+            {"name": {"value": "Jazz"}},
+            {"name": {"value": "Metal"}},
+            {"name": {"value": "New Age"}},
+            {"name": {"value": "Oldies"}},
+            {"name": {"value": "Pop"}},
+            {"name": {"value": "R and B"}},
+            {"name": {"value": "RNB"}},
+            {"name": {"value": "Rap"}},
+            {"name": {"value": "Reggae"}},
+            {"name": {"value": "Rock"}},
+            {"name": {"value": "Techno"}},
+            {"name": {"value": "Industrial"}},
+            {"name": {"value": "Alternative"}},
+            {"name": {"value": "Ska"}},
+            {"name": {"value": "Death Metal"}},
+            {"name": {"value": "Soundtrack"}},
+            {"name": {"value": "Ambient"}},
+            {"name": {"value": "Trip Hop"}},
+            {"name": {"value": "TripHop"}},
+            {"name": {"value": "Vocal"}},
+            {"name": {"value": "Jazz Funk"}},
+            {"name": {"value": "Fusion"}},
+            {"name": {"value": "Trance"}},
+            {"name": {"value": "Classical"}},
+            {"name": {"value": "Instrumental"}},
+            {"name": {"value": "Acid"}},
+            {"name": {"value": "House"}},
+            {"name": {"value": "Game"}},
+            {"name": {"value": "Sound Clip"}},
+            {"name": {"value": "Gospel"}},
+            {"name": {"value": "Noise"}},
+            {"name": {"value": "Bass"}},
+            {"name": {"value": "Soul"}},
+            {"name": {"value": "Punk"}},
+            {"name": {"value": "Space"}},
+            {"name": {"value": "Meditative"}},
+            {"name": {"value": "Instrumental Pop"}},
+            {"name": {"value": "Instrumental Rock"}},
+            {"name": {"value": "Ethnic"}},
+            {"name": {"value": "Gothic"}},
+            {"name": {"value": "Darkwave"}},
+            {"name": {"value": "Electronic"}},
+            {"name": {"value": "Eurodance"}},
+            {"name": {"value": "Dream"}},
+            {"name": {"value": "Southern Rock"}},
+            {"name": {"value": "Comedy"}},
+            {"name": {"value": "Cult"}},
+            {"name": {"value": "Gangsta"}},
+            {"name": {"value": "Top 40"}},
+            {"name": {"value": "Christian Rap"}},
+            {"name": {"value": "Jungle"}},
+            {"name": {"value": "Native American"}},
+            {"name": {"value": "Cabaret"}},
+            {"name": {"value": "New Wave"}},
+            {"name": {"value": "Psychadelic"}},
+            {"name": {"value": "Rave"}},
+            {"name": {"value": "Showtunes"}},
+            {"name": {"value": "Trailer"}},
+            {"name": {"value": "Tribal"}},
+            {"name": {"value": "Acid Punk"}},
+            {"name": {"value": "Acid Jazz"}},
+            {"name": {"value": "Polka"}},
+            {"name": {"value": "Retro"}},
+            {"name": {"value": "Musical"}},
+            {"name": {"value": "Rock and Roll"}},
+            {"name": {"value": "Rock N Roll"}},
+            {"name": {"value": "Hard Rock"}},
+            {"name": {"value": "Folk"}},
+            {"name": {"value": "Folk Rock"}},
+            {"name": {"value": "National Folk"}},
+            {"name": {"value": "Swing"}},
+            {"name": {"value": "Fast Fusion"}},
+            {"name": {"value": "Bebop"}},
+            {"name": {"value": "Latin"}},
+            {"name": {"value": "Revival"}},
+            {"name": {"value": "Celtic"}},
+            {"name": {"value": "Bluegrass"}},
+            {"name": {"value": "Avantgarde"}},
+            {"name": {"value": "Gothic Rock"}},
+            {"name": {"value": "Progressive Rock"}},
+            {"name": {"value": "Psychedelic Rock"}},
+            {"name": {"value": "Symphonic Rock"}},
+            {"name": {"value": "Slow Rock"}},
+            {"name": {"value": "Big Band"}},
+            {"name": {"value": "Chorus"}},
+            {"name": {"value": "Easy Listening"}},
+            {"name": {"value": "Acoustic"}},
+            {"name": {"value": "Humour"}},
+            {"name": {"value": "Speech"}},
+            {"name": {"value": "Opera"}},
+            {"name": {"value": "Chamber Music"}},
+            {"name": {"value": "Sonata"}},
+            {"name": {"value": "Symphony"}},
+            {"name": {"value": "Booty Bass"}},
+            {"name": {"value": "Primus"}},
+            {"name": {"value": "Slow Jam"}},
+            {"name": {"value": "Club"}},
+            {"name": {"value": "Tango"}},
+            {"name": {"value": "Samba"}},
+            {"name": {"value": "Folklore"}},
+            {"name": {"value": "Ballad"}},
+            {"name": {"value": "Power Ballad"}},
+            {"name": {"value": "Rhythmic Soul"}},
+            {"name": {"value": "Freestyle"}},
+            {"name": {"value": "Duet"}},
+            {"name": {"value": "Punk Rock"}},
+            {"name": {"value": "Drum Solo"}},
+            {"name": {"value": "A capella"}},
+            {"name": {"value": "Euro House"}},
+            {"name": {"value": "Dance Hall"}},
+            {"name": {"value": "Dubstep"}},
+            {"name": {"value": "Trap"}},
+            {"name": {"value": "Drum n Bass"}},
+            {"name": {"value": "DNB"}},
+            {"name": {"value": "Breakbeat"}},
+            {"name": {"value": "Big Beat"}},
+            {"name": {"value": "Breaks"}},
+            {"name": {"value": "Hardcore"}},
+            {"name": {"value": "Electro"}},
+            {"name": {"value": "Garage"}},
+            {"name": {"value": "UK Garage"}},
+            {"name": {"value": "Dub"}},
+            {"name": {"value": "Grime"}},
+            {"name": {"value": "DJ Mix"}},
+            {"name": {"value": "Mash up"}},
+            {"name": {"value": "Flamenco"}},
+            {"name": {"value": "Bossanova"}},
+            {"name": {"value": "Pop Punk"}},
+            {"name": {"value": "Soft Rock"}},
+            {"name": {"value": "Alt Rock"}},
+            {"name": {"value": "Rock Ballad"}},
+            {"name": {"value": "Spoken"}},
+            {"name": {"value": "Podcast"}},
+            {"name": {"value": "Oldschool"}},
+            {"name": {"value": "Oldschool Hardcore"}},
+            {"name": {"value": "Acid House"}},
+            {"name": {"value": "Old school Hiphop"}},
+            {"name": {"value": "World"}},
+            {"name": {"value": "Brit Rock"}},
+            {"name": {"value": "Indie"}},
+            {"name": {"value": "Psy Trance"}},
+            {"name": {"value": "Baroque"}},
+            {"name": {"value": "Romantic"}}
+          ]
+        },
+        {
+          "name": "PLAYLIST",
+          "values": [
+            {"name": {"value": "Chilled"}},
+            {"name": {"value": "Relaxing"}},
+            {"name": {"value": "Romantic"}},
+            {"name": {"value": "Quiet"}},
+            {"name": {"value": "Bad-Ass"}},
+            {"name": {"value": "Badass"}},
+            {"name": {"value": "Underground"}},
+            {"name": {"value": "Old school"}},
+            {"name": {"value": "Future Chill"}},
+            {"name": {"value": "Summer"}},
+            {"name": {"value": "Summer Vibes"}},
+            {"name": {"value": "Melancholy"}},
+            {"name": {"value": "Smooth"}},
+            {"name": {"value": "Sexy"}},
+
+            {"name": {"value": "Weekend"}},
+            {"name": {"value": "Sunday Morning"}},
+            {"name": {"value": "Party"}},
+            {"name": {"value": "My Birthday"}},
+            {"name": {"value": "Party Tunes"}},
+            {"name": {"value": "BBQ"}},
+            {"name": {"value": "Barbecue"}},
+            {"name": {"value": "Wedding Night"}},
+            {"name": {"value": "Engagement"}},
+            {"name": {"value": "Girls Night"}},
+            {"name": {"value": "NYE"}},
+            {"name": {"value": "New Years Eve"}},
+            {"name": {"value": "Christmas"}},
+            {"name": {"value": "Easter"}},
+            {"name": {"value": "Thanksgiving"}},
+            {"name": {"value": "Best of 2016"}},
+
+
+            {"name": {"value": "Dinner Jazz"}},
+            {"name": {"value": "Driving"}},
+            {"name": {"value": "Night time"}},
+            {"name": {"value": "Going Out"}},
+            {"name": {"value": "Warm Up"}},
+            {"name": {"value": "Clubbing"}},
+            {"name": {"value": "Beach Bar"}},
+            {"name": {"value": "Thank God It's Friday"}},
+            {"name": {"value": "Break-up songs"}},
+
+
+            {"name": {"value": "Rocking"}},
+            {"name": {"value": "Rock N Roll"}},
+            {"name": {"value": "Soulful"}},
+            {"name": {"value": "Bluesy"}},
+            {"name": {"value": "Acoustic Songs"}},
+
+            {"name": {"value": "Classic HipHop"}},
+            {"name": {"value": "Oldschool HipHop"}},
+            {"name": {"value": "Gangster"}},
+            {"name": {"value": "Dance Classics"}},
+            {"name": {"value": "90s"}},
+            {"name": {"value": "80s"}},
+            {"name": {"value": "70s"}},
+            {"name": {"value": "Noughties"}},
+
+            {"name": {"value": "Piano Music"}},
+            {"name": {"value": "Guitar Music"}},
+
+            {"name": {"value": "Choral"}},
+            {"name": {"value": "Opera"}},
+            {"name": {"value": "Classical Music"}},
+            {"name": {"value": "Classical"}},
+            {"name": {"value": "Mozart"}},
+            {"name": {"value": "Chopin"}},
+            {"name": {"value": "Beethoven"}},
+            {"name": {"value": "Debussy"}},
+
+            {"name": {"value": "Metal"}},
+            {"name": {"value": "Metal Mayhem"}},
+            {"name": {"value": "Classic Metal"}},
+            {"name": {"value": "Feeling Blue"}},
+
+            {"name": {"value": "Cardio"}},
+            {"name": {"value": "Workout"}},
+            {"name": {"value": "Running"}},
+            {"name": {"value": "Gym Songs"}},
+
+            {"name": {"value": "Greatest songs ever"}},
+            {"name": {"value": "Top of the charts"}},
+            {"name": {"value": "Angry Shit"}},
+            {"name": {"value": "Eclectic Classics"}},
+            {"name": {"value": "Best Covers"}}
+          ]
+        }
+      ]
+    }
+  }
+}
