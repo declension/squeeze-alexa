@@ -16,9 +16,8 @@ and the [follow-up with videos](http://declension.net/posts/2017-01-03-squeeze-a
  * Low latency (given that it's a cloud service), i.e. fast at reacting to your commands.
  * Decent security, remaining under your own control
  * Extensive support for choosing songs by (multiple) genres, and playlists
- * Helpful, conversational responses / interaction in English (:new: and German)
+ * Helpful, conversational responses / interaction
  * :new: Support a variety of networks including restrictive firewalls (or 3G / 4G broadband with CGNAT)
-
 
 ### Things it is not
 
@@ -26,6 +25,12 @@ and the [follow-up with videos](http://declension.net/posts/2017-01-03-squeeze-a
  * A public / multi-user skill. This means **you will need Alexa and AWS developer accounts**.
  * A native LMS (Squeezeserver) plugin. So whilst this would be cool, at least there's no need to touch your LMS.
  * Easy to set up :scream:
+
+### Supported Languages
+ * British English :gb:
+ * American English :us:
+ * German :de:
+ * :new: French :fr:
 
 ### Controlling your music
 
@@ -55,9 +60,14 @@ Most commands can take a player name, or will remember the default / last player
  * _Alexa, ask Squeezebox what's playing \[in the Kitchen\]_
 
 #### Auf Deutsch
-* _Alexa, was ist das für ein Lied?_
-* _Alexa, alles ausschalten_
+* _Alexa, frage Squeezebox was ist das für ein Lied?_
+* _Alexa, frage Squeezebox alles ausschalten_
 * etc...
+
+#### En français
+
+ * _Alexa, demande à Squeezebox de baisser le volume dans la cuisine!_
+ * _Alexa, demande à Squeezebox qu'est ce qu'on écoute dans le salon?
 
 I want!
 -------
