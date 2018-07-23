@@ -25,6 +25,9 @@ from tests.utils import ROOT
 INTENTS_V0_PATH = os.path.join(ROOT,
                                'metadata/intents/v0/intents.json')
 
+INTENTS_V1_PATH = os.path.join(ROOT,
+                               'metadata/intents/v1/locale/en_US/intents.json')
+
 
 class AllIntentHandlingTest(TestCase):
     """Makes sure all registered handlers are behaving at least vaguely well"""
@@ -46,3 +49,8 @@ class AllIntentHandlingTest(TestCase):
         with open(INTENTS_V0_PATH) as f:
             j = json.load(f)
             assert j["intents"]
+
+    def test_intents_v1_json(self):
+        with open(INTENTS_V1_PATH) as f:
+            j = json.load(f)
+            assert j["interactionModel"]
