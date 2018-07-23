@@ -335,7 +335,7 @@ class SqueezeAlexa(AlexaHandler):
             artist = intent['slots']['Artist']['value']
             print_d("Extracted artist slot: {}".format(artist))
         except KeyError:
-            print_d("Couldn't process artist from: {}", intent)
+            print_d("Couldn't process artist from: {intent}", intent=intent)
             return speech_response(
                 text=_("Couldn't process that artist. "))
         else:
@@ -353,7 +353,7 @@ class SqueezeAlexa(AlexaHandler):
             album = intent['slots']['Album']['value']
             print_d("Extracted album slot: {}".format(album))
         except KeyError:
-            print_d("Couldn't process album from: {}", intent)
+            print_d("Couldn't process album from: {intent}", intent=intent)
             return speech_response(
                 text=_("Couldn't process that album. "))
         else:
