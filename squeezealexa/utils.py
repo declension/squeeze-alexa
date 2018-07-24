@@ -107,8 +107,8 @@ def wait_for(func, timeout=3, what=None, context=None):
         sleep(0.1)
         nt = time()
         if nt - t > timeout:
-            msg = "Timed out {task} in {context}".format(task=what,
-                                                         context=str(context))
+            msg = "Failed \"{task}\" in {context}, after {secs:.2f}s".format(
+                task=what, context=str(context), secs=nt - t)
             raise Exception(msg)
     print_d("Stats: \"{task}\" took < {duration:.2f} seconds", task=what,
             duration=nt - t)
