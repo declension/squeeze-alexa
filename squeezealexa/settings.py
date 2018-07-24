@@ -117,9 +117,12 @@ class MqttSettings(Settings):
     TOPIC_RESP = 'squeeze-resp'
     """The MQTT topic for outgoing messages (back to squeeze-alexa Lambda)"""
 
+    DEBUG = False
+    """Whether to log all MQTT traffic (warning: will contain passwords etc)"""
+
     def __init__(self, hostname=HOSTNAME, port=PORT, cert_dir=CERT_DIR,
                  internal_server_hostname=INTERNAL_SERVER_HOSTNAME,
-                 topic_req=TOPIC_REQ, topic_resp=TOPIC_RESP):
+                 topic_req=TOPIC_REQ, topic_resp=TOPIC_RESP, debug=DEBUG):
         # Do these explicitly to allow us to override by name
         self.hostname = hostname
         self.cert_dir = cert_dir
@@ -127,6 +130,7 @@ class MqttSettings(Settings):
         self.internal_server_hostname = internal_server_hostname
         self.topic_req = topic_req
         self.topic_resp = topic_resp
+        self.debug = debug
 
     @property
     def configured(self):
