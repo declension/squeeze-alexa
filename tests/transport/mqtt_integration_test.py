@@ -60,7 +60,8 @@ class TestLiveMqttTransport:
             replier.subscribe(test_mqtt_settings.topic_req)
             assert replier.loop_start() != MQTT_ERR_INVAL
             reply = transport.communicate(msg)
-            wait_for(lambda x: self.published, what="confirming publish")
+            wait_for(lambda x: self.published,
+                     what="confirming publish", timeout=5)
         finally:
             del transport
             replier.loop_stop()
