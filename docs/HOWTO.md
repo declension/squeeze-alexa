@@ -19,7 +19,7 @@ About this guide
  * This is still a work in progress but improving all the time - and you can help!
  * The documentation is versioned - so make sure you're using the docs for the same 
    squeeze-alexa version you're installing (e.g. here's the [v1.3 README](https://github.com/declension/squeeze-alexa/blob/v1.3/README.md)).
- * If you've followed this guide and are getting stuck, see [TROUBLESHOOTING](TROUBLESHOOTING.md).
+ * If you've followed this guide and are getting stuck, see [TROUBLESHOOTING](TROUBLESHOOTING.md), or [join the Gitter chat](https://gitter.im/squeeze-alexa/Lobby).
  * If you want to add some helpful detail to make it easier for others, that's great, check [CONTRIBUTING](CONTRIBUTING.md) - but please raise an issue first.
 
 
