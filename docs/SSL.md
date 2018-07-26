@@ -71,7 +71,7 @@ You _could_ use the username / password auth LMS CLI provides, but for these pro
 
 By mandating client-side TLS (aka SSL) with a private cert, `squeeze-alexa` avoids most of these problems.
 
-<sup>* Though people with fixed servers (i.e. not just using Lambdas) are beginning to try outwards-only tunnels or persistent websocket connections which could show promise here</sup>
+<sup>* Or you could [use MQTT](MQTT.md) of course.
 
 ### TLS Implementations
 I chose to go with [stunnel](http://stunnel.org/) (see details below),
@@ -83,7 +83,7 @@ but other options should work here (**feedback wanted!**)
 
 Make sure you configure a new (safe) TLS, **minimum TLS v1.2**.
 
-### With `stunnel`
+### With stunnel
 #### On Synology
 ##### Using Entware and `opkg`
 Follow [this excellent Synology forum post](https://forum.synology.com/enu/viewtopic.php?f=40&t=95346) to install Entware if you don't have it.
@@ -144,3 +144,29 @@ To do so you'll need something to edit your `stunnel.conf` (e.g. `vim` or `nano`
 As before `MY-PORT` and `MY-HOSTNAME` should be substituted with your own values.
 Note that here `MY-HOSTNAME` here is referring to the LMS address as seen from the proxy, i.e. internally.
 This will usually just be blank (==`localhost`) if your LMS is on the same machine as stunnel.
+
+
+### With Nginx 1.9+
+
+:new: Nginx 1.9 is supported and seems to work.
+Try [this example config](example-config/docker/nginx-tcp-ssl/nginx.conf), or something similar (remember to replace `LMS_SERVER` and `SSL_PORT`).
+You'll need to copy the cert across to `/etc/ssl/squeeze-alexa.pem`
+
+
+### With Dockerised Nginx
+:new: This can be Dockerised easily for people who prefer Docker.
+See the [nginx-tcp-ssl directory](example-config/docker/nginx-tcp-ssl/).
+The hard bit is probably getting your networking stable and port-forwarding appropriately.
+Remember the certificate name has to match this server's hostname...
+
+#### To build
+From the directory above, first copy your `squeeze-alexa.pem` file in, then:
+
+```bash
+docker build --build-arg INTERNAL_SERVER_HOSTNAME=192.168.1.123 -t $(basename $PWD) .
+```
+
+#### To run
+```bash
+docker run -p 19090:19090 $(basename $PWD)
+```
