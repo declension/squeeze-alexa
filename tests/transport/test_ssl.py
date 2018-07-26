@@ -110,7 +110,7 @@ class TestSslWrap(TestCase):
     def test_wrong_port(self):
         with ServerResource(tls=False) as server:
             with pytest.raises(TransportError) as exc:
-                SslSocketTransport('', port=server.port)
+                SslSocketTransport('localhost', port=server.port)
             msg = exc.value.message.lower()
             assert ('not tls on port %d' % server.port) in msg
 
@@ -124,7 +124,7 @@ class TestSslWrap(TestCase):
     def test_timeout(self):
         with TimeoutServer() as server:
             with pytest.raises(TransportError) as exc:
-                SslSocketTransport('', port=server.port,
+                SslSocketTransport('localhost', port=server.port,
                                    cert_file=CertFiles.CERT_AND_KEY,
                                    ca_file=CertFiles.CERT_AND_KEY,
                                    timeout=1)
