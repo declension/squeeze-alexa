@@ -253,7 +253,7 @@ class Server(object):
     def search_for_album(self, term=None):
         resp = self.__a_request("search 0 10 term:%s" % term, raw=True)
         albums = [v for k, v in self.__pairs_from(resp)
-                   if k == 'album' and re.search(term, v, re.IGNORECASE)]
+                  if k == 'album' and re.search(term, v, re.IGNORECASE)]
         return albums
 
     def search_for_artist(self, term=None):

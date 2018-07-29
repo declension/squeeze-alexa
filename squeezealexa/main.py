@@ -340,7 +340,8 @@ class SqueezeAlexa(AlexaHandler):
                 text=_("Couldn't process that artist. "))
         else:
             matched_artists = server.search_for_artist(artist)
-            print_d("Found Matching artists on squeezebox server {matched_artists}", matched_artists=matched_artists)
+            print_d("Found Matching artists on squeezebox server "
+                    "{matched_artists}", matched_artists=matched_artists)
             try:
                 server.play_artist(matched_artists[0], player_id=pid)
                 artist_name = sanitise_text(matched_artists[0])
@@ -349,8 +350,7 @@ class SqueezeAlexa(AlexaHandler):
                 return self.smart_response(text=text, speech=text)
             except KeyError:
                 return speech_response(
-                   text=_("Couldn't find the artist on squeezebox. ")
-                )
+                    text=_("Couldn't find the artist on squeezebox. "))
         raise ValueError("Don't understand intent '{}'".format(intent))
 
     @handler.handle(Play.ALBUM)
@@ -365,7 +365,8 @@ class SqueezeAlexa(AlexaHandler):
                 text=_("Couldn't process that album. "))
         else:
             matched_albums = server.search_for_album(album)
-            print_d("Found Matching albums on squeezebox server {matched_albums}", matched_albums=matched_albums)
+            print_d("Found Matching albums on squeezebox server "
+                    "{matched_albums}", matched_albums=matched_albums)
             try:
                 server.play_album(matched_albums[0], player_id=pid)
                 album_name = sanitise_text(matched_albums[0])
