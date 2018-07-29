@@ -249,7 +249,7 @@
             },
             {
               "name": "Artist",
-              "type": "AMAZON.Artist"
+              "type": "AMAZON.MusicGroup"
             }
           ],
           "samples": [
