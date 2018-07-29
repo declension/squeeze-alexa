@@ -28,6 +28,7 @@ TODO: script this too.
 
 Create a new directory somewhere on your server and copy these there.
 For Synology, I've chosen `/volume1/mqtt-squeeze`
+Make sure `mqtt_squeeze.py` is executable (`chmod +x mqtt_squeeze.py`).
 
 
 ### Create a service
@@ -35,22 +36,31 @@ For Synology, I've chosen `/volume1/mqtt-squeeze`
 On Linux, this might be SysV (traditional), [Upstart](https://en.wikipedia.org/wiki/Upstart), or [systemd](https://en.wikipedia.org/wiki/Systemd) (most modern Linux).
 
 #### Using Upstart on Synology
-For convenience find [an Upstart script suitable for Synology](example-config/upstart/mqtt-squeeze.conf).
+For convenience find [an Upstart script suitable for Synology](example-config/upstart/mqtt-squeeze.conf),
+which you can copy to `/etc/init/mqtt-squeeze.conf`.
+
+You can then reload the daemon: `sudo initctl reload-configuration`.
+
 You can then start it with:
 `sudo start mqtt-squeeze`
 
 And the status with:
 `sudo initctl status mqtt-squeeze`
 
+#### ...or manually
+You can just do it oldschool and run `nohup mqtt_squeeze.py &`,
+but you'll have to do this every time your server starts,
+and it doesn't take care of connections dying like Upstart etc.
 
 
-Set up cloud MQTT
------------------
+Set up MQTT with Amazon IOT
+---------------------------
 
 ### Create a new certificate
 
 This convenient AWS CLI command will create the certs in the right place (assuming you're in the project root, e.g. `~/workspace/squeeze-alexa/`).
-You'll need to be logged in first, as with all the other aws commands. Use `--profile` if you've got lots of accounts.
+You'll need to be logged in first, as with all the other aws commands.
+Use `--profile` if you've got lots of accounts.
 
 ```bash
 aws iot create-keys-and-certificate --set-as-active --certificate-pem-outfile etc/certs/iot-certificate.pem.crt --private-key-outfile etc/certs/iot-private.pem.key
