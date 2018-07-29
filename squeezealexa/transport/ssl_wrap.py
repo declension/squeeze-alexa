@@ -30,7 +30,7 @@ class SslSocketTransport(Transport):
         self.port = port
         self.timeout = timeout
         self.failures = 0
-        context = ssl.SSLContext(ssl.PROTOCOL_TLSv1)
+        context = ssl.SSLContext(_ssl.PROTOCOL_TLS_CLIENT)
         self.__harden_context(context)
         try:
             if ca_file:
@@ -41,8 +41,8 @@ class SslSocketTransport(Transport):
                 context.load_cert_chain(cert_file)
         except ssl.SSLError as e:
             self._die("Problem with Cert / CA (+key) files ({cert} / {ca}). "
-                      "Does it include the private key?",
-                      cert=cert_file, ca=ca_file, err=e)
+                      "Does it include the private key? ({reason})",
+                      cert=cert_file, ca=ca_file, reason=e.reason, err=e)
         except IOError as e:
             if 'No such file or directory' in e.strerror:
                 self._die("Can't find cert '{cert_file}' or CA '{ca_file}'. "
@@ -74,7 +74,8 @@ class SslSocketTransport(Transport):
                 self._die('probably not TLS on port {port} - '
                           'wrong SERVER_PORT maybe?', port=port, err=e)
             elif 'Connection reset by peer' in err_str:
-                self._die("server killed the connection - handshake error? "
+                self._die("server killed the connection - handshake error "
+                          "(e.g. unsupported TLS protocol)? "
                           "Check the SSL tunnel logs")
             elif 'CERTIFICATE_VERIFY_FAILED' in err_str:
                 self._die("Cert not trusted by / from server. "
@@ -85,8 +86,8 @@ class SslSocketTransport(Transport):
                 self._die("Couldn't connect to port {port} on {host} - "
                           "check the server setup and the firewall.",
                           host=self.hostname, port=self.port)
-            self._die("Connection problem ({type}: {err})",
-                      type=type(e).__name__, err=err_str)
+            self._die("Connection problem ({type}: {text})",
+                      type=type(e).__name__, text=err_str)
 
         peer_cert = self._ssl_sock.getpeercert()
         if peer_cert is None:
@@ -111,10 +112,14 @@ class SslSocketTransport(Transport):
         context.set_ciphers(ssl._RESTRICTED_SERVER_CIPHERS)
         # Prefer the server's ciphers by default so that we get stronger
         # encryption
-        context.options |= getattr(_ssl, "OP_CIPHER_SERVER_PREFERENCE", 0)
+        context.options |= _ssl.OP_CIPHER_SERVER_PREFERENCE
         # Use single use keys in order to improve forward secrecy
-        context.options |= getattr(_ssl, "OP_SINGLE_DH_USE", 0)
-        context.options |= getattr(_ssl, "OP_SINGLE_ECDH_USE", 0)
+        context.options |= _ssl.OP_SINGLE_DH_USE
+        context.options |= _ssl.OP_SINGLE_ECDH_USE
+        # Deny outdated protocols
+        context.options |= _ssl.OP_NO_SSLv2
+        context.options |= _ssl.OP_NO_SSLv3
+        context.options |= _ssl.OP_NO_TLSv1
 
     def communicate(self, raw: str, wait=True) -> str:
         eof = False

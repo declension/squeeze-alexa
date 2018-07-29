@@ -32,7 +32,6 @@ def run_diagnostics(transport: Transport):
                     password=LMS_SETTINGS.PASSWORD)
     assert server.genres
     assert server.playlists
-    assert server.favorites
     cur_play_details = server.get_track_details().values()
     if cur_play_details:
         print("Currently playing: %s" %

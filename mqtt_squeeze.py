@@ -28,7 +28,6 @@ from squeezealexa.transport.mqtt import CustomClient
 from squeezealexa.utils import print_d, print_w
 
 telnet = None
-DEBUG = True
 
 
 def on_connect(client, data, flags, rc):
@@ -44,7 +43,7 @@ def on_subscribe(client, data, mid, granted_qos):
 def on_message(client, userdata, message):
     num_lines = message.payload.count(b'\n')
     msg = message.payload.decode('utf-8')
-    if DEBUG:
+    if MQTT_SETTINGS.debug:
         print_d(">>> {msg} (@QoS {qos})", msg=msg.strip(), qos=message.qos)
     telnet.write(message.payload.strip() + b'\n')
     resp_lines = []
@@ -53,7 +52,7 @@ def on_message(client, userdata, message):
 
     rsp = b'\n'.join(resp_lines)
     if rsp:
-        if DEBUG:
+        if MQTT_SETTINGS.debug:
             print_d("<<< {msg}", msg=rsp.decode('utf-8'))
         client.publish(MQTT_SETTINGS.topic_resp, rsp, qos=1)
     else:
