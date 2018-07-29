@@ -240,6 +240,45 @@
             "play my {Playlist} playlist on {Player}",
             "play my {Playlist} playlist in {Player}"
           ]
+        },{
+          "name": "PlayArtistIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            },
+            {
+              "name": "Artist",
+              "type": "AMAZON.Artist"
+            }
+          ],
+          "samples": [
+            "play artist {Artist}",
+            "play band {Artist}",
+            "play artist {Artist} jams",
+            "play band {Artist} jams",
+            "play artist {Artist} on {Player}",
+            "play artist {Artist} in {Player}"
+          ]
+        },
+        {
+          "name": "PlayAlbumIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            },
+            {
+              "name": "Album",
+              "type": "AMAZON.MusicAlbum"
+            }
+          ],
+          "samples": [
+            "play album {Album}",
+            "play CD {Album}",
+            "play album {Album} on {Player}",
+            "play album {Album} in {Player}"
+          ]
         }
       ],
       "types": [
