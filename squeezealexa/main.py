@@ -341,7 +341,7 @@ class SqueezeAlexa(AlexaHandler):
         else:
             server.play_artist(artist, player_id=pid)
             artist_name = sanitise_text(artist)
-            text = _("Playing albums by \"{artist_name}\" "
+            text = _("Playing albums by \"{artist_name}\" on squeezebox "
                      .format(artist_name=artist_name))
             return self.smart_response(text=text, speech=text)
         raise ValueError("Don't understand intent '{}'".format(intent))
@@ -359,7 +359,8 @@ class SqueezeAlexa(AlexaHandler):
         else:
             server.play_album(album, player_id=pid)
             album_name = sanitise_text(album)
-            text = _("Playing \"album\" ".format(album_name=album_name))
+            text = _("Playing \"{album_name}\" on squeezebox".
+                     format(album_name=album_name))
             return self.smart_response(text=text, speech=text)
         raise ValueError("Don't understand intent '{}'".format(intent))
 

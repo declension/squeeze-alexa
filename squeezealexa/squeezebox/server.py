@@ -227,15 +227,17 @@ class Server(object):
     def play_artist(self, artist, player_id=None):
         """Adds then plays the albums of the specified artist"""
         commands = (["playlist clear"] +
-                    ["playlist addalbum * %s *" % urllib.quote(artist)] +
+                    ["playlist addalbum * %s *"
+                     % urllib.quote(artist.title())] +
                     ["play 2"])
         pid = player_id or self.cur_player_id
         return self._request(["%s %s" % (pid, com) for com in commands])
 
     def play_album(self, album, player_id=None):
         """Adds then plays the specified album"""
-        commands = (["playlist clear"] +
-                    ["playlist addalbum * * %s" % urllib.quote(album)] +
+        commands = (["playlist clear", "playlist shuffle 0"] +
+                    ["playlist addalbum * * %s"
+                     % urllib.quote(album.title())] +
                     ["play 2"])
         pid = player_id or self.cur_player_id
         return self._request(["%s %s" % (pid, com) for com in commands])
