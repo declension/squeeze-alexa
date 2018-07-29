@@ -339,11 +339,18 @@ class SqueezeAlexa(AlexaHandler):
             return speech_response(
                 text=_("Couldn't process that artist. "))
         else:
-            server.play_artist(artist, player_id=pid)
-            artist_name = sanitise_text(artist)
-            text = _("Playing albums by \"{artist_name}\" on squeezebox "
-                     .format(artist_name=artist_name))
-            return self.smart_response(text=text, speech=text)
+            matched_artists = server.search_for_artist(artist)
+            print_d("Found Matching artists on squeezebox server {matched_artists}", matched_artists=matched_artists)
+            try:
+                server.play_artist(matched_artists[0], player_id=pid)
+                artist_name = sanitise_text(matched_artists[0])
+                text = _("Playing albums by \"{artist_name}\" on squeezebox"
+                         .format(artist_name=artist_name))
+                return self.smart_response(text=text, speech=text)
+            except KeyError:
+                return speech_response(
+                   text=_("Couldn't find the artist on squeezebox. ")
+                )
         raise ValueError("Don't understand intent '{}'".format(intent))
 
     @handler.handle(Play.ALBUM)
@@ -357,11 +364,18 @@ class SqueezeAlexa(AlexaHandler):
             return speech_response(
                 text=_("Couldn't process that album. "))
         else:
-            server.play_album(album, player_id=pid)
-            album_name = sanitise_text(album)
-            text = _("Playing \"{album_name}\" on squeezebox".
-                     format(album_name=album_name))
-            return self.smart_response(text=text, speech=text)
+            matched_albums = server.search_for_album(album)
+            print_d("Found Matching albums on squeezebox server {matched_albums}", matched_albums=matched_albums)
+            try:
+                server.play_album(matched_albums[0], player_id=pid)
+                album_name = sanitise_text(matched_albums[0])
+                text = _("Playing \"{album_name}\" on squeezebox".
+                         format(album_name=album_name))
+                return self.smart_response(text=text, speech=text)
+            except KeyError:
+                return speech_response(
+                    text=_("Couldn't find that album on squeezebox. ")
+                )
         raise ValueError("Don't understand intent '{}'".format(intent))
 
     def _genres_from_slots(self, slots, genres):
