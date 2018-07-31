@@ -3,6 +3,8 @@ set -e
 
 root=$(readlink -f "$(dirname $0)/..")
 release_dir="$root/releases"
+[ -d "$release_dir" ] || mkdir "$release_dir"
+
 pushd "$root/dist" >/dev/null
 version=${1:-latest}
 echo "<<<< Doing release build for version '$version'. Continue?... >>>>"
