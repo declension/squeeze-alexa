@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: Set up various tools
-          command: apt update && apt install -y gettext zip unzip python3-boto3
+          command: apt update && apt install -y gettext zip unzip
 
       - run:
           name: Compile translations
@@ -18,7 +18,7 @@ jobs:
 
       - run:
           name: Setup Pipenv
-          command: pip install pipenv
+          command: pip -q install pipenv
 
       - run:
           name: Install deps
@@ -34,4 +34,4 @@ jobs:
 
       - run:
           name: Test release script
-          command: bin/deploy.py
+          command: pip3 -q install boto3 && bin/deploy.py
