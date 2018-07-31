@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: Set up various tools
-          command: apt update && apt install -y gettext zip unzip
+          command: apt update && apt install -y gettext zip unzip python-boto3
 
       - run:
           name: Compile translations
@@ -34,4 +34,4 @@ jobs:
 
       - run:
           name: Test release script
-          command: bin/deploy.sh
+          command: bin/deploy.py
