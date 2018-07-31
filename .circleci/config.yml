@@ -25,27 +25,9 @@ jobs:
           command: pipenv install --dev
 
       - run:
-          name: Tests
-          command: pipenv run pytest -v --cov=squeezealexa --cov-report=term tests
-
-      - store_test_results:
-          path: test-results
-
-      - store_artifacts:
-          path: test-results
-
-      - run:
-          name: Code Quality
-          command: pipenv run flake8 --statistics .
-
-      - run:
-          name: Coverage submission
-          command: pipenv run coveralls
-
-      - run:
           name: Test build script
           command: bin/build.sh
 
       - run:
           name: Test release script
-          command: yes | bin/release.sh
+          command: bin/release.sh -y

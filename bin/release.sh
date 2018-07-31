@@ -3,12 +3,14 @@ set -e
 
 root=$(readlink -f "$(dirname $0)/..")
 release_dir="$root/releases"
-[ -d "$release_dir" ] || mkdir "$release_dir"
+[ -d "$release_dir" ] || mkdir -p "$release_dir"
 
 pushd "$root/dist" >/dev/null
 version=${1:-latest}
 echo "<<<< Doing release build for version '$version'. Continue?... >>>>"
-read -n 1 -p "Continue? (ctrl-c to abort)"
+if [ "$1" != "-y" ]; then
+    read -n 1 -p "Continue? (ctrl-c to abort)"
+fi
 
 $(dirname $0)/compile-translations
 
