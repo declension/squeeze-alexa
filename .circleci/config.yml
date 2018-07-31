@@ -43,6 +43,9 @@ jobs:
           command: pipenv run coveralls
 
       - run:
-          name: Test Packaging
+          name: Test build script
           command: bin/build.sh
+
+      - run:
+          name: Test release script
           command: yes | bin/release.sh
