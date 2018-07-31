@@ -26,6 +26,8 @@ import boto3
 
 from botocore.exceptions import ClientError
 
+OUTPUT_ZIP = "lambda_function.zip"
+
 LAMBDA_NAME = "squeeze-alexa"
 MANAGED_POLICY_ARN = ("arn:aws:iam::aws:policy/service-role/"
                       "AWSLambdaBasicExecutionRole")
@@ -66,7 +68,9 @@ def suitable(name: str) -> bool:
 
 def main(args=sys.argv[1:]):
     parser = argparse.ArgumentParser(description="squeeze-alexa uploader")
-    parser.add_argument("--profile", action="store")
+    parser.add_argument("--profile", action="store", help="AWS profile to use")
+    parser.add_argument("--upload", action="store",
+                        help="Create / update lambda with package")
     parser.add_argument("--skill", required=True, action="store",
                         help="Your Alexa skill ID (without 'amzn1.ask.skill')")
     args = parser.parse_args(args)
@@ -81,7 +85,13 @@ def main(args=sys.argv[1:]):
     chdir(dist_dir)
 
     zip_data = create_zip()
-
+    if not args.upload:
+        log.info("Creating zip for manual upload. "
+                 "Use --upload to setup skill directly")
+        with open(OUTPUT_ZIP, "wb") as f:
+            f.write(zip_data.read())
+        log.info("Wrote %s", OUTPUT_ZIP)
+        return
     role_arn = set_up_role()
     if lambda_exists():
         upload(zip_data)
@@ -108,8 +118,8 @@ def upload(zip: BinaryIO, name=LAMBDA_NAME):
     r = lam.update_function_code(FunctionName=name,
                                  ZipFile=zip.read())
     log.info("Updated Lambda: %s", r['FunctionArn'])
-    log.info("Updated %s (\"%s\"), with %.0f KB of zipped data",
-             name, r["Description"], r["CodeSize"] / 1024)
+    log.debug("Updated %s (\"%s\"), with %.0f KB of zipped data",
+              name, r["Description"], r["CodeSize"] / 1024)
 
 
 def create_lambda(role_arn: str, zip_data: BinaryIO, skill_id: str) -> Arn:
