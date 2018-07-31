@@ -31,3 +31,7 @@ jobs:
       - run:
           name: Test release script
           command: bin/release.sh -y
+
+      - run:
+          name: Test release script
+          command: bin/deploy.sh
