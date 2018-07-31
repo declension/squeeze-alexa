@@ -31,8 +31,8 @@ RELEASE_EXCLUDES=$(tr '\n' ' ' <<< """
 test-results""")
 
 echo "Creating ZIP (excluding $RELEASE_EXCLUDES)"
-rm "$release_dir/releases/$output" 2>/dev/null || true
+rm "$release_dir/$output" 2>/dev/null || true
 zip -r "$release_dir/$output" * -x $RELEASE_EXCLUDES
-cd ..
+cd "$root"
 echo -e "\nSuccess! Created release ZIP: ($(ls -sh "$output"))"
 popd >/dev/null
