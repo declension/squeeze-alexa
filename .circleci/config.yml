@@ -34,4 +34,4 @@ jobs:
 
       - run:
           name: Test release script
-          command: pip3 -q install boto3 && bin/deploy.py
+          command: pip3 -q install boto3 && bin/deploy.py zip

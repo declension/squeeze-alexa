@@ -18,7 +18,7 @@ import re
 import sys
 from io import BytesIO
 from os import path, walk, chdir
-from os.path import dirname
+from os.path import dirname, realpath
 from typing import BinaryIO
 from zipfile import ZipFile, ZIP_DEFLATED
 
@@ -36,11 +36,12 @@ EXCLUDE_REGEXES = [re.compile(s) for s in
                    ("__pycache__/", "\.git/", "\.dist-info/",
                     "docs/", "metadata/",
                     "\.po$", r"~$", "\.pyc$", "\.md$", "\.zip$")]
+AWS_UPLOAD_CMD = 'aws'
 
 logging.basicConfig(format="[{levelname:7s}] {message}",
                     style="{")
 log = logging.getLogger("squeeze-alexa-uploader")
-log.setLevel(logging.DEBUG)
+log.setLevel(logging.INFO)
 
 ROLE_POLICY_DOC = json.dumps({
     "Version": "2012-10-17",
@@ -67,31 +68,47 @@ def suitable(name: str) -> bool:
 
 
 def main(args=sys.argv[1:]):
-    parser = argparse.ArgumentParser(description="squeeze-alexa uploader")
-    parser.add_argument("--profile", action="store", help="AWS profile to use")
-    parser.add_argument("--upload", action="store",
-                        help="Create / update lambda with package")
-    parser.add_argument("--skill", required=True, action="store",
-                        help="Your Alexa skill ID (without 'amzn1.ask.skill')")
+    parser = argparse.ArgumentParser(description="squeeze-alexa deployer")
+    parser.add_argument("-v", "--verbose", help="Verbose logging",
+                        action="store_true")
+
+    subparsers = parser.add_subparsers(dest="cmd", help="Command")
+    subparsers.required = True
+    subparsers.add_parser('zip', help='create local ZIP')
+
+    aws_parser = subparsers.add_parser(AWS_UPLOAD_CMD, help='Set up AWS Lambda')
+    aws_parser.add_argument("--profile", action="store",
+                            help="AWS profile to use")
+    aws_parser.add_argument("--skill", required=True, action="store",
+                            metavar="SKILL_ID",
+                            help="Your Alexa skill ID (amzn1.ask.skill....)")
     args = parser.parse_args(args)
+    log.setLevel(logging.DEBUG if args.verbose else logging.INFO)
+    log.debug(args)
+
+    dist_dir = realpath(path.join(dirname(dirname(__file__)), "dist"))
+    log.info("Using built code and config from directory: %s", dist_dir)
+    chdir(dist_dir)
+
+    zip_data = create_zip()
+    if args.cmd == AWS_UPLOAD_CMD:
+        log.debug("Setting up AWS Lambda")
+        aws_upload(args, zip_data)
+    else:
+        log.info("Creating zip for manual upload. "
+                 "Use '%s' command to setup skill automatically",
+                 AWS_UPLOAD_CMD)
+        with open(OUTPUT_ZIP, "wb") as f:
+            f.write(zip_data.read())
+        log.info("Wrote %s", OUTPUT_ZIP)
+
+
+def aws_upload(args: argparse.Namespace, zip_data: BinaryIO):
     if args.profile:
         session = boto3.session.Session()
         log.debug("Available profiles: %s", session.available_profiles)
         log.info("Using profile: %s", args.profile)
         boto3.setup_default_session(profile_name=args.profile)
-
-    dist_dir = path.join(dirname(dirname(__file__)), "dist")
-    logging.info("Taking built code from %s", dist_dir)
-    chdir(dist_dir)
-
-    zip_data = create_zip()
-    if not args.upload:
-        log.info("Creating zip for manual upload. "
-                 "Use --upload to setup skill directly")
-        with open(OUTPUT_ZIP, "wb") as f:
-            f.write(zip_data.read())
-        log.info("Wrote %s", OUTPUT_ZIP)
-        return
     role_arn = set_up_role()
     if lambda_exists():
         upload(zip_data)
@@ -150,7 +167,7 @@ def create_zip() -> BinaryIO:
             for d in list(dirs):
                 if not suitable(d + "/"):
                     dir_path = path.join(root, d)
-                    log.info("Excluding dir: %s", dir_path)
+                    log.debug("Excluding dir: %s", dir_path)
                     try:
                         dirs.remove(d)
                     except ValueError:
@@ -160,7 +177,8 @@ def create_zip() -> BinaryIO:
                     zf.write(path.join(root, name), compress_type=ZIP_DEFLATED)
     log.debug("All files: %s", ", ".join(zi.filename for zi in zf.filelist))
     io.seek(0)
-    log.info("Size of ZIP: %.0f KB", len(io.read()) / 1024)
+    log.info("Added %d files to ZIP (%.0f KB total)",
+             len(zf.filelist), len(io.read()) / 1024)
     io.seek(0)
     return io
 
