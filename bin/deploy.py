@@ -28,6 +28,7 @@ import boto3
 from botocore.exceptions import ClientError
 
 ROOT = realpath(dirname(dirname(__file__)))
+DIST_SUBDIR = "dist"
 
 OUTPUT_ZIP = path.join(ROOT, "lambda_function.zip")
 MQTT_OUTPUT_GZIP = path.join(ROOT, "mqtt-squeeze.tgz")
@@ -105,20 +106,22 @@ def main(args=sys.argv[1:]):
     log.setLevel(logging.DEBUG if args.verbose else logging.INFO)
     log.debug(args)
 
-    dist_dir = path.join(ROOT, "dist")
+    dist_dir = path.join(ROOT, DIST_SUBDIR)
     if isdir(dist_dir):
-        chdir(dist_dir)
         log.info("Using built code and config from directory: %s", dist_dir)
     else:
-        log.info("No 'dist/' dir found, using root %s for files", ROOT)
+        dist_dir = ROOT
+        log.info("No '%s/' dir found, using root %s for files",
+                 DIST_SUBDIR, ROOT)
+    chdir(dist_dir)
     c = Commands(args.cmd)
     if c == Commands.AWS_DEPLOY:
         log.debug("Setting up AWS Lambda")
         aws_upload(args, create_skill_zip())
     elif c == Commands.ZIP_MQTT:
-        log.debug("Creating zip for mqtt-squeeze")
+        log.debug("Creating tgz for mqtt-squeeze")
         with open(MQTT_OUTPUT_GZIP, "wb") as f:
-            create_mqtt_gzip(f)
+            create_mqtt_gzip(f, root=dist_dir)
         log.info("Wrote %s", MQTT_OUTPUT_GZIP)
     else:
         log.info("Creating zip for manual skill upload. "
@@ -215,7 +218,7 @@ def create_skill_zip() -> BinaryIO:
     return io
 
 
-def create_mqtt_gzip(f: BinaryIO) -> None:
+def create_mqtt_gzip(f: BinaryIO, root: str = ROOT) -> None:
     def exclude_bad(ti: TarInfo) -> Union[TarInfo, None]:
         for r in EXCLUDE_REGEXES:
             if r.search(ti.name):
@@ -225,7 +228,7 @@ def create_mqtt_gzip(f: BinaryIO) -> None:
     with TarFile.gzopen("mqtt-squeeze", mode="w", fileobj=f) as tf:
         tf.add(path.join(ROOT, 'mqtt_squeeze.py'), arcname='mqtt_squeeze.py')
         for d in ['etc', 'squeezealexa']:
-            tf.add(path.join(ROOT, d), arcname=d, filter=exclude_bad)
+            tf.add(path.join(root, d), arcname=d, filter=exclude_bad)
 
         if not [fn for fn in tf.getnames() if fn.endswith('.pem.crt')]:
             raise Error("Can't find any certs (.pem.crt files). "
