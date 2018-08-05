@@ -14,7 +14,7 @@ echo "Checking for uncommitted changes..."
 files=$(git diff --cached --exit-code --name-only) || die "You have staged Git changes. Commit or stash: \n $files"
 files=$(git diff --exit-code --name-only) || die "You have unstaged Git changes. Commit or stash: \n $files"
 
-pushd "$root/dist" >/dev/null
+pushd "$root/dist" >/dev/null || die "Perhaps you haven't run the build yet?"
 version=${1:-latest}
 echo "<<<< Doing release build for version '$version'. Continue?... >>>>"
 if [ "$1" != "-y" ]; then
