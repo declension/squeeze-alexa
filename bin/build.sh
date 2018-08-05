@@ -10,7 +10,11 @@ includes="handler.py squeezealexa/ locale/ etc/ metadata/ bin docs/ README.md"
 
 pushd "$root" >/dev/null
 dist_dir="$PWD/dist"
-echo "Building to $dist_dir"
+echo "Building to $dist_dir..."
+
+$root/bin/update-translations
+
+$root/bin/compile-translations
 
 echo "Installing Pipenv dependencies..."
 pipenv install --dev >/dev/null

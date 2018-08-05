@@ -246,6 +246,6 @@ msgstr ""
 msgid "and"
 msgstr ""
 
-#: squeezealexa/i18n.py:45
+#: squeezealexa/i18n.py:47
 msgid "favorites"
 msgstr "favourites"

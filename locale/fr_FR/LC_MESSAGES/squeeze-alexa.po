@@ -2,6 +2,7 @@ msgid ""
 msgstr ""
 "Language: fr_FR\n"
 "Content-Type: text/plain; charset=UTF-8\n"
+
 #: squeezealexa/main.py:69
 msgid "Squeezebox is online. Please try some commands."
 msgstr "Squeezebox est en ligne. Merci d'essayer quelques commandes."
@@ -216,7 +217,8 @@ msgstr "Joue la liste de lecture \"{name}\""
 #: squeezealexa/main.py:301
 #, python-brace-format
 msgid "Couldn't find a playlist matching \"{name}\".How about the \"{suggestion}\" playlist?"
-msgstr "Je n'ai pas trouvé de liste de lecture qui contient \"{name}\". Que pensez-vous de la liste de lecture \"{suggestion}\" ?"
+msgstr "Je n'ai pas trouvé de liste de lecture qui contient \"{name}\". "
+       "Que pensez-vous de la liste de lecture {suggestion}\" ?"
 
 #: squeezealexa/main.py:319
 #, python-brace-format
@@ -241,10 +243,10 @@ msgstr "Impossible de trouver les genres : {genres}"
 msgid "Hasta la vista. Baby."
 msgstr "Hasta la vista. Baby."
 
-#: squeezealexa/i18n.py:38
-msgid "favorites"
-msgstr "favoris"
-
 #: squeezealexa/utils.py:38
 msgid "and"
 msgstr "et"
+
+#: squeezealexa/i18n.py:47
+msgid "favorites"
+msgstr "favoris"

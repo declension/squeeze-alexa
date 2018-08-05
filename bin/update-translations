@@ -12,7 +12,7 @@ echo -e "\nMerging translations sources..."
 find locale -iname '*.po' -execdir msgmerge --width=120 -U -v {} ../../${DOMAIN}.pot \;
 echo "...done"
 
-echo -e "\nTidying up..."
+echo -e "\nTidying up translations..."
 rm "locale/$DOMAIN.pot"
-echo "...done"
 popd >/dev/null
+echo "...done"
