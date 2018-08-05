@@ -31,11 +31,12 @@ No output / error code means everything is good...
 
 ### Releasing
 
-This is crudely semi-automated now:
+This is mostly automated now:
 ```
-bin/create_zip.sh release 1.3
+bin/build.sh
+bin/release.sh 3.0
 ```
-will create `squeeze-alexa-1.3.zip` (hopefully) suitable for upload to Github etc.
+will create `releases/squeeze-alexa-3.0.zip` (hopefully) suitable for upload to Github etc.
 
 
 

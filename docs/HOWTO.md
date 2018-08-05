@@ -5,12 +5,13 @@ Set up your own squeeze-alexa
 
 Prerequisites
 -------------
- * A running LMS instance on a Linux-ish server or NAS (and some squeezebox players)
- * An Amazon Echo / Echo Dot
- * An Amazon developer account, and an Alexa one (tip: use the same email, or you'll wish you had)
- * A router that supports port forwarding, and ideally DDNS of some sort (nearly all modern routers do).
- * Some time and a little knowledge of: Linux, networking, AWS / Lambda, SSL
- * _Optional_: a domain name, and a "real" (not self-signed) SSL certificate to match.
+ * A Linux server, NAS (e.g. Synology) or even [Raspberry Pi](https://www.raspberrypi.org/)
+ * [LMS](http://wiki.slimdevices.com/index.php/Logitech_Media_Server), typically running on the above server.
+ * Some Squeezebox players - even if they're Chromecasts, RPIs other compatible devices.
+ * At least one Amazon Echo device
+ * An Amazon developer account, and an Alexa one (:note: use the same email, or you'll wish you had)
+ * Some time and a little knowledge of: Linux, networking, AWS, Alexa, and SSL.
+ * _(SSL only)_: A router that supports port forwarding, and ideally DDNS of some sort (nearly all modern routers do).
 
 
 
@@ -27,7 +28,8 @@ About this guide
 Choose your networking
 ----------------------
 
-:new: There are now two ways squeeze-alexa can work: SSL tunnel mode, or MQTT mode.
+:new: There are now two alternative ways squeeze-alexa can work:
+SSL tunnel mode, or MQTT mode.
 These are referred to as _transports_.
 
 ### SSL Tunnel
@@ -40,9 +42,9 @@ These are referred to as _transports_.
  * Works on all networking / firewalls including 3G / 4G setups.
  * Still experimental. It definitely works, but no documentation around much of this yet.
  * Relies on more AWS infrastructure (AWS IoT)
- * Need a server that can run Python (3.5+), to run `mqtt-squeeze` (or: write your own...)
+ * Need a server that can run Python (3.5+), to run `mqtt-squeeze` (or: write your own tunnel...)
 
-So, you decide, then [set up SSL transport](SSL.md) or [set up MQTT transport](./MQTT.md).
+So, you decide, then [set up SSL transport](SSL.md) **or** [set up MQTT transport](./MQTT.md).
 
 
 
@@ -74,14 +76,16 @@ squeeze-alexa has official [releases on Github](https://github.com/declension/sq
 It is recommended to choose from these, but if you want the _very_ latest (or plan to contribute yourself),
 get the `master` branch (no guarantees though generally the testing ensures it's fully working)*[]:
 
-#### from a release
+#### from a release zip
+ * Release zips should have _only_ what you need to set up and install your - not translator / developer tests, scripts etc.
+ * Due to a few release problems, not all releases have these zips currently (follow the source code method instead)
  * Download a [a release ZIP](https://github.com/declension/squeeze-alexa/releases) (or [latest master](https://github.com/declension/squeeze-alexa/archive/master.zip))
  * and extract this to your computer, e.g. to a direcotry like `/home/me/workspace/squeeze-alexa`.
 
-#### from Source code
+#### from source code
 Make sure you have everything detailed in [requirements](#Requirements) above set up.
 
-* Clone the repo: `git clone git@github.com:declension/squeeze-alexa.git`.
+* Clone the repo: `git clone git@github.com:declension/squeeze-alexa.git` (or download a _source zip_ from the releases page)
 * You can / should still choose a release tag (e.g. `git checkout v1.1`), or go with bleeding edge (`HEAD`).
 Note you will have to run a release process now to get the translations
 * Run the translation script: `bin/compile-translations`, else you'll get errors about like [No translation file found](https://github.com/declension/squeeze-alexa/issues/46).
@@ -153,42 +157,74 @@ Note: This has only been tested for `en_US`.
 Here's another thousand words on roughly what you're aiming for:
 ![Slots screenshot](amazon-developer-slots-screenshot-2017-11.png)
 
-##### Configuration
- * Use the AWS ARN for your new AWS Lambda function. This is where the linkage between the AWS Console world and this Amazon Developer account becomes important.
+##### Endpoint configuration
+ * This is where the linkage between the AWS Console world and this Amazon Developer account becomes important.
+ * Once ready, enter the AWS ARN for your new AWS Lambda function (see below).
  You'll have to [read some Alexa + Lambda docs](https://developer.amazon.com/docs/custom-skills/host-a-custom-skill-as-an-aws-lambda-function.html) for full details.
  * You don't want account linking. One day squeeze-alexa may implement this and build a server, but probably not.
- * The new features (since 2016) are all unnecessary for squeeze-alexa, so no permissions necessary
+ * The new (since 2016) permissions (Address, lists, payment etc) are all unnecessary for squeeze-alexa, so leave them disabled.
 
-#### Lambda setup
-From your AWS console, select Lambda. Again, best to refer to the official the guides ideally e.g. [Deploying a Sample Custom Skill To AWS Lambda](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/deploying-a-sample-skill-to-aws-lambda#creating-the-lambda-function-for-the-sample).
-Here's what your Lambda function view should look like
-![Lambda console screenshot](lambda-management-screenshot-2017-11.png)
+
+AWS setup
+---------
+
+:new: As of [v2.1](https://github.com/declension/squeeze-alexa/releases/tag/2.1),
+you can use `deploy.py` to automate the AWS Lambda creation / update including IAM permissions, etc (BETA).
+The script will output your Lambda ARN, for convenience in finishing the setup.
+
+
+### Manual lambda setup
+
+If you prefer / have to do the setup manually...
+
+ * From your AWS console, select Lambda.
+ * Refer to the official the guides ideally e.g. [Deploying a Sample Custom Skill To AWS Lambda](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/deploying-a-sample-skill-to-aws-lambda#creating-the-lambda-function-for-the-sample).
+ * Don't forget to [create an IAM role](https://developer.amazon.com/docs/custom-skills/host-a-custom-skill-as-an-aws-lambda-function.html#define-new-role) for your skill.
+ * Here's what your Lambda function view should look like
+   ![Lambda console screenshot](lambda-management-screenshot-2017-11.png)
+ * Take a note of the ARN for your new lambda, to use in your Skill setup (See _Endpoint Configuration_ above)
 
 
 ### Upload the customised skill
 
-#### Create the zip file
- * To build the package, use the helpful [`create_zip.sh`](../bin/create_zip.sh) script:
+#### dev-only: build the project
+ * To build the project, use the helpful [`build.sh`](../bin/build.sh) script:
   ```bash
-  bin/create_zip.sh
+  bin/build.sh
   ```
+
+#### Upload the zip file
 To upload, you can choose:
 
-#### Upload with the GUI
- * Upload the created `lambda_function.zip` in the AWS Lambda interface ([as described here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function#about-lambda-functions-and-custom-skills))
+#### :new: deploy and set up AWS Lambda automatically
+You'll need:
+ * To be logged in to AWS CLI (Use `aws configure` or edit `~/.aws/config` yourself with your secrets)
+ * Your Alexa Skill ID (Click _View skill ID_ in the Alexa Skills home page,
+   or you can see it in the URLs). It starts `amzn1.ask.skill...`
 
-#### ...or with the AWS CLI
- * You can use the [AWS CLI `update-function-code` call](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html) to upload the zip from the manual step.
- * Make sure you have the [AWS CLI installed](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) (e.g. `pip install awscli`) and have logged in (`aws configure`).
- * Then
 ```bash
-aws lambda update-function-code --zip-file fileb://lambda_function.zip --function-name squeezebox
+bin/deploy.py aws --skill SKILL_ID
 ```
-(adjusting for your own function name, of course)
+This creates or updates your AWS Lambda automatically
+Try `deploy.py --help` for details.
+
+#### ...or upload yourself
+ * :new: Use the `deploy.py` script to (only) create a zip:
+   ```bash
+   bin/deploy.py zip
+   ```
+ * Upload the created `lambda_function.zip` in the AWS Lambda interface ([as described here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function#about-lambda-functions-and-custom-skills))
+ * ...or if you prefer, use the [AWS CLI `update-function-code` call](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html) to upload the zip
+   * Make sure you have the [AWS CLI installed](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) (e.g. `pip install awscli`) and have logged in (`aws configure`).
+   * Then
+     ```bash
+     aws lambda update-function-code --zip-file fileb://lambda_function.zip --function-name squeeze-alexa
+     ```
+     (adjusting for your own function name, of course)
 
 
 ### Install your Skill on your Echo
- * Make sure you've enabled the testing checkbox for this skill in the developer portal
+ * You might need to enable the testing checkbox for this skill in the developer portal, though this seems to have moved.
  * In the [Alexa app](http://alexa.amazon.com), you should see your Squeeze Alexa skill listed under _Skills_ -> _My Skills_
  * **Do not submit the skill for certification**. As the author of this software I am not allowing this under the license (or indemnifying any consequences of doing so), but more to the point _it won't pass anyway_.
 
