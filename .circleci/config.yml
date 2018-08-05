@@ -34,7 +34,7 @@ jobs:
 
       - run:
           name: Test mqtt-squeeze zip creation
-          command: touch dist/etc/certs/foo.pem.crt && dist/bin/deploy.py mqtt
+          command: touch dist/etc/certs/foo.pem.crt && bin/deploy.py mqtt
 
       - run:
           name: Test deploy script (from source)
@@ -42,5 +42,5 @@ jobs:
 
       - run:
           name: Test deploy script (without build)
-          command:  rm -rf dist/ tests/ && bin/deploy.py zip
+          command: rm -rf dist/ tests/ && bin/deploy.py zip
 
