@@ -33,6 +33,10 @@ jobs:
           command: bin/release.sh -y
 
       - run:
+          name: Test mqtt-squeeze zip creation
+          command: touch dist/etc/certs/foo.pem.crt && dist/bin/deploy.py mqtt
+
+      - run:
           name: Test deploy script (from source)
           command: pip3 -q install boto3 && bin/deploy.py zip
 
@@ -40,6 +44,3 @@ jobs:
           name: Test deploy script (without build)
           command:  rm -rf dist/ tests/ && bin/deploy.py zip
 
-      - run:
-          name: Test mqtt zip creation
-          command: bin/deploy.py mqtt
