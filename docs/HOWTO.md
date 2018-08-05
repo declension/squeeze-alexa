@@ -187,11 +187,17 @@ If you prefer / have to do the setup manually...
 
 ### Upload the customised skill
 
-#### dev-only: build the project
- * To build the project, use the helpful [`build.sh`](../bin/build.sh) script:
-  ```bash
-  bin/build.sh
-  ```
+If you chose _building from source_ originally (developer-style),
+you need to build the project first.
+This runs various scripts and produces a minimal deployment directory of `dist/`, ready to zip.
+
+Use the helpful [`build.sh`](../bin/build.sh) script:
+```bash
+bin/build.sh
+```
+
+If not (so you probably won't even _have_ the build script), you can skip this bit
+
 
 #### Upload the zip file
 To upload, you can choose:
@@ -213,6 +219,7 @@ Try `deploy.py --help` for details.
    ```bash
    bin/deploy.py zip
    ```
+   :information_source: This uses the `dist/` directory if it exists, else assumes you're using an expanded release zip (no tests / translation source / dev scripting etc).
  * Upload the created `lambda_function.zip` in the AWS Lambda interface ([as described here](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/developing-an-alexa-skill-as-a-lambda-function#about-lambda-functions-and-custom-skills))
  * ...or if you prefer, use the [AWS CLI `update-function-code` call](https://docs.aws.amazon.com/cli/latest/reference/lambda/update-function-code.html) to upload the zip
    * Make sure you have the [AWS CLI installed](http://docs.aws.amazon.com/cli/latest/userguide/installing.html) (e.g. `pip install awscli`) and have logged in (`aws configure`).

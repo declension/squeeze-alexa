@@ -18,13 +18,14 @@ import re
 import sys
 from io import BytesIO
 from os import path, walk, chdir
-from os.path import dirname, realpath
-from typing import BinaryIO
-from zipfile import ZipFile, ZIP_DEFLATED
+from os.path import dirname, realpath, isdir
+from typing import BinaryIO, Set
+from zipfile import ZipFile, ZIP_DEFLATED, ZipInfo
 
 import boto3
-
 from botocore.exceptions import ClientError
+
+ROOT = realpath(dirname(dirname(__file__)))
 
 OUTPUT_ZIP = "lambda_function.zip"
 
@@ -33,7 +34,7 @@ MANAGED_POLICY_ARN = ("arn:aws:iam::aws:policy/service-role/"
                       "AWSLambdaBasicExecutionRole")
 ROLE_NAME = "squeeze-alexa"
 EXCLUDE_REGEXES = [re.compile(s) for s in
-                   ("__pycache__/", "\.git/", "\.dist-info/",
+                   ("__pycache__/", "\.git/", "^\..+",
                     "docs/", "metadata/",
                     "\.po$", r"~$", "\.pyc$", "\.md$", "\.zip$")]
 AWS_UPLOAD_CMD = 'aws'
@@ -59,6 +60,8 @@ ROLE_POLICY_DOC = json.dumps({
 
 Arn = str
 
+class Error(Exception):
+    pass
 
 def suitable(name: str) -> bool:
     for r in EXCLUDE_REGEXES:
@@ -86,9 +89,12 @@ def main(args=sys.argv[1:]):
     log.setLevel(logging.DEBUG if args.verbose else logging.INFO)
     log.debug(args)
 
-    dist_dir = realpath(path.join(dirname(dirname(__file__)), "dist"))
-    log.info("Using built code and config from directory: %s", dist_dir)
-    chdir(dist_dir)
+    dist_dir = path.join(ROOT, "dist")
+    if isdir(dist_dir):
+        chdir(dist_dir)
+        log.info("Using built code and config from directory: %s", dist_dir)
+    else:
+        log.info("No 'dist/' dir found, using root %s for files", ROOT)
 
     zip_data = create_zip()
     if args.cmd == AWS_UPLOAD_CMD:
@@ -161,6 +167,10 @@ def create_lambda(role_arn: str, zip_data: BinaryIO, skill_id: str) -> Arn:
 
 
 def create_zip() -> BinaryIO:
+
+    def files_in(zf: ZipFile, ext: str) -> Set[ZipInfo]:
+        return {f for f in zf.filelist if f.filename.endswith(ext)}
+
     io = BytesIO()
     with ZipFile(io, "w") as zf:
         for root, dirs, fns in walk("./"):
@@ -175,6 +185,9 @@ def create_zip() -> BinaryIO:
             for name in fns:
                 if suitable(name):
                     zf.write(path.join(root, name), compress_type=ZIP_DEFLATED)
+    if not files_in(zf, '.mo'):
+        raise Error("Can't find any translations (.mo files). "
+                    "Did  you forget to run the build first?")
     log.debug("All files: %s", ", ".join(zi.filename for zi in zf.filelist))
     io.seek(0)
     log.info("Added %d files to ZIP (%.0f KB total)",
