@@ -24,12 +24,16 @@ Set up mqtt-squeeze
    * the `etc/` directory with your certificates (see below)
    * the [`squeezealexa` directory](../squeezealexa)
 
-TODO: script this too.
+:new: Use the scripting to do this bit for you:
+```bash
+bin/deploy.py mqtt
+```
+This creates an `mqtt-squeeze.tgz` file for you to copy to your server.
 
-Create a new directory somewhere on your server and copy these there.
+Create a new directory somewhere on your server and copy this there.
 For Synology, I've chosen `/volume1/mqtt-squeeze`
 Make sure `mqtt_squeeze.py` is executable (`chmod +x mqtt_squeeze.py`).
-
+Then just `tar -xf mqtt-squeeze.tgz`.
 
 ### Create a service
  * To start and stop this, it's best to use your OS's service manager.

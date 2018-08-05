@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: Set up various tools
-          command: apt update && apt install -y gettext zip unzip
+          command: apt update && apt install -y gettext zip unzip && pip3 -q install boto3
 
       - run:
           name: Compile translations
@@ -18,30 +18,29 @@ jobs:
 
       - run:
           name: Setup Pipenv
-          command: pip install pipenv
+          command: pip -q install pipenv
 
       - run:
           name: Install deps
           command: pipenv install --dev
 
       - run:
-          name: Tests
-          command: pipenv run pytest -v --cov=squeezealexa --cov-report=term tests
-
-      - store_test_results:
-          path: test-results
-
-      - store_artifacts:
-          path: test-results
+          name: Test build script
+          command: bin/build.sh
 
       - run:
-          name: Code Quality
-          command: pipenv run flake8 --statistics .
+          name: Test release script
+          command: bin/release.sh -y
 
       - run:
-          name: Coverage submission
-          command: pipenv run coveralls
+          name: Test mqtt-squeeze zip creation
+          command: touch dist/etc/certs/foo.pem.crt && bin/deploy.py mqtt
 
       - run:
-          name: Test Packaging
-          command: bin/create_zip.sh
+          name: Test deploy script (from source)
+          command: bin/deploy.py zip
+
+      - run:
+          name: Test deploy script (without build)
+          command: rm -rf dist/ tests/ && bin/deploy.py zip
+
