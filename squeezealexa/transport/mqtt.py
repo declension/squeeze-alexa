@@ -11,6 +11,7 @@
 #   See LICENSE for full license
 
 import os
+import ssl
 from _ssl import PROTOCOL_TLSv1_2
 from glob import glob
 from os.path import dirname, realpath, join
@@ -46,9 +47,16 @@ class CustomClient(Client):
         port = port or self._port
 
         check_listening(host, port, msg="check your MQTT settings")
-        ret = super().connect(host=self._host,
-                              port=self._port,
-                              keepalive=keepalive, bind_address=bind_address)
+        try:
+            ret = super().connect(host=self._host,
+                                  port=self._port,
+                                  keepalive=keepalive,
+                                  bind_address=bind_address)
+        except ssl.SSLError as e:
+            if 'SSLV3_ALERT_CERTIFICATE_UNKNOWN' in str(e):
+                raise Error("Certificate problem with MQTT. "
+                            "Is the certificate enabled in AWS?")
+
         if MQTT_ERR_SUCCESS == ret:
             print_d("Connecting to {settings}", settings=self.settings)
             return ret
