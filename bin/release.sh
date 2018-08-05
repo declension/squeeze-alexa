@@ -1,9 +1,18 @@
 #!/usr/bin/env bash
 set -e
+function die() {
+    echo -e "FATAL: $@"
+    exit 2
+}
+
 
 root=$(readlink -f "$(dirname $0)/..")
 release_dir="$root/releases"
 [ -d "$release_dir" ] || mkdir -p "$release_dir"
+
+echo "Checking for uncommitted changes..."
+files=$(git diff --cached --exit-code --name-only) || die "You have staged Git changes. Commit or stash: \n $files"
+files=$(git diff --exit-code --name-only) || die "You have unstaged Git changes. Commit or stash: \n $files"
 
 pushd "$root/dist" >/dev/null
 version=${1:-latest}
