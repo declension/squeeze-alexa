@@ -126,7 +126,7 @@ After clicking through to the ASK section of the site, add a new Alexa Skill, th
  * Select **yes** for _Audio Streaming API_, **no** for _Video App_ and _Render Template_ options.
 
 As a picture is worth a thousand words, here's roughly what your Lambda function view should look like
-![Lambda console screenshot](amazon-developer-alexa-screenshot-2017-11.png)
+![Lambda console screenshot](amazon-developer-alexa-screenshot-2018-7.png)
 
 
 #### Update the Interaction Model
@@ -181,7 +181,7 @@ If you prefer / have to do the setup manually...
  * Refer to the official the guides ideally e.g. [Deploying a Sample Custom Skill To AWS Lambda](https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/deploying-a-sample-skill-to-aws-lambda#creating-the-lambda-function-for-the-sample).
  * Don't forget to [create an IAM role](https://developer.amazon.com/docs/custom-skills/host-a-custom-skill-as-an-aws-lambda-function.html#define-new-role) for your skill.
  * Here's what your Lambda function view should look like
-   ![Lambda console screenshot](lambda-management-screenshot-2017-11.png)
+   ![Lambda console screenshot](lambda-management-screenshot-2018-7.png)
  * Take a note of the ARN for your new lambda, to use in your Skill setup (See _Endpoint Configuration_ above)
 
 
