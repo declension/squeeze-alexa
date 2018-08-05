@@ -39,7 +39,8 @@ RELEASE_EXCLUDES=$(tr '\n' ' ' <<< """
 *.egg-info/*
 *bin/release*
 *-translations
-test-results""")
+test-results
+bin/build.sh""")
 
 echo "Creating ZIP (excluding $RELEASE_EXCLUDES)"
 rm "$release_dir/$output" 2>/dev/null || true
