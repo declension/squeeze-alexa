@@ -45,5 +45,5 @@ echo "Creating ZIP (excluding $RELEASE_EXCLUDES)"
 rm "$release_dir/$output" 2>/dev/null || true
 zip -r "$release_dir/$output" * -x $RELEASE_EXCLUDES
 cd "$root"
-echo -e "\nSuccess! Created release ZIP: ($(ls -sh "$output"))"
 popd >/dev/null
+echo -e "\nSuccess! Created release ZIP: ($(ls -sh "$release_dir/$output"))"
