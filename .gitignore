@@ -85,6 +85,7 @@ metadata/audio/
 
 # Amazon / release prep
 *.zip
+*.tgz
 
 *.pot~
 *.po~

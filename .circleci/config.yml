@@ -39,3 +39,7 @@ jobs:
       - run:
           name: Test deploy script (without build)
           command:  rm -rf dist/ tests/ && bin/deploy.py zip
+
+      - run:
+          name: Test mqtt zip creation
+          command: bin/deploy.py mqtt

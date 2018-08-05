@@ -12,6 +12,7 @@
 #   See LICENSE for full license
 
 import argparse
+import enum
 import json
 import logging
 import re
@@ -19,7 +20,8 @@ import sys
 from io import BytesIO
 from os import path, walk, chdir
 from os.path import dirname, realpath, isdir
-from typing import BinaryIO, Set
+from tarfile import TarFile, TarInfo
+from typing import BinaryIO, Set, Union
 from zipfile import ZipFile, ZIP_DEFLATED, ZipInfo
 
 import boto3
@@ -27,7 +29,8 @@ from botocore.exceptions import ClientError
 
 ROOT = realpath(dirname(dirname(__file__)))
 
-OUTPUT_ZIP = "lambda_function.zip"
+OUTPUT_ZIP = path.join(ROOT, "lambda_function.zip")
+MQTT_OUTPUT_GZIP = path.join(ROOT, "mqtt-squeeze.tgz")
 
 LAMBDA_NAME = "squeeze-alexa"
 MANAGED_POLICY_ARN = ("arn:aws:iam::aws:policy/service-role/"
@@ -37,7 +40,13 @@ EXCLUDE_REGEXES = [re.compile(s) for s in
                    ("__pycache__/", "\.git/", "^\..+",
                     "docs/", "metadata/",
                     "\.po$", r"~$", "\.pyc$", "\.md$", "\.zip$")]
-AWS_UPLOAD_CMD = 'aws'
+
+
+class Commands(enum.Enum):
+    AWS_DEPLOY = 'aws'
+    ZIP_MQTT = 'mqtt'
+    ZIP_SKILL = 'zip'
+
 
 logging.basicConfig(format="[{levelname:7s}] {message}",
                     style="{")
@@ -60,8 +69,11 @@ ROLE_POLICY_DOC = json.dumps({
 
 Arn = str
 
+
 class Error(Exception):
+    """Base Exception"""
     pass
+
 
 def suitable(name: str) -> bool:
     for r in EXCLUDE_REGEXES:
@@ -77,9 +89,13 @@ def main(args=sys.argv[1:]):
 
     subparsers = parser.add_subparsers(dest="cmd", help="Command")
     subparsers.required = True
-    subparsers.add_parser('zip', help='create local ZIP')
+    subparsers.add_parser(Commands.ZIP_SKILL.value, help='create local zip')
 
-    aws_parser = subparsers.add_parser(AWS_UPLOAD_CMD, help='Set up AWS Lambda')
+    subparsers.add_parser(Commands.ZIP_MQTT.value,
+                          help='create mqtt-squeeze zip')
+
+    aws_parser = subparsers.add_parser(Commands.AWS_DEPLOY.value,
+                                       help='Set up AWS Lambda')
     aws_parser.add_argument("--profile", action="store",
                             help="AWS profile to use")
     aws_parser.add_argument("--skill", required=True, action="store",
@@ -95,17 +111,21 @@ def main(args=sys.argv[1:]):
         log.info("Using built code and config from directory: %s", dist_dir)
     else:
         log.info("No 'dist/' dir found, using root %s for files", ROOT)
-
-    zip_data = create_zip()
-    if args.cmd == AWS_UPLOAD_CMD:
+    c = Commands(args.cmd)
+    if c == Commands.AWS_DEPLOY:
         log.debug("Setting up AWS Lambda")
-        aws_upload(args, zip_data)
+        aws_upload(args, create_skill_zip())
+    elif c == Commands.ZIP_MQTT:
+        log.debug("Creating zip for mqtt-squeeze")
+        with open(MQTT_OUTPUT_GZIP, "wb") as f:
+            create_mqtt_gzip(f)
+        log.info("Wrote %s", MQTT_OUTPUT_GZIP)
     else:
-        log.info("Creating zip for manual upload. "
+        log.info("Creating zip for manual skill upload. "
                  "Use '%s' command to setup skill automatically",
-                 AWS_UPLOAD_CMD)
+                 Commands.AWS_DEPLOY.value)
         with open(OUTPUT_ZIP, "wb") as f:
-            f.write(zip_data.read())
+            f.write(create_skill_zip().read())
         log.info("Wrote %s", OUTPUT_ZIP)
 
 
@@ -166,11 +186,10 @@ def create_lambda(role_arn: str, zip_data: BinaryIO, skill_id: str) -> Arn:
     return resp["FunctionArn"]
 
 
-def create_zip() -> BinaryIO:
-
+def create_skill_zip() -> BinaryIO:
     def files_in(zf: ZipFile, ext: str) -> Set[ZipInfo]:
         return {f for f in zf.filelist if f.filename.endswith(ext)}
-
+    log.debug("Compressing Skill deployment files")
     io = BytesIO()
     with ZipFile(io, "w") as zf:
         for root, dirs, fns in walk("./"):
@@ -187,13 +206,31 @@ def create_zip() -> BinaryIO:
                     zf.write(path.join(root, name), compress_type=ZIP_DEFLATED)
     if not files_in(zf, '.mo'):
         raise Error("Can't find any translations (.mo files). "
-                    "Did  you forget to run the build first?")
+                    "Did you forget to run the build first?")
     log.debug("All files: %s", ", ".join(zi.filename for zi in zf.filelist))
     io.seek(0)
-    log.info("Added %d files to ZIP (%.0f KB total)",
+    log.info("Added %d files to zip (%.0f KB total)",
              len(zf.filelist), len(io.read()) / 1024)
     io.seek(0)
     return io
+
+
+def create_mqtt_gzip(f: BinaryIO) -> None:
+    def exclude_bad(ti: TarInfo) -> Union[TarInfo, None]:
+        for r in EXCLUDE_REGEXES:
+            if r.search(ti.name):
+                return None
+        return ti
+    log.debug("Compressing MQTT deployment files")
+    with TarFile.gzopen("mqtt-squeeze", mode="w", fileobj=f) as tf:
+        tf.add(path.join(ROOT, 'mqtt_squeeze.py'), arcname='mqtt_squeeze.py')
+        for d in ['etc', 'squeezealexa']:
+            tf.add(path.join(ROOT, d), arcname=d, filter=exclude_bad)
+
+        if not [fn for fn in tf.getnames() if fn.endswith('.pem.crt')]:
+            raise Error("Can't find any certs (.pem.crt files). "
+                        "Make sure you create these first in /etc/certs")
+        log.debug("All files: %s", ", ".join(tf.getnames()))
 
 
 def set_up_role() -> str:
