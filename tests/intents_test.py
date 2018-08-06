@@ -58,9 +58,9 @@ class AllIntentHandlingTest(TestCase):
     def test_intents_v1_en_gb_json(self):
         with open(INTENTS_V1_EN_GB_PATH) as f:
             j = json.load(f)
-            assert j["intents"]
+            assert j["interactionModel"]
 
     def test_intents_v1_en_us_json(self):
         with open(INTENTS_V1_EN_US_PATH) as f:
             j = json.load(f)
-            assert j["intents"]
+            assert j["interactionModel"]
