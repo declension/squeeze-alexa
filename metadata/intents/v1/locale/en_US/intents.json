@@ -203,15 +203,15 @@
             },
             {
               "name": "Genre",
-              "type": "GENRE"
+              "type": "AMAZON.GENRE"
             },
             {
               "name": "SecondaryGenre",
-              "type": "GENRE"
+              "type": "AMAZON.GENRE"
             },
             {
               "name": "TertiaryGenre",
-              "type": "GENRE"
+              "type": "AMAZON.GENRE"
             }
           ],
           "samples": [
@@ -239,6 +239,45 @@
             "play my {Playlist} playlist",
             "play my {Playlist} playlist on {Player}",
             "play my {Playlist} playlist in {Player}"
+          ]
+        },{
+          "name": "PlayArtistIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            },
+            {
+              "name": "Artist",
+              "type": "AMAZON.MusicGroup"
+            }
+          ],
+          "samples": [
+            "play artist {Artist}",
+            "play band {Artist}",
+            "play artist {Artist} jams",
+            "play band {Artist} jams",
+            "play artist {Artist} on {Player}",
+            "play artist {Artist} in {Player}"
+          ]
+        },
+        {
+          "name": "PlayAlbumIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            },
+            {
+              "name": "Album",
+              "type": "AMAZON.MusicAlbum"
+            }
+          ],
+          "samples": [
+            "play album {Album}",
+            "play CD {Album}",
+            "play album {Album} on {Player}",
+            "play album {Album} in {Player}"
           ]
         }
       ],
@@ -291,162 +330,6 @@
 
             {"name": {"value": "Cellar"}},
             {"name": {"value": "Cellar Music"}}
-          ]
-        },
-        {
-          "name": "GENRE",
-          "values": [
-            {"name": {"value": "Blues"}},
-            {"name": {"value": "Classic Rock"}},
-            {"name": {"value": "Country"}},
-            {"name": {"value": "Dance"}},
-            {"name": {"value": "Disco"}},
-            {"name": {"value": "Funk"}},
-            {"name": {"value": "Grunge"}},
-            {"name": {"value": "Hip Hop"}},
-            {"name": {"value": "Jazz"}},
-            {"name": {"value": "Metal"}},
-            {"name": {"value": "New Age"}},
-            {"name": {"value": "Oldies"}},
-            {"name": {"value": "Pop"}},
-            {"name": {"value": "R and B"}},
-            {"name": {"value": "RNB"}},
-            {"name": {"value": "Rap"}},
-            {"name": {"value": "Reggae"}},
-            {"name": {"value": "Rock"}},
-            {"name": {"value": "Techno"}},
-            {"name": {"value": "Industrial"}},
-            {"name": {"value": "Alternative"}},
-            {"name": {"value": "Ska"}},
-            {"name": {"value": "Death Metal"}},
-            {"name": {"value": "Soundtrack"}},
-            {"name": {"value": "Ambient"}},
-            {"name": {"value": "Trip Hop"}},
-            {"name": {"value": "TripHop"}},
-            {"name": {"value": "Vocal"}},
-            {"name": {"value": "Jazz Funk"}},
-            {"name": {"value": "Fusion"}},
-            {"name": {"value": "Trance"}},
-            {"name": {"value": "Classical"}},
-            {"name": {"value": "Instrumental"}},
-            {"name": {"value": "Acid"}},
-            {"name": {"value": "House"}},
-            {"name": {"value": "Game"}},
-            {"name": {"value": "Sound Clip"}},
-            {"name": {"value": "Gospel"}},
-            {"name": {"value": "Noise"}},
-            {"name": {"value": "Bass"}},
-            {"name": {"value": "Soul"}},
-            {"name": {"value": "Punk"}},
-            {"name": {"value": "Space"}},
-            {"name": {"value": "Meditative"}},
-            {"name": {"value": "Instrumental Pop"}},
-            {"name": {"value": "Instrumental Rock"}},
-            {"name": {"value": "Ethnic"}},
-            {"name": {"value": "Gothic"}},
-            {"name": {"value": "Darkwave"}},
-            {"name": {"value": "Electronic"}},
-            {"name": {"value": "Eurodance"}},
-            {"name": {"value": "Dream"}},
-            {"name": {"value": "Southern Rock"}},
-            {"name": {"value": "Comedy"}},
-            {"name": {"value": "Cult"}},
-            {"name": {"value": "Gangsta"}},
-            {"name": {"value": "Top 40"}},
-            {"name": {"value": "Christian Rap"}},
-            {"name": {"value": "Jungle"}},
-            {"name": {"value": "Native American"}},
-            {"name": {"value": "Cabaret"}},
-            {"name": {"value": "New Wave"}},
-            {"name": {"value": "Psychadelic"}},
-            {"name": {"value": "Rave"}},
-            {"name": {"value": "Showtunes"}},
-            {"name": {"value": "Trailer"}},
-            {"name": {"value": "Tribal"}},
-            {"name": {"value": "Acid Punk"}},
-            {"name": {"value": "Acid Jazz"}},
-            {"name": {"value": "Polka"}},
-            {"name": {"value": "Retro"}},
-            {"name": {"value": "Musical"}},
-            {"name": {"value": "Rock and Roll"}},
-            {"name": {"value": "Rock N Roll"}},
-            {"name": {"value": "Hard Rock"}},
-            {"name": {"value": "Folk"}},
-            {"name": {"value": "Folk Rock"}},
-            {"name": {"value": "National Folk"}},
-            {"name": {"value": "Swing"}},
-            {"name": {"value": "Fast Fusion"}},
-            {"name": {"value": "Bebop"}},
-            {"name": {"value": "Latin"}},
-            {"name": {"value": "Revival"}},
-            {"name": {"value": "Celtic"}},
-            {"name": {"value": "Bluegrass"}},
-            {"name": {"value": "Avantgarde"}},
-            {"name": {"value": "Gothic Rock"}},
-            {"name": {"value": "Progressive Rock"}},
-            {"name": {"value": "Psychedelic Rock"}},
-            {"name": {"value": "Symphonic Rock"}},
-            {"name": {"value": "Slow Rock"}},
-            {"name": {"value": "Big Band"}},
-            {"name": {"value": "Chorus"}},
-            {"name": {"value": "Easy Listening"}},
-            {"name": {"value": "Acoustic"}},
-            {"name": {"value": "Humour"}},
-            {"name": {"value": "Speech"}},
-            {"name": {"value": "Opera"}},
-            {"name": {"value": "Chamber Music"}},
-            {"name": {"value": "Sonata"}},
-            {"name": {"value": "Symphony"}},
-            {"name": {"value": "Booty Bass"}},
-            {"name": {"value": "Primus"}},
-            {"name": {"value": "Slow Jam"}},
-            {"name": {"value": "Club"}},
-            {"name": {"value": "Tango"}},
-            {"name": {"value": "Samba"}},
-            {"name": {"value": "Folklore"}},
-            {"name": {"value": "Ballad"}},
-            {"name": {"value": "Power Ballad"}},
-            {"name": {"value": "Rhythmic Soul"}},
-            {"name": {"value": "Freestyle"}},
-            {"name": {"value": "Duet"}},
-            {"name": {"value": "Punk Rock"}},
-            {"name": {"value": "Drum Solo"}},
-            {"name": {"value": "A capella"}},
-            {"name": {"value": "Euro House"}},
-            {"name": {"value": "Dance Hall"}},
-            {"name": {"value": "Dubstep"}},
-            {"name": {"value": "Trap"}},
-            {"name": {"value": "Drum n Bass"}},
-            {"name": {"value": "DNB"}},
-            {"name": {"value": "Breakbeat"}},
-            {"name": {"value": "Big Beat"}},
-            {"name": {"value": "Breaks"}},
-            {"name": {"value": "Hardcore"}},
-            {"name": {"value": "Electro"}},
-            {"name": {"value": "Garage"}},
-            {"name": {"value": "UK Garage"}},
-            {"name": {"value": "Dub"}},
-            {"name": {"value": "Grime"}},
-            {"name": {"value": "DJ Mix"}},
-            {"name": {"value": "Mash up"}},
-            {"name": {"value": "Flamenco"}},
-            {"name": {"value": "Bossanova"}},
-            {"name": {"value": "Pop Punk"}},
-            {"name": {"value": "Soft Rock"}},
-            {"name": {"value": "Alt Rock"}},
-            {"name": {"value": "Rock Ballad"}},
-            {"name": {"value": "Spoken"}},
-            {"name": {"value": "Podcast"}},
-            {"name": {"value": "Oldschool"}},
-            {"name": {"value": "Oldschool Hardcore"}},
-            {"name": {"value": "Acid House"}},
-            {"name": {"value": "Old school Hiphop"}},
-            {"name": {"value": "World"}},
-            {"name": {"value": "Brit Rock"}},
-            {"name": {"value": "Indie"}},
-            {"name": {"value": "Psy Trance"}},
-            {"name": {"value": "Baroque"}},
-            {"name": {"value": "Romantic"}}
           ]
         },
         {

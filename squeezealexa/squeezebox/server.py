@@ -16,6 +16,7 @@ from typing import List
 from squeezealexa.utils import with_example, print_d, stronger, print_w
 
 import urllib.request as urllib
+import re
 
 
 class SqueezeboxException(Exception):
@@ -224,12 +225,42 @@ class Server(object):
         pid = player_id or self.cur_player_id
         return self._request(["%s %s" % (pid, com) for com in commands])
 
+    def play_artist(self, artist, player_id=None):
+        """Adds then plays the albums of the specified artist"""
+        commands = (["playlist clear"] +
+                    ["playlist addalbum * %s *"
+                     % urllib.quote(artist)] +
+                    ["play 2"])
+        pid = player_id or self.cur_player_id
+        return self._request(["%s %s" % (pid, com) for com in commands])
+
+    def play_album(self, album, player_id=None):
+        """Adds then plays the specified album"""
+        commands = (["playlist clear", "playlist shuffle 0"] +
+                    ["playlist addalbum * * %s"
+                     % urllib.quote(album)] +
+                    ["play 2"])
+        pid = player_id or self.cur_player_id
+        return self._request(["%s %s" % (pid, com) for com in commands])
+
     def get_track_details(self, player_id=None):
         keys = ["genre", "artist", "current_title"]
         pid = player_id or self.cur_player_id
         responses = self._request(["%s %s ?" % (pid, s)
                                    for s in keys])
         return dict(zip(keys, responses))
+
+    def search_for_album(self, term=None):
+        resp = self.__a_request("search 0 10 term:%s" % term, raw=True)
+        albums = [v for k, v in self.__pairs_from(resp)
+                  if k == 'album' and re.search(term, v, re.IGNORECASE)]
+        return albums
+
+    def search_for_artist(self, term=None):
+        resp = self.__a_request("search 0 10 term:%s" % term, raw=True)
+        artist = [v for k, v in self.__pairs_from(resp)
+                  if k == 'contributor' and v.lower() == term.lower()]
+        return artist
 
     @property
     def genres(self):
