@@ -168,7 +168,7 @@ Here's another thousand words on roughly what you're aiming for:
 AWS setup
 ---------
 
-:new: As of [v2.1](https://github.com/declension/squeeze-alexa/releases/tag/2.1),
+:new: As of [v2.1](https://github.com/declension/squeeze-alexa/releases/tag/v2.1),
 you can use `deploy.py` to automate the AWS Lambda creation / update including IAM permissions, etc (BETA).
 The script will output your Lambda ARN, for convenience in finishing the setup.
 
