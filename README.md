@@ -66,8 +66,8 @@ Most commands can take a player name, or will remember the default / last player
 
 #### En français
 
- * _Alexa, demande à Squeezebox de baisser le volume dans la cuisine!_
- * _Alexa, demande à Squeezebox qu'est ce qu'on écoute dans le salon?
+ * _Alexa, demande à Squeezebox de baisser le volume!_
+ * _Alexa, demande à Squeezebox qu'est ce qu'on écoute dans le salon_
 
 I want!
 -------
