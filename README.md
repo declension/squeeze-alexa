@@ -4,19 +4,22 @@ squeeze-alexa
 [![Build Status](https://circleci.com/gh/declension/squeeze-alexa.svg?style=svg)](https://circleci.com/gh/declension/squeeze-alexa)
 [![Coverage Status](https://coveralls.io/repos/github/declension/squeeze-alexa/badge.svg?branch=master)](https://coveralls.io/github/declension/squeeze-alexa?branch=master)
 [![Join the chat at https://gitter.im/squeeze-alexa/Lobby](https://badges.gitter.im/squeeze-alexa/Lobby.svg)](https://gitter.im/squeeze-alexa/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+:gb: :us: :de: :fr:
 
-`squeeze-alexa` is an Amazon Alexa Skill integrating with the Logitech Media Server ("squeezebox") using a NAS or home server.
+`squeeze-alexa` is a codebase for creating your own Amazon Alexa Skill to communicate with Logitech Media Server ("squeezebox") using a NAS or home server.
 See the original [announcement blog post](http://declension.net/posts/2016-11-30-alexa-meets-squeezebox/),
 and the [follow-up with videos](http://declension.net/posts/2017-01-03-squeeze-alexa-demos/).
 
 
-### Aims / Features
+Aims & Features
+---------------
 
  * Intuitive voice control over common music scenarios
  * Low latency (given that it's a cloud service), i.e. fast at reacting to your commands.
  * Decent security, remaining under your own control
  * Extensive support for choosing songs by (multiple) genres, and playlists
- * Helpful, conversational responses / interaction
+ * Up-to-date with (some) changes and new features from Alexa and Amazon.
+ * Helpful, conversational responses / interaction in several languages.
  * :new: Support a variety of networks including restrictive firewalls (or 3G / 4G broadband with CGNAT)
 
 ### Things it is not
@@ -24,7 +27,9 @@ and the [follow-up with videos](http://declension.net/posts/2017-01-03-squeeze-a
  * Full coverage of all LMS features, plugins or use cases - but it aims to be good at what it does.
  * A public / multi-user skill. This means **you will need Alexa and AWS developer accounts**.
  * A native LMS (Squeezeserver) plugin. So whilst this would be cool, at least there's no need to touch your LMS.
- * Easy to set up :scream:
+ * Easy to set up :scream: (it's getting easier though with more setup automation)
+ * Funded or officially supported by anyone - it's an open-source project,
+   so please [help out](#contributing) if think you can.
 
 ### Supported Languages
  * British English :gb:
@@ -32,8 +37,11 @@ and the [follow-up with videos](http://declension.net/posts/2017-01-03-squeeze-a
  * German :de:
  * :new: French :fr:
 
-### Controlling your music
 
+Commands
+--------
+
+### In English
 These should all work (usually) in the current version.
 Most commands can take a player name, or will remember the default / last player if not specified.
 
@@ -59,15 +67,16 @@ Most commands can take a player name, or will remember the default / last player
 #### Feedback
  * _Alexa, ask Squeezebox what's playing \[in the Kitchen\]_
 
-#### Auf Deutsch
+### Auf Deutsch
 * _Alexa, frage Squeezebox was ist das für ein Lied?_
 * _Alexa, frage Squeezebox alles ausschalten_
 * etc...
 
-#### En français
+### En français
 
  * _Alexa, demande à Squeezebox de baisser le volume!_
  * _Alexa, demande à Squeezebox qu'est ce qu'on écoute dans le salon_
+
 
 I want!
 -------

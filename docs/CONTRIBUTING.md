@@ -1,8 +1,25 @@
 Contributors' Guide
 ===================
 
+[Translating to your own language](#translation) is perhaps the most useful thing you can do for the project currently,
+as Amazon rolls out more and more language support for Alexa.
+
 Developing
 ----------
+
+### Where to start
+Generally, have a look at tickets marked [help wanted](https://github.com/declension/squeeze-alexa/issues?q=is%3Aissue+is%3Aopen+label%3A%22help+wanted%22)
+or [good first issue](https://github.com/declension/squeeze-alexa/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22).
+
+Generally pull requests are accepted if they:
+ * Address a Github issue where the approach has been discussed
+ * Pass all automated tests and linting
+ * Don't reduce the test coverage
+ * Are clearly written, and in a Pythonic way
+ * Use the current (ever changing...) best practices for Alexa skills
+ * :new: use Python 3.5+ features where appropriate (in particular typing)
+   3.6 features can't currently be used for mqtt-squeeze.
+
 
 ### Building
 
