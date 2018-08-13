@@ -17,7 +17,7 @@ from time import time
 from paho.mqtt.client import MQTT_ERR_INVAL, MQTTMessage, Client
 
 from squeezealexa.settings import MqttSettings
-from squeezealexa.transport.configured import create_transport
+from squeezealexa.transport.factory import TransportFactory
 from squeezealexa.transport.mqtt import CustomClient
 from squeezealexa.utils import wait_for
 from tests.utils import TEST_DATA_DIR
@@ -25,9 +25,17 @@ from tests.utils import TEST_DATA_DIR
 
 class CustomTlsCustomClient(CustomClient):
 
+    def __init__(self, settings: MqttSettings):
+        super().__init__(settings)
+        self.connections = 0
+
     def _configure_tls(self):
         self.tls_set(ca_certs=self._conf_file_of("mosquitto.org*.crt"),
                      tls_version=PROTOCOL_TLSv1_2)
+
+    def connect(self, host=None, port=None, keepalive=30, bind_address=""):
+        self.connections += 1
+        return super().connect(host, port, keepalive, bind_address)
 
 
 class TestLiveMqttTransport:
@@ -43,19 +51,22 @@ class TestLiveMqttTransport:
             msg = msg.payload.decode('utf-8').strip()
             client.publish(test_mqtt_settings.topic_resp,
                            "GOT: {msg}".format(msg=msg).encode('utf-8'))
+
         replier = CustomTlsCustomClient(test_mqtt_settings)
         replier.on_message = on_message
         replier.connect()
 
         def on_publish(client, userdata, mid):
             self.published.append(mid)
+
         client = CustomTlsCustomClient(test_mqtt_settings)
         client.on_publish = on_publish
 
         msg = "TEST MESSAGE at %s" % datetime.now()
-        transport = create_transport(ssl_config=None,
-                                     mqtt_settings=test_mqtt_settings,
-                                     mqtt_client=client)
+        factory = TransportFactory(ssl_config=None,
+                                   mqtt_settings=test_mqtt_settings)
+        transport = factory.create(mqtt_client=client)
+        transport.start()
         try:
             replier.subscribe(test_mqtt_settings.topic_req)
             assert replier.loop_start() != MQTT_ERR_INVAL
@@ -69,10 +80,23 @@ class TestLiveMqttTransport:
         assert len(self.published) == 1
         assert reply == "GOT: {msg}".format(**locals())
 
+    def test_over_connect(self):
+        settings = self.mqtt_settings()
+        client = CustomTlsCustomClient(settings)
+        factory = TransportFactory(ssl_config=None, mqtt_settings=settings)
+        transport = factory.create(mqtt_client=client)
+        transport.start()
+        wait_for(lambda x: transport.is_connected)
+        transport.start()
+        transport.start()
+        assert client.connections == 1, "Over connected to MQTT"
+
+        del transport
+
     def mqtt_settings(self) -> MqttSettings:
         uid = time()
-        test_mqtt_settings = MqttSettings(
-            hostname='test.mosquitto.org', port=8883, cert_dir=TEST_DATA_DIR,
+        return MqttSettings(
+            hostname='test.mosquitto.org', port=8883,
+            cert_dir=TEST_DATA_DIR,
             topic_req="squeeze-req-%s" % uid,
             topic_resp="squeeze-resp-%s" % uid)
-        return test_mqtt_settings

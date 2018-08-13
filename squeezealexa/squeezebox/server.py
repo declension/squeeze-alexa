@@ -42,27 +42,39 @@ class SqueezeboxPlayerSettings(dict):
         return "{name} [{short}]".format(short=self['playerid'][-5:], **self)
 
 
+class ServerFactory:
+    _MAX_CACHE_SECS = 600
+    _INSTANCE = None
+    _CREATION_TIME = None
+
+    def __init__(self, transport_factory):
+        self.transport_factory = transport_factory
+
+    def _too_old(self):
+        if not self._INSTANCE:
+            return True
+        age = time.time() - self._CREATION_TIME
+        print_d("Age of instance: {age:0.1f}s", age=age)
+        return age > self._MAX_CACHE_SECS
+
+    def create(self, *args, **kwargs):
+        instance = self._INSTANCE
+        if not instance or not instance.connected or self._too_old():
+            print_d("Creating new server instance")
+            transport = self.transport_factory.create()
+            transport.start()
+            inst = type(self)._INSTANCE = Server(transport, *args, **kwargs)
+            type(self)._CREATION_TIME = time.time()
+            return inst
+        print_d("Reusing cached instance {object}", object=instance)
+        return instance
+
+
 class Server(object):
     """Encapsulates access to a Squeezebox player via a Squeezecenter server"""
 
     _TIMEOUT = 10
     _MAX_FAILURES = 3
-    _MAX_CACHE_SECS = 600
-    _INSTANCE = None
-    _CREATION_TIME = None
-
-    def __new__(cls, *args, **kwargs):
-        if not cls._INSTANCE:
-            print_d("Creating new server instance")
-            cls._INSTANCE = super().__new__(cls)
-            cls._CREATION_TIME = time.time()
-            return cls._INSTANCE
-        if time.time() - cls._CREATION_TIME > cls._MAX_CACHE_SECS:
-            print_d("Recreating stale server instance")
-            del cls._INSTANCE
-            cls._CREATION_TIME = time.time()
-            cls._INSTANCE = super().__new__(cls)
-        return cls._INSTANCE
 
     def __init__(self, transport, user=None, password=None,
                  cur_player_id=None, debug=False):
@@ -93,6 +105,10 @@ class Server(object):
         self.__genres = []
         self.__playlists = []
         self.__favorites = []
+
+    @property
+    def connected(self):
+        return self.transport.is_connected
 
     @property
     def player_names(self):
@@ -164,9 +180,11 @@ class Server(object):
 
     def __pairs_from(self, response):
         """Split and unescape a response"""
+
         def demunge(string):
             s = urllib.unquote(string)
             return tuple(s.split(':', 1))
+
         demunged = map(demunge, response.split(' '))
         return [d for d in demunged if len(d) == 2]
 
@@ -324,5 +342,5 @@ class Server(object):
         return "Squeezebox server over {transport}".format(**self.__dict__)
 
     def __del__(self):
-        print_d("Goodbye from {what}", what=self)
+        print_d("Goodbye from {what!r}", what=self)
         del self.transport

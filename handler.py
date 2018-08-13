@@ -15,8 +15,8 @@ from traceback import format_exc
 from squeezealexa.alexa.response import speech_response
 from squeezealexa.main import SqueezeAlexa
 from squeezealexa.settings import SKILL_SETTINGS, LMS_SETTINGS
-from squeezealexa.squeezebox.server import Server
-from squeezealexa.transport.configured import create_transport
+from squeezealexa.squeezebox.server import ServerFactory
+from squeezealexa.transport.factory import TransportFactory
 
 try:
     from squeezealexa.i18n import _
@@ -24,13 +24,14 @@ except ImportError:
     def _(s):
         return s
 
+factory = ServerFactory(TransportFactory())
+
 
 def get_server():
-    return Server(create_transport(),
-                  user=LMS_SETTINGS.username,
-                  password=LMS_SETTINGS.password,
-                  cur_player_id=LMS_SETTINGS.default_player,
-                  debug=LMS_SETTINGS.debug)
+    return factory.create(user=LMS_SETTINGS.username,
+                          password=LMS_SETTINGS.password,
+                          cur_player_id=LMS_SETTINGS.default_player,
+                          debug=LMS_SETTINGS.debug)
 
 
 def lambda_handler(event, context, server=None):

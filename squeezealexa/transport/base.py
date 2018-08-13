@@ -45,6 +45,14 @@ class Transport:
         """Property for connection details"""
         raise NotImplementedError()
 
+    def start(self) -> 'Transport':
+        self.is_connected = True
+        return self
+
+    def stop(self) -> 'Transport':
+        self.is_connected = False
+        return self
+
     def __str__(self) -> str:
         return self.details
 

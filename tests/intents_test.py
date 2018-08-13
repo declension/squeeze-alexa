@@ -38,7 +38,7 @@ class AllIntentHandlingTest(TestCase):
     """Makes sure all registered handlers are behaving at least vaguely well"""
 
     def test_all_handler(self):
-        fake_output = FakeTransport()
+        fake_output = FakeTransport().start()
         server = Server(transport=fake_output)
         alexa = SqueezeAlexa(server=server)
         for name, func in handler._handlers.items():

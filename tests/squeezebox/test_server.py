@@ -16,7 +16,10 @@ from unittest import TestCase
 from pytest import raises
 
 from squeezealexa.squeezebox.server import Server, SqueezeboxPlayerSettings, \
-    SqueezeboxException
+    SqueezeboxException, ServerFactory
+from squeezealexa.transport.base import Transport
+from squeezealexa.transport.factory import TransportFactory
+from squeezealexa.utils import print_d
 from tests.transport.fake_transport import FakeTransport, FAKE_LENGTH, \
     A_REAL_STATUS
 
@@ -28,11 +31,25 @@ class TestSqueezeboxPlayerSettings:
         assert "couldn't find a playerid" in str(e).lower()
 
 
+class FixedTransportFactory(TransportFactory):
+
+    def __init__(self, instance: Transport = None):
+        super().__init__()
+        self.instance = instance
+        self.count = 0
+
+    def create(self, mqtt_client=None):
+        self.count += 1
+        print_d("Creating instance #{count}", count=self.count)
+        return self.instance
+
+
 class NoRefreshServer(Server):
     """A normal server, that has no transport never returns any players"""
 
     def __init__(self, user=None, password=None, cur_player_id=None):
-        super().__init__(None, user, password, cur_player_id, False)
+        super().__init__(FixedTransportFactory(FakeTransport()), user, password,
+                         cur_player_id, False)
 
     def refresh_status(self):
         self.players = {}
@@ -46,26 +63,35 @@ class TestServerNoTransport:
         assert "no players" in str(e).lower()
 
 
+class TestServerFactory(TestCase):
+    def setUp(self):
+        transport = FakeTransport().start()
+        self.factory = ServerFactory(FixedTransportFactory(transport))
+
+    def test_singleton(self):
+        first = self.factory.create()
+        second = self.factory.create()
+        assert first is second
+
+    def test_staleness_creates_new_instance(self):
+        first = self.factory.create()
+        ServerFactory._CREATION_TIME = (time.time() -
+                                        ServerFactory._MAX_CACHE_SECS - 1)
+        second = self.factory.create()
+        assert first is not second
+
+
 class TestServerWithTransport(TestCase):
 
     def setUp(self):
-        self.transport = FakeTransport()
+        self.transport = FakeTransport().start()
         self.server = Server(transport=self.transport)
-
-    def test_singleton(self):
-        second = Server(transport=self.transport)
-        assert second is self.server
-
-    def test_staleness_creates_new_instance(self):
-        Server._CREATION_TIME = time.time() - Server._MAX_CACHE_SECS - 1
-        second = Server(transport=self.transport)
-        assert second is not self.server
 
     def test_debug(self):
         Server(self.transport, debug=True)
 
     def test_unknown_default_player(self):
-        transport = FakeTransport(fake_id="foo")
+        transport = FakeTransport(fake_id="foo").start()
         self.server = Server(transport=transport, cur_player_id="GONE")
         assert self.server.cur_player_id == "foo"
 
@@ -79,7 +105,7 @@ class TestServerWithTransport(TestCase):
         assert 'localhost:0' in str(self.server)
 
     def test_login(self):
-        self.server = Server(transport=FakeTransport(),
+        self.server = Server(transport=self.transport,
                              user='admin', password='pass')
         assert self.server.user == 'admin'
 

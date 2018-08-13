@@ -49,7 +49,7 @@ class FakeTransport(Transport):
         self.hostname = 'localhost'
         self.port = 0
         self.failures = 0
-        self.is_connected = True
+        self.is_connected = False
         self.player_name = fake_name
         self.player_id = fake_id
         self.all_input = ""

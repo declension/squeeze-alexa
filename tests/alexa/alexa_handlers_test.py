@@ -90,7 +90,7 @@ class SqueezeAlexaTest(TestCase):
                                 'type': 'AudioPlayerStarted'}})
 
     def test_handling_all_intents(self):
-        fake_output = FakeTransport()
+        fake_output = FakeTransport().start()
         server = Server(transport=fake_output)
         alexa = SqueezeAlexa(server=server)
         for name, func in handler._handlers.items():
@@ -101,7 +101,8 @@ class SqueezeAlexaTest(TestCase):
             self.validate_response(name, output)
 
     def test_handling_all_intents_without_session_or_slots(self):
-        alexa = SqueezeAlexa(server=(Server(transport=(FakeTransport()))))
+        server = Server(transport=(FakeTransport().start()))
+        alexa = SqueezeAlexa(server=server)
         for name, func in handler._handlers.items():
             request = self.request_for({'name': name, 'slots': {}}, NO_SESSION)
             output = alexa.handle(request, None)
