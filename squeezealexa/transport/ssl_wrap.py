@@ -56,14 +56,16 @@ class SslSocketTransport(Transport):
         sock.settimeout(self.timeout)
         self._ssl_sock = context.wrap_socket(sock,
                                              server_hostname=hostname)
+
+    def start(self):
         print_d("Connecting to port {port} on {hostname}",
-                port=port, hostname=hostname or '(localhost)')
+                port=self.port, hostname=self.hostname or '(localhost)')
         try:
-            self._ssl_sock.connect((hostname, port))
+            self._ssl_sock.connect((self.hostname, self.port))
         except socket.gaierror as e:
             if "Name or service not know" in e.strerror:
                 self._die("unknown host ({host}) - check SERVER_HOSTNAME",
-                          host=hostname, err=e)
+                          host=self.hostname, err=e)
             self._die("Couldn't connect to {host} with TLS", host=self, err=e)
         except IOError as e:
             err_str = e.strerror or str(e)
@@ -73,7 +75,7 @@ class SslSocketTransport(Transport):
             elif ('WRONG_VERSION_NUMBER' in err_str
                   or 'unknown_protocol' in err_str):
                 self._die('probably not TLS on port {port} - '
-                          'wrong SERVER_PORT maybe?', port=port, err=e)
+                          'wrong SERVER_PORT maybe?', port=self.port, err=e)
             elif 'Connection reset by peer' in err_str:
                 self._die("server killed the connection - handshake error "
                           "(e.g. unsupported TLS protocol)? "
@@ -82,7 +84,7 @@ class SslSocketTransport(Transport):
                 self._die("Cert not trusted by / from server. "
                           "Is your CA correct? Is the cert expired? "
                           "Is the cert for the right hostname ({host})?",
-                          host=hostname, err=e)
+                          host=self.hostname, err=e)
             elif 'timed out' in err_str:
                 self._die("Couldn't connect to port {port} on {host} - "
                           "check the server setup and the firewall.",
@@ -103,6 +105,7 @@ class SslSocketTransport(Transport):
                 data = subject_data
             print_d("Validated cert for {data}", data=data)
         self.is_connected = True
+        return self
 
     def _die(self, msg, err=None, **kwargs):
         raise Error(msg.format(**kwargs), err)
@@ -154,7 +157,10 @@ class SslSocketTransport(Transport):
     def details(self):
         return "{hostname}:{port} over SSL".format(**self.__dict__)
 
-    def __del__(self):
+    def stop(self):
         print_d("Closing {who}", who=self)
         if hasattr(self, '_ssl_sock'):
             self._ssl_sock.close()
+
+    def __del__(self):
+        self.stop()

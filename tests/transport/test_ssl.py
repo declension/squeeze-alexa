@@ -46,6 +46,8 @@ class TestSslWrap(TestCase):
     def test_with_real_server(self):
         with ServerResource() as server:
             sslw = self._working_transport(server)
+            assert not sslw.is_connected
+            sslw.start()
             assert sslw.is_connected
             response = sslw.communicate('HELLO')
             assert response == response_for("HELLO")
@@ -53,18 +55,19 @@ class TestSslWrap(TestCase):
     def test_with_real_server_no_wait(self):
         with ServerResource() as server:
             sslw = self._working_transport(server)
+            sslw.start()
             assert sslw.communicate('HELLO', wait=False) is None
 
     def test_with_real_server_failing_socket(self):
         with ServerResource() as server:
-            transport = self._working_transport(server)
+            transport = self._working_transport(server).start()
             transport._ssl_sock = FailingSocket()
             assert transport.is_connected
             assert not transport.communicate('HELLO')
 
     def test_failing_socket_raises_eventually(self):
         with ServerResource() as server:
-            transport = self._working_transport(server)
+            transport = self._working_transport(server).start()
             transport._ssl_sock = FailingSocket()
             assert transport.is_connected
             assert transport._MAX_FAILURES == 3
@@ -79,23 +82,24 @@ class TestSslWrap(TestCase):
         with ServerResource() as server:
             with pytest.raises(TransportError) as exc:
                 SslSocketTransport('', port=server.port,
-                                   cert_file=CertFiles.CERT_AND_KEY)
+                                   cert_file=CertFiles.CERT_AND_KEY).start()
             assert 'cert not trusted' in exc.value.message.lower()
 
     def test_cert_no_key(self):
         with pytest.raises(TransportError) as exc:
-            SslSocketTransport('', port=0, cert_file=CertFiles.CERT_ONLY)
+            t = SslSocketTransport('', port=0, cert_file=CertFiles.CERT_ONLY)
+            t.start()
         assert 'include the private key' in exc.value.message.lower()
 
     def test_missing_cert(self):
         with pytest.raises(TransportError) as exc:
             SslSocketTransport('', port=0, cert_file="not.there",
-                               ca_file='ca.not.there')
+                               ca_file='ca.not.there').start()
         assert "ca 'ca.not.there'" in exc.value.message.lower()
 
     def test_bad_hostname(self):
         with pytest.raises(TransportError) as exc:
-            SslSocketTransport('zzz.qqq', port=0)
+            SslSocketTransport('zzz.qqq', port=0).start()
         msg = exc.value.message.lower()
         assert "unknown host" in msg
         assert "zzz.qqq" in msg
@@ -104,20 +108,20 @@ class TestSslWrap(TestCase):
         with ServerResource() as server:
             with pytest.raises(TransportError) as exc:
                 SslSocketTransport('', port=server.port,
-                                   cert_file=CertFiles.BAD_HOSTNAME)
+                                   cert_file=CertFiles.BAD_HOSTNAME).start()
             assert 'right hostname' in exc.value.message.lower()
 
     def test_wrong_port(self):
         with ServerResource(tls=False) as server:
             with pytest.raises(TransportError) as exc:
-                SslSocketTransport('localhost', port=server.port)
+                SslSocketTransport('localhost', port=server.port).start()
             msg = exc.value.message.lower()
             assert ('not tls on port %d' % server.port) in msg
 
     def test_bad_port(self):
         with pytest.raises(TransportError) as exc:
             SslSocketTransport('localhost', port=12345,
-                               cert_file=CertFiles.CERT_AND_KEY)
+                               cert_file=CertFiles.CERT_AND_KEY).start()
         message = exc.value.message.lower()
         assert 'nothing listening on localhost:12345' in message
 
@@ -127,5 +131,5 @@ class TestSslWrap(TestCase):
                 SslSocketTransport('localhost', port=server.port,
                                    cert_file=CertFiles.CERT_AND_KEY,
                                    ca_file=CertFiles.CERT_AND_KEY,
-                                   timeout=1)
+                                   timeout=1).start()
             assert "check the server setup and the firewall" in str(exc)

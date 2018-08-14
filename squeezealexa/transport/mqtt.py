@@ -36,6 +36,7 @@ class CustomClient(Client):
         self._host = settings.hostname
         self._port = settings.port
         self._configure_tls()
+        self.connected = False
 
     def _configure_tls(self):
         self.tls_set(certfile=self._conf_file_of("*-certificate.pem.crt"),
@@ -59,9 +60,15 @@ class CustomClient(Client):
 
         if MQTT_ERR_SUCCESS == ret:
             print_d("Connecting to {settings}", settings=self.settings)
+            self.connected = True
             return ret
         raise Error("Couldn't connect to {settings}".format(
             settings=self.settings))
+
+    def disconnect(self):
+        ret = super().disconnect()
+        self.connected = False
+        return ret
 
     def _conf_file_of(self, rel_glob: str) -> str:
         full_glob = os.path.join(self.settings.cert_dir, rel_glob)
@@ -98,6 +105,7 @@ class MqttTransport(Transport):
         self.client.on_subscribe = subscribed
         self.client.on_message = self._on_message
         self.message = []
+        print_d("Created transport: {self!r}", self=self)
 
     def start(self):
         def connected(client, userdata, flags, rc):
@@ -105,10 +113,20 @@ class MqttTransport(Transport):
                     client=self.client, topic=self.resp_topic)
             self.client.subscribe(self.resp_topic, qos=1)
 
+        def disconnected(client, userdata, rc):
+            print_d("Disconnected from {client}", client=self.client)
+            self.is_connected = False
+
+        self.is_connected = self.client.connected
+        if self.is_connected:
+            print_d("Already connected, great!")
+            return
         self.client.on_connect = connected
+        self.client.on_disconnect = disconnected
         assert self.client.loop_start() != MQTT_ERR_INVAL
         self.client.connect()
         wait_for(lambda s: s.is_connected, what="connection", context=self)
+        return self
 
     def _on_message(self, client, userdata, message):
         self.response_lines += message.payload.splitlines()
@@ -140,7 +158,11 @@ class MqttTransport(Transport):
     def _clear(self):
         self.response_lines = []
 
-    def __del__(self):
-        super().__del__()
+    def stop(self):
         print_d("Killing {what}", what=self)
+        self.client.disconnect()
+        self.is_connected = False
         del self.client
+
+    def __del__(self):
+        self.stop()

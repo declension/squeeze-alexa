@@ -17,7 +17,7 @@ from traceback import print_exc
 sys.path.append(dirname(dirname(__file__)))
 
 from squeezealexa.settings import *
-from squeezealexa.transport.configured import create_transport
+from squeezealexa.transport.factory import TransportFactory
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.transport.base import Transport
 
@@ -54,7 +54,7 @@ def die(e):
 
 if __name__ == '__main__':
     try:
-        transport = create_transport()
+        transport = TransportFactory().create().start()
         run_diagnostics(transport)
         print("\n>>>> Looks good! <<<<")
         sys.exit(0)
