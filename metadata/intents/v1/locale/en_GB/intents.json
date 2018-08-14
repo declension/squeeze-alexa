@@ -240,6 +240,21 @@
             "play my {Playlist} playlist on {Player}",
             "play my {Playlist} playlist in {Player}"
           ]
+        },
+        {
+          "name": "AllOnIntent",
+          "samples": [
+            "turn everything on",
+            "turn all players on"
+          ]
+        },
+        {
+          "name": "AllOffIntent",
+          "samples": [
+            "shut down",
+            "turn everything off",
+            "turn all players off"
+          ]
         }
       ],
       "types": [

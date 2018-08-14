@@ -16,6 +16,7 @@ import os
 
 import json
 
+from squeezealexa.alexa.intents import Audio, Power
 from squeezealexa.main import handler, SqueezeAlexa
 from squeezealexa.squeezebox.server import Server
 from squeezealexa.utils import print_d
@@ -33,6 +34,16 @@ INTENTS_V1_EN_US_PATH = os.path.join(ROOT,
                                      'metadata/intents/v1/locale'
                                      '/en_US/intents.json')
 
+
+def intents_from(j):
+    lang_model = j["interactionModel"]["languageModel"]
+    return {i["name"]: i for i in lang_model["intents"]}
+
+
+def enum_values_from(cls):
+    for k, v in cls.__dict__.items():
+        if not k.startswith("_"):
+            yield v
 
 class AllIntentHandlingTest(TestCase):
     """Makes sure all registered handlers are behaving at least vaguely well"""
@@ -58,9 +69,18 @@ class AllIntentHandlingTest(TestCase):
     def test_intents_v1_en_gb_json(self):
         with open(INTENTS_V1_EN_GB_PATH) as f:
             j = json.load(f)
-            assert j["interactionModel"]
+            intents = intents_from(j)
+            assert intents, "No intents found"
+            for i in enum_values_from(Power):
+                assert intents[i]
+            for i in enum_values_from(Audio):
+                assert intents[i]
 
     def test_intents_v1_en_us_json(self):
         with open(INTENTS_V1_EN_US_PATH) as f:
             j = json.load(f)
-            assert j["interactionModel"]
+            intents = intents_from(j)
+            for i in enum_values_from(Power):
+                assert intents[i]
+            for i in enum_values_from(Audio):
+                assert intents[i]
