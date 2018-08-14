@@ -25,6 +25,16 @@ jobs:
           command: pipenv install --dev
 
       - run:
+          name: Tests
+          command: pipenv run pytest -v --cov=squeezealexa --cov-report=term tests
+
+      - store_test_results:
+          path: test-results
+
+      - store_artifacts:
+          path: test-results
+
+      - run:
           name: Test build script
           command: bin/build.sh
 
