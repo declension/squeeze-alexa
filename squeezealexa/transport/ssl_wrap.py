@@ -72,8 +72,8 @@ class SslSocketTransport(Transport):
             if 'Connection refused' in err_str:
                 self._die("nothing listening on {this}. "
                           "Check settings, or (re)start server.", this=self)
-            elif ('WRONG_VERSION_NUMBER' in err_str
-                  or 'unknown_protocol' in err_str):
+            elif ('WRONG_VERSION_NUMBER' in err_str or
+                  'unknown_protocol' in err_str):
                 self._die('probably not TLS on port {port} - '
                           'wrong SERVER_PORT maybe?', port=self.port, err=e)
             elif 'Connection reset by peer' in err_str:

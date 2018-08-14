@@ -48,8 +48,8 @@ class NoRefreshServer(Server):
     """A normal server, that has no transport never returns any players"""
 
     def __init__(self, user=None, password=None, cur_player_id=None):
-        super().__init__(FixedTransportFactory(FakeTransport()), user, password,
-                         cur_player_id, False)
+        super().__init__(FixedTransportFactory(FakeTransport()),
+                         user, password, cur_player_id, False)
 
     def refresh_status(self):
         self.players = {}

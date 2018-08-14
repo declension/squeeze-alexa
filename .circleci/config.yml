@@ -35,6 +35,14 @@ jobs:
           path: test-results
 
       - run:
+          name: Code Quality
+          command: pipenv run flake8 --statistics .
+
+      - run:
+          name: Coverage submission
+          command: pipenv run coveralls
+
+      - run:
           name: Test build script
           command: bin/build.sh
 

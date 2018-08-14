@@ -86,7 +86,7 @@ class TestLiveMqttTransport:
         factory = TransportFactory(ssl_config=None, mqtt_settings=settings)
         transport = factory.create(mqtt_client=client)
         transport.start()
-        wait_for(lambda x: transport.is_connected)
+        wait_for(lambda t: t.is_connected, context=transport)
         transport.start()
         transport.start()
         assert client.connections == 1, "Over connected to MQTT"

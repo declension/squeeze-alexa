@@ -45,6 +45,7 @@ def enum_values_from(cls):
         if not k.startswith("_"):
             yield v
 
+
 class AllIntentHandlingTest(TestCase):
     """Makes sure all registered handlers are behaving at least vaguely well"""
 
