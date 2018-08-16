@@ -73,7 +73,7 @@ class TestWithExample(TestCase):
     def test_with_example_dict(self):
         assert with_example("{num} words", {1: 'one'}) == '1 words ("1")'
 
-    def missing_num_raises(self):
+    def test_missing_num_raises(self):
         with raises(ValueError):
             with_example("Nothing {there}", [2])
 
@@ -91,6 +91,10 @@ class TestLogging(TestCase):
     def test_print_d(self):
         actual = print_d("{foo} - {num:.1f}", foo="bar", num=3.1415)
         assert actual == "bar - 3.1"
+
+    def test_print_d_rejects_positional(self):
+        with raises(ValueError):
+            print_d("This is not cool: {}", "bar")
 
     def test_print_w(self):
         assert "Exception" in print_w("{ex!r}", ex=Exception("bar"))
