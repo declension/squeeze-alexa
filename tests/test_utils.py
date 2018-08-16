@@ -9,12 +9,14 @@
 #   (at your option) any later version.
 #
 #   See LICENSE for full license
-
+from time import sleep
 from unittest import TestCase
+
+from pytest import raises
 
 from squeezealexa import Settings
 from squeezealexa.utils import english_join, sanitise_text, with_example, \
-    stronger, print_d, print_w
+    stronger, print_d, print_w, wait_for
 
 LOTS = ['foo', 'bar', 'baz', 'quux']
 
@@ -71,6 +73,10 @@ class TestWithExample(TestCase):
     def test_with_example_dict(self):
         assert with_example("{num} words", {1: 'one'}) == '1 words ("1")'
 
+    def missing_num_raises(self):
+        with raises(ValueError):
+            with_example("Nothing {there}", [2])
+
 
 class TestStrong(TestCase):
     def test_full(self):
@@ -104,3 +110,14 @@ class TestSettings:
     def test_configured(self):
         assert FakeSettings().configured
         assert Settings().configured
+
+
+class TestWaitFor:
+
+    def test_timeout_raises_nicely(self):
+        context = FakeSettings()
+        with raises(Exception) as e:
+            wait_for(lambda x: sleep(1.1), 1, "Doing things", context)
+        assert "Failed \"Doing things\"" in str(e)
+        assert str(context) in str(e)
+        assert "after 1.20s" in str(e)

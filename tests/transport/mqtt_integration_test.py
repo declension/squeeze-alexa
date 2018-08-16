@@ -74,6 +74,7 @@ class TestLiveMqttTransport:
             wait_for(lambda x: self.published,
                      what="confirming publish", timeout=8)
         finally:
+            transport.stop()
             del transport
             replier.loop_stop()
             del replier

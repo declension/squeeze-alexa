@@ -10,7 +10,6 @@
 #
 #   See LICENSE for full license
 
-from __future__ import print_function
 import random
 import re
 import unicodedata
@@ -18,9 +17,6 @@ import sys
 from time import time, sleep
 
 from squeezealexa.i18n import _
-
-Char = chr
-Unicode = str
 
 
 def print_d(template, *args, **kwargs):
@@ -44,7 +40,7 @@ def english_join(items, final=_("and")):
 
 
 _SPACIFIES = {i: u' ' for i in range(sys.maxunicode)
-              if unicodedata.category(Char(i)).startswith('P')}
+              if unicodedata.category(chr(i)).startswith('P')}
 
 _REMOVALS = {ord(i): None for i in ['\'', '!']}
 
@@ -54,8 +50,6 @@ _SANITISE = {'&': ' N ',
 
 
 def remove_punctuation(text):
-    if not isinstance(text, Unicode):
-        text = text.decode('utf-8')
     return text.translate(_REMOVALS).translate(_SPACIFIES)
 
 
