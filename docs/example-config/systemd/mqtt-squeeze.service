@@ -1,0 +1,14 @@
+[Unit]
+Description=mqtt-squeeze
+After=network.target
+
+[Service]
+# UPDATE THIS to your installation directory (making sure all files are copied)
+ExecStart=/usr/local/bin/mqtt_squeeze.py
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=multi-user.target
+
+
