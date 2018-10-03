@@ -52,6 +52,15 @@ class TestSslWrap(TestCase):
             response = sslw.communicate('HELLO')
             assert response == response_for("HELLO")
 
+    def test_stop_real_server(self):
+        with ServerResource() as server:
+            sslw = self._working_transport(server)
+            sslw.start()
+            assert not sslw._ssl_sock._closed, "Shouldn't have closed socket"
+            sslw.stop()
+            assert not sslw.is_connected
+            assert sslw._ssl_sock._closed, "Should have closed socket"
+
     def test_with_real_server_no_wait(self):
         with ServerResource() as server:
             sslw = self._working_transport(server)

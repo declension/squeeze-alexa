@@ -161,6 +161,7 @@ class SslSocketTransport(Transport):
         print_d("Closing {who}", who=self)
         if hasattr(self, '_ssl_sock'):
             self._ssl_sock.close()
+        return super().stop()
 
     def __del__(self):
         self.stop()

@@ -111,7 +111,9 @@ class MqttTransport(Transport):
         def connected(client, userdata, flags, rc):
             print_d("Connected to {client}. Subscribing to {topic}",
                     client=self.client, topic=self.resp_topic)
-            self.client.subscribe(self.resp_topic, qos=1)
+            result, mid = self.client.subscribe(self.resp_topic, qos=1)
+            if result != MQTT_ERR_SUCCESS:
+                raise Error("Couldn't subscribe to '{topic}'", self.resp_topic)
 
         def disconnected(client, userdata, rc):
             print_d("Disconnected from {client}", client=self.client)
@@ -159,10 +161,13 @@ class MqttTransport(Transport):
         self.response_lines = []
 
     def stop(self):
-        print_d("Killing {what}", what=self)
+        print_d("Killing {what}...", what=self)
+        print_d("Unsubscribing from '{topic}'", topic=self.resp_topic)
+        self.client.on_message = None
+        self.client.on_subscribe = None
+        self.client.unsubscribe(self.resp_topic)
         self.client.disconnect()
-        self.is_connected = False
-        del self.client
+        return super().stop()
 
     def __del__(self):
         self.stop()

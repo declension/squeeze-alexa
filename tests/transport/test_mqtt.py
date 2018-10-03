@@ -29,16 +29,19 @@ class EchoingFakeClient(NoTlsCustomClient):
 
     def __init__(self, settings: MqttSettings):
         super().__init__(settings)
+        self.subscribed = []
+        self.unsubscribed = []
 
     def connect(self, host=None, port=None, keepalive=30, bind_address=""):
         if self.on_connect:
             self.on_connect(self, None, None, 1)
-        return MQTT_ERR_SUCCESS
+        return MQTT_ERR_SUCCESS, 1
 
     def subscribe(self, topic, qos=0):
+        self.subscribed.append(topic)
         if self.on_subscribe:
             self.on_subscribe(self, None, 123, (qos,))
-        return MQTT_ERR_SUCCESS
+        return MQTT_ERR_SUCCESS, 2
 
     def publish(self, topic, payload=None, qos=0, retain=False):
         if self.on_publish:
@@ -47,6 +50,10 @@ class EchoingFakeClient(NoTlsCustomClient):
         info = MQTTMessageInfo(123)
         info._published = True
         return info
+
+    def unsubscribe(self, topic):
+        self.unsubscribed.append(topic)
+        return super().unsubscribe(topic)
 
     def react_to_msg(self, payload):
         """Fake the round trip entirely"""
@@ -75,6 +82,7 @@ class TestMqttTransport:
         """Ensure that the communication we get back is the echo server's"""
         t = MqttTransport(fake_client, req_topic="foo", resp_topic="bar")
         t.start()
+        assert fake_client.subscribed == ["bar"]
         msg = "TEST MESSAGE at %s" % datetime.now()
         ret = t.communicate(msg)
         assert ret == fake_client.PREFIX + msg
@@ -99,6 +107,11 @@ class TestMqttTransport:
         s = str(t)
         assert "MQTT " in s
         assert str(fake_client) in s
+
+    def test_stop(self, fake_client):
+        t = MqttTransport(fake_client, req_topic="foo", resp_topic="bar")
+        t.stop()
+        assert fake_client.unsubscribed == ['bar']
 
 
 class TestCustomClient:

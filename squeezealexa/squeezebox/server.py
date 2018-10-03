@@ -50,16 +50,22 @@ class ServerFactory:
     def __init__(self, transport_factory):
         self.transport_factory = transport_factory
 
-    def _too_old(self):
-        if not self._INSTANCE:
-            return True
-        age = time.time() - self._CREATION_TIME
+    @classmethod
+    def _too_old(cls):
+        assert cls._INSTANCE
+        age = time.time() - cls._CREATION_TIME
         print_d("Age of instance: {age:0.1f}s", age=age)
-        return age > self._MAX_CACHE_SECS
+        return age > cls._MAX_CACHE_SECS
 
     def create(self, *args, **kwargs):
-        instance = self._INSTANCE
-        if not instance or not instance.connected or self._too_old():
+        instance = type(self)._INSTANCE
+        if instance and self._too_old():
+            print_d("Killing stale server instance...")
+            instance.disconnect()
+            instance = self._INSTANCE = None
+            # Fall through
+
+        if not instance or not instance.connected:
             print_d("Creating new server instance")
             transport = self.transport_factory.create()
             transport.start()
@@ -109,6 +115,10 @@ class Server(object):
     @property
     def connected(self):
         return self.transport.is_connected
+
+    def disconnect(self):
+        print_d("Goodbye from {what!r}", what=self)
+        self.transport.stop()
 
     @property
     def player_names(self):
@@ -342,5 +352,4 @@ class Server(object):
         return "Squeezebox server over {transport}".format(**self.__dict__)
 
     def __del__(self):
-        print_d("Goodbye from {what!r}", what=self)
-        del self.transport
+        self.disconnect()

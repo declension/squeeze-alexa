@@ -73,6 +73,14 @@ class TestServerFactory(TestCase):
         second = self.factory.create()
         assert first is second
 
+    def test_singletons_across_factories(self):
+        first = self.factory.create()
+        del self.factory
+        transport = FakeTransport().start()
+        factory2 = ServerFactory(FixedTransportFactory(transport))
+        second = factory2.create()
+        assert first is second
+
     def test_staleness_creates_new_instance(self):
         first = self.factory.create()
         ServerFactory._CREATION_TIME = (time.time() -
