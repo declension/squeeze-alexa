@@ -15,6 +15,7 @@ from __future__ import print_function
 
 import random
 import time
+
 from fuzzywuzzy import process
 
 from squeezealexa.i18n import _
@@ -23,8 +24,8 @@ from squeezealexa.alexa.intents import *
 from squeezealexa.alexa.response import audio_response, speech_response, \
     _build_response
 from squeezealexa.alexa.utterances import Utterances
-from squeezealexa.squeezebox.server import Server, print_d
-from squeezealexa.utils import english_join, sanitise_text
+from squeezealexa.squeezebox.server import Server, print_d, people_from
+from squeezealexa.utils import human_join, sanitise_text
 
 
 class MinConfidences(object):
@@ -107,11 +108,11 @@ class SqueezeAlexa(AlexaHandler):
         self._server.next(player_id=pid)
         return self.smart_response(speech=_("Yep, pretty lame."))
 
-    @handler.handle(Custom.CURRENT)
-    def on_current(self, intent, session, pid=None):
+    @handler.handle(Custom.NOW_PLAYING)
+    def now_playing(self, intent, session, pid=None):
         details = self._server.get_track_details(player_id=pid)
-        title = details['current_title']
-        artist = details['artist']
+        title = details['title'][0]
+        artist = human_join(people_from(details))
         if title:
             desc = _("Currently playing: \"{title}\"").format(title=title)
             if artist:
@@ -193,7 +194,7 @@ class SqueezeAlexa(AlexaHandler):
                                    store={"player_id": pid})
         speech = (_("I only found these players: {players}. "
                     "Could you try again?")
-                  .format(players=english_join(srv.player_names)))
+                  .format(players=human_join(srv.player_names)))
         reprompt = (_("You can select a player by saying \"{utterance}\" "
                       "and then the player name.")
                     .format(utterance=Utterances.SELECT_PLAYER))
@@ -315,11 +316,11 @@ class SqueezeAlexa(AlexaHandler):
             lms_genres = self._genres_from_slots(slots, server.genres)
             if lms_genres:
                 server.play_genres(lms_genres, player_id=pid)
-                gs = english_join(sanitise_text(g) for g in lms_genres)
+                gs = human_join(sanitise_text(g) for g in lms_genres)
                 text = _("Playing mix of {genres}").format(genres=gs)
                 return self.smart_response(text=text, speech=text)
             else:
-                genres_text = english_join(slots, _("or"))
+                genres_text = human_join(slots, _("or"))
                 text = _("Don't understand requested genres {genres}").format(
                     genres=genres_text)
                 speech = _("Can't find genres: {genres}").format(

@@ -15,7 +15,7 @@ from unittest import TestCase
 from pytest import raises
 
 from squeezealexa import Settings
-from squeezealexa.utils import english_join, sanitise_text, with_example, \
+from squeezealexa.utils import human_join, sanitise_text, with_example, \
     stronger, print_d, print_w, wait_for
 
 LOTS = ['foo', 'bar', 'baz', 'quux']
@@ -23,20 +23,20 @@ LOTS = ['foo', 'bar', 'baz', 'quux']
 
 class TestEnglishJoin(TestCase):
     def test_basics(self):
-        assert english_join([]) == ''
-        assert english_join(['foo']) == 'foo'
-        assert english_join(['foo', 'bar']) == 'foo and bar'
-        assert english_join(LOTS[:-1]) == 'foo, bar and baz'
-        assert english_join(LOTS) == 'foo, bar, baz and quux'
+        assert human_join([]) == ''
+        assert human_join(['foo']) == 'foo'
+        assert human_join(['foo', 'bar']) == 'foo and bar'
+        assert human_join(LOTS[:-1]) == 'foo, bar and baz'
+        assert human_join(LOTS) == 'foo, bar, baz and quux'
 
     def test_alternate_join_works(self):
-        assert english_join(['foo', 'bar'], 'or') == 'foo or bar'
+        assert human_join(['foo', 'bar'], 'or') == 'foo or bar'
 
     def test_tuples_ok(self):
-        assert english_join(('foo', 'bar'), 'or') == 'foo or bar'
+        assert human_join(('foo', 'bar'), 'or') == 'foo or bar'
 
     def test_skips_falsey(self):
-        assert english_join(['foo', None, 'bar', '']) == 'foo and bar'
+        assert human_join(['foo', None, 'bar', '']) == 'foo and bar'
 
 
 class TestSanitise(TestCase):
