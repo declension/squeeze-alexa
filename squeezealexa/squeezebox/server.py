@@ -12,8 +12,11 @@
 
 import time
 
-from typing import List
-from squeezealexa.utils import with_example, print_d, stronger, print_w
+from typing import List, Dict
+
+from squeezealexa.transport.base import Error
+from squeezealexa.utils import with_example, print_d, stronger, print_w, \
+    first_of
 
 import urllib.request as urllib
 
@@ -183,8 +186,10 @@ class Server(object):
 
         resp_lines = response.splitlines()
         if len(lines) != len(resp_lines):
-            raise ValueError("Response problem: %s != %s"
-                             % (lines, resp_lines))
+            print_d("Got mismatched response: {lines} vs {resp_lines}",
+                    lines=lines, resp_lines=resp_lines)
+            raise Error("Transport response problem: got %d lines, not %d"
+                        % (len(resp_lines), len(lines)))
         return [resp_line[start_point(line):]
                 for line, resp_line in zip(lines, resp_lines)]
 
@@ -252,12 +257,28 @@ class Server(object):
         pid = player_id or self.cur_player_id
         return self._request(["%s %s" % (pid, com) for com in commands])
 
-    def get_track_details(self, player_id=None):
-        keys = ["genre", "artist", "current_title"]
+    def get_track_details(self, player_id=None) -> Dict[str, List]:
+        """Returns a dict of details"""
         pid = player_id or self.cur_player_id
-        responses = self._request(["%s %s ?" % (pid, s)
-                                   for s in keys])
-        return dict(zip(keys, responses))
+        # We need to support servers with and without multi-valued tags...
+        responses = self.player_request("status - 1 tags:aAlgG", pid, raw=True)
+        print_d("Got track details: {details}", details=responses)
+        items = next(self._groups(responses)).items()
+
+        def values_for(tag: str, value: str) -> List[str]:
+            return ([value] if tag in ('title', 'album')
+                    else [v.strip() for v in value.split(',')])
+
+        details = {k: values_for(k, v)
+                   for k, v in items
+                   if k in ('title', 'genre', 'genres', 'album',
+                            'trackartist', 'artist', 'albumartist', 'composer')
+                   }
+        if 'genres' in details:
+            details['genre'] = details['genres']
+            del details['genres']
+        print_d("Processed details: {d}", d=details)
+        return details
 
     @property
     def genres(self):
@@ -353,3 +374,12 @@ class Server(object):
 
     def __del__(self):
         self.disconnect()
+
+
+def people_from(details):
+    genres = {g.lower() for g in details.get('genre', [])}
+    tags = ['trackartist', 'artist', 'albumartist', 'composer']
+    if genres.intersection({'classical', 'baroque', 'neoclassical'}):
+        # Having it twice is fine
+        tags = ['composer'] + tags
+    return first_of(details, tags)

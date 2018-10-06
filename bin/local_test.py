@@ -32,10 +32,11 @@ def run_diagnostics(transport: Transport):
                     password=LMS_SETTINGS.PASSWORD)
     assert server.genres
     assert server.playlists
-    cur_play_details = server.get_track_details().values()
+    cur_play_details = server.get_track_details()
     if cur_play_details:
-        print("Currently playing: %s" %
-              " >> ".join(cur_play_details))
+        print("Currently playing: \n >> %s" %
+              "\n >> ".join("%s: %s" % (k, ", ".join(v))
+                            for k, v in cur_play_details.items()))
     else:
         print("Nothing currently in playlist")
 

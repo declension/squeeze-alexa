@@ -52,5 +52,5 @@ class Custom(object):
                         for s in ["Increase", "Decrease"])
     SET_VOL, SET_VOL_PERCENT = ("%sIntent" % s
                                 for s in ["SetVolume", "SetVolumePercent"])
-    CURRENT, SELECT_PLAYER = ("%sIntent" % s
-                              for s in ["NowPlaying", "SelectPlayer"])
+    NOW_PLAYING, SELECT_PLAYER = ("%sIntent" % s
+                                  for s in ["NowPlaying", "SelectPlayer"])

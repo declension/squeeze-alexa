@@ -33,7 +33,7 @@ class TestSqueezeboxPlayerSettings:
 
 class FixedTransportFactory(TransportFactory):
 
-    def __init__(self, instance: Transport = None):
+    def __init__(self, instance: Transport = FakeTransport()):
         super().__init__()
         self.instance = instance
         self.count = 0
@@ -48,7 +48,7 @@ class NoRefreshServer(Server):
     """A normal server, that has no transport never returns any players"""
 
     def __init__(self, user=None, password=None, cur_player_id=None):
-        super().__init__(FixedTransportFactory(FakeTransport()),
+        super().__init__(FixedTransportFactory(FakeTransport()).create(),
                          user, password, cur_player_id, False)
 
     def refresh_status(self):

@@ -15,6 +15,7 @@ import re
 import unicodedata
 import sys
 from time import time, sleep
+from typing import Dict, Iterable, Union
 
 from squeezealexa.i18n import _
 
@@ -30,7 +31,7 @@ def print_d(template, *args, **kwargs):
 print_w = print_d
 
 
-def english_join(items, final=_("and")):
+def human_join(items, final=_("and")):
     """Like join, but in English (no Oxford commas...)
        Kinda works in some other languages (French, German)"""
     items = list(filter(None, items))
@@ -105,3 +106,11 @@ def wait_for(func, timeout=3, what=None, context=None):
             raise Exception(msg)
     print_d("Stats: \"{task}\" took < {duration:.2f} seconds", task=what,
             duration=nt - t)
+
+
+def first_of(details: Dict, tags: Iterable[str]) -> Union[str, None]:
+    """Gets the first non-null value from the list of tags"""
+    for tag in tags:
+        if tag in details:
+            return details[tag]
+    return None
