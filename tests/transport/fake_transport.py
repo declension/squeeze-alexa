@@ -81,4 +81,3 @@ class FakeTransport(Transport):
 
     def stop(self) -> 'Transport':
         return super().stop()
-
