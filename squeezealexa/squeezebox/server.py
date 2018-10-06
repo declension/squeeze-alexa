@@ -186,8 +186,10 @@ class Server(object):
 
         resp_lines = response.splitlines()
         if len(lines) != len(resp_lines):
-            raise ValueError("Response problem: %s != %s"
-                             % (lines, resp_lines))
+            print_d("Got mismatched response: {lines} vs {resp_lines}",
+                    lines=lines, resp_lines=resp_lines)
+            raise Error("Transport response problem: got %d lines, not %d"
+                        % (len(resp_lines), len(lines)))
         return [resp_line[start_point(line):]
                 for line, resp_line in zip(lines, resp_lines)]
 
