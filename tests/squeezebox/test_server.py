@@ -60,7 +60,7 @@ class TestServerNoTransport:
         with raises(SqueezeboxException) as e:
             Server._INSTANCE = None
             NoRefreshServer()
-        assert "no players" in str(e).lower()
+        assert "no connected players" in str(e).lower()
 
 
 class TestServerFactory(TestCase):
@@ -129,8 +129,7 @@ class TestServerWithTransport(TestCase):
                     'ip': '127.0.0.1:39365', 'name': 'Lavf from echo6fd1',
                     'seq_no': 0, 'model': 'http', 'power': True,
                     'isplaying': False, 'canpoweroff': False,
-                    'connected': False, 'isplayer': True,
-                    'sn player count': 0, 'other player count': 0}
+                    'connected': False, 'isplayer': True}
         assert next(groups) == expected
 
     def test_groups_multiple(self):
@@ -158,7 +157,7 @@ class TestServerWithTransport(TestCase):
 
     def test_groups_dodgy(self):
         raw = "blah bar%3Abaz"
-        groups = list(self.server._groups(raw, start="id"))
+        groups = list(self.server._groups(raw, start_key="id"))
         assert not groups
 
     def test_groups_status(self):
@@ -184,3 +183,42 @@ class TestServerWithTransport(TestCase):
     def test_change_volume_zero(self):
         self.server.change_volume(0)
         assert "mixer volume" not in self.transport.all_input
+
+
+def test_tricky_players_parsing():
+    """See https://github.com/declension/squeeze-alexa/issues/93"""
+    tricky_players = """serverstatus 0 99 lastscan%3A1536990512
+    version%3A7.9.1 uuid%3Aa6abbce0-edfe-447d-9c4b-2f132345733f
+    mac%3A00%3A01%3A02%3A03%3A04%3A05 info%20total%20albums%3A107
+    info%20total%20artists%3A209 info%20total%20genres%3A13
+    info%20total%20songs%3A2151
+    info%20total%20duration%3A534087.510000002 player%20count%3A3
+    playerindex%3A0 playerid%3A00%3A01%3A02%3A03%3A04%3Ad1
+    uuid%3Ab1a5d6e01890c4c440d2da913233e622 ip%3A192.168.168.173%3A35566
+    name%3ACuisine seq_no%3A180 model%3Ababy
+    modelname%3ASqueezebox%20Radio power%3A0 isplaying%3A0
+    displaytype%3Anone isplayer%3A1 canpoweroff%3A1 connected%3A1
+    firmware%3A7.7.3-r16676 playerindex%3A1
+    playerid%3A00%3A01%3A02%3A03%3A04%3Ab6
+    uuid%3Afeeaab78bf7d9d4773495e7112eefaff ip%3A192.168.168.134%3A34510
+    name%3AChambre seq_no%3A73 model%3Ababy
+    modelname%3ASqueezebox%20Radio power%3A0 isplaying%3A0
+    displaytype%3Anone isplayer%3A1 canpoweroff%3A1 connected%3A1
+    firmware%3A7.7.3-r16676 playerindex%3A2
+    playerid%3A00%3A01%3A02%3A03%3A04%3Af6
+    uuid%3A8d470575086e09c3995a5fcb7a1667c8 ip%3A192.168.168.186%3A39845
+    name%3ASalon seq_no%3A17 model%3Afab4 modelname%3ASqueezebox%20Touch
+    power%3A0 isplaying%3A0 displaytype%3Anone isplayer%3A1
+    canpoweroff%3A1 connected%3A1 firmware%3A7.8.0-r16754
+    sn%20player%20count%3A2 id%3A31579863
+    name%3ASqueezebox%20Radio%20Fanal
+    playerid%3A00%3A01%3A02%3A03%3A04%3Ac2 model%3Ababy id%3A11266387
+    name%3ASqueezebox%20Radio%20Meme
+    playerid%3A00%3A01%3A02%3A03%3A04%3A5a model%3Ababy
+    other%20player%20count%3A0""".replace("\n", "")
+
+    transport = FakeTransport(fake_server_status=tricky_players).start()
+    server = Server(transport)
+    server.refresh_status()
+    assert len(server.player_names) == 3, "Should only have found 3 players"
+    assert server.player_names == {'Cuisine', 'Chambre', 'Salon'}

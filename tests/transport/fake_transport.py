@@ -46,7 +46,7 @@ FAKE_LENGTH = 358.852
 class FakeTransport(Transport):
 
     def __init__(self, fake_name='fake', fake_id='12:34',
-                 fake_status=A_REAL_STATUS):
+                 fake_status=A_REAL_STATUS, fake_server_status=None):
         self.hostname = 'localhost'
         self.port = 0
         self.failures = 0
@@ -55,15 +55,21 @@ class FakeTransport(Transport):
         self.player_id = fake_id
         self.all_input = ""
         self._status = fake_status
+        self._server_status = fake_server_status
 
     def communicate(self, data, wait=True):
         self.all_input += data
         stripped = data.rstrip('\n')
         if data.startswith('serverstatus'):
             print_d("Faking server status...")
-            return ('{orig} player%20count:1 playerid:{pid} name:{name}\n'
-                    .format(orig=stripped, name=self.player_name,
-                            pid=self.player_id))
+            if self._server_status:
+                return self._server_status
+            else:
+                return ('{orig} player%20count:1 playerid:{pid} connected:1 '
+                        'name:{name}\n'
+                        .format(orig=stripped, name=self.player_name,
+                                pid=self.player_id))
+
         elif ' status ' in stripped:
             print_d("Faking player status...")
             return stripped + self._status

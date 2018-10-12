@@ -17,7 +17,7 @@ from typing import List, Dict
 from squeezealexa.transport.base import Error
 from squeezealexa.utils import with_example, print_d, stronger, print_w, \
     first_of
-
+from squeezealexa.i18n import _
 import urllib.request as urllib
 
 
@@ -99,7 +99,7 @@ class Server(object):
         self.refresh_status()
         players = list(self.players.values())
         if not players:
-            raise SqueezeboxException("Uh-oh. No players found.")
+            raise SqueezeboxException(_("Uh-oh. No connected players found."))
         if not cur_player_id:
             self.cur_player_id = players[0].id
         elif cur_player_id not in self.players:
@@ -203,20 +203,24 @@ class Server(object):
         demunged = map(demunge, response.split(' '))
         return [d for d in demunged if len(d) == 2]
 
-    def _groups(self, response, start=None, extra_bools=None):
-        """Returns a series of dicts from `response`.
+    def _groups(self, response: str, start_key: str =None, extra_bools=None):
+        """Generator to yield a series of dicts from `response`.
         If `start` is specified, items prior to this will be discarded,
         and each dict will be grouped starting with this key.
         `extra_bools` allows custom keys to be booleaned"""
         groups = []
+        started = False
         for k, v in self.__pairs_from(response):
-            if k == start:
+            if k == start_key or " count" in k:
                 if groups:
                     yield dict(groups)
+                    groups = []
+                started = True
                 # New group starts here
-                groups = [(k, stronger(k, v, extra_bools))]
+                if " count" not in k:
+                    groups = [(k, stronger(k, v, extra_bools))]
             else:
-                if groups or not start:
+                if started or not start_key:
                     groups.append((k, stronger(k, v, extra_bools)))
         if groups:
             yield dict(groups)
@@ -229,10 +233,13 @@ class Server(object):
         self.players = {}
         for data in self._groups(response, 'playerid',
                                  extra_bools=['power', 'connected']):
-            self.players[data['playerid']] = SqueezeboxPlayerSettings(data)
-        print_d("Found {total} player(s): {players}",
+            print_d("Data is {data}", data=data)
+            if data.get('connected', False):
+                self.players[data['playerid']] = SqueezeboxPlayerSettings(data)
+        print_d("Found {total} connected player(s): {players}",
                 total=len(self.players),
-                players=[p['name'] for p in self.players.values()])
+                players=[p.get('name', _("Unknown player"))
+                         for p in self.players.values()])
         if self._debug:
             print_d("Player(s): {players}", players=self.players.values())
 
