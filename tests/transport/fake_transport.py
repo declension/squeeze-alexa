@@ -40,6 +40,15 @@ A_REAL_STATUS = """
  artist%3AJamie%20Cullum album%3AThe%20Pursuit duration%3A255.906
 """.lstrip().replace('\n', '')
 
+NO_ARTIST_STATUS = """player_name%3AUpstairs%20Music
+ player_connected%3A1 player_ip%3A192.168.1.35%3A45672 power%3A0
+ signalstrength%3A78 mode%3Astop remote%3A1 current_title%3ABBC%20Radio%204
+ time%3A0 rate%3A1 mixer%20volume%3A75 playlist%20repeat%3A0
+ playlist%20shuffle%3A2 playlist%20mode%3Aoff seq_no%3A0 playlist_cur_index%3A0
+ playlist_timestamp%3A1539889230.96449 playlist_tracks%3A1
+ digital_volume_control%3A1 remoteMeta%3AHASH(0xef71c70) playlist%20index%3A0
+ id%3A-230948072 title%3ABBC%20Radio%204""".replace('\n', '')
+
 FAKE_LENGTH = 358.852
 
 

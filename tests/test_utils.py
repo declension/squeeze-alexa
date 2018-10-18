@@ -38,6 +38,9 @@ class TestEnglishJoin(TestCase):
     def test_skips_falsey(self):
         assert human_join(['foo', None, 'bar', '']) == 'foo and bar'
 
+    def test_nothing(self):
+        assert human_join(None) == ''
+
 
 class TestSanitise(TestCase):
     def test_nothing(self):

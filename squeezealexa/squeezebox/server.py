@@ -12,7 +12,7 @@
 
 import time
 
-from typing import List, Dict
+from typing import List, Dict, Union
 
 from squeezealexa.transport.base import Error
 from squeezealexa.utils import with_example, print_d, stronger, print_w, \
@@ -383,7 +383,7 @@ class Server(object):
         self.disconnect()
 
 
-def people_from(details):
+def people_from(details: Dict) -> Union[str, None]:
     genres = {g.lower() for g in details.get('genre', [])}
     tags = ['trackartist', 'artist', 'albumartist', 'composer']
     if genres.intersection({'classical', 'baroque', 'neoclassical'}):

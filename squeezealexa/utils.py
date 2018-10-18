@@ -31,10 +31,10 @@ def print_d(template, *args, **kwargs):
 print_w = print_d
 
 
-def human_join(items, final=_("and")):
+def human_join(items: Iterable, final: str =_("and")) -> str:
     """Like join, but in English (no Oxford commas...)
        Kinda works in some other languages (French, German)"""
-    items = list(filter(None, items))
+    items = list(filter(None, items or []))
     most = ", ".join(items[0:-1])
     sep = " %s " % final.strip()
     return sep.join(filter(None, [most] + items[-1:]))

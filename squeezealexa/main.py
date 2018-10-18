@@ -112,11 +112,11 @@ class SqueezeAlexa(AlexaHandler):
     def now_playing(self, intent, session, pid=None):
         details = self._server.get_track_details(player_id=pid)
         title = details['title'][0]
-        artist = human_join(people_from(details))
+        artists = people_from(details)
         if title:
             desc = _("Currently playing: \"{title}\"").format(title=title)
-            if artist:
-                desc += _(", by {artist}").format(artist=artist)
+            if artists:
+                desc += _(", by {artists}").format(artists=human_join(artists))
             heading = _("Now playing: \"{title}\"").format(title=title)
         else:
             desc = _("Nothing playing.")
