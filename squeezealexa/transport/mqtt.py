@@ -154,7 +154,7 @@ class MqttTransport(Transport):
                 topic=self.req_topic, num=num_lines)
 
         wait_for(lambda s: len(s.response_lines) >= num_lines, context=self,
-                 what="response from mqtt-squeeze", timeout=5)
+                 what="response from mqtt-squeeze", timeout=5, exc_cls=Error)
         return "\n".join(m.decode('utf-8') for m in self.response_lines)
 
     def _clear(self):

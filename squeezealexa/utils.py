@@ -95,15 +95,17 @@ def stronger(k, v, extra_bools=None):
         return None if not v else v
 
 
-def wait_for(func, timeout=3, what=None, context=None):
+def wait_for(func, timeout=3, what=None, context=None, exc_cls=Exception):
     nt = t = time()
     while not func(context):
         sleep(0.1)
         nt = time()
         if nt - t > timeout:
-            msg = "Failed \"{task}\" in {context}, after {secs:.2f}s".format(
-                task=what, context=str(context), secs=nt - t)
-            raise Exception(msg)
+            msg = _("Failed \"{task}\", "
+                    "after {secs:.1f} seconds").format(task=what,
+                                                       context=str(context),
+                                                       secs=nt - t)
+            raise exc_cls(msg)
     print_d("Stats: \"{task}\" took < {duration:.2f} seconds", task=what,
             duration=nt - t)
 

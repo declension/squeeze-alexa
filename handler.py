@@ -24,6 +24,9 @@ except ImportError:
     def _(s):
         return s
 
+ERROR_SPEECH = _("<speak><say-as interpret-as='interjection'>d'oh</say-as>: "
+                 "{type} - {message}.</speak>")
+
 factory = ServerFactory(TransportFactory())
 
 
@@ -48,6 +51,6 @@ def lambda_handler(event, context, server=None):
         # Work with AWS stack-trace log magic
         print(format_exc().replace('\n', '\r'))
         error = str(e.msg if hasattr(e, "msg") else e)
-        text = _("Oh dear: {type}. {message}").format(
-            type=type(e).__name__, message=error)
-        return speech_response(title=_("All went wrong"), text=text)
+        speech = ERROR_SPEECH.format(type=type(e).__name__, message=error)
+        return speech_response(title=_("All went wrong"), speech=speech,
+                               text=error, use_ssml="SSML")

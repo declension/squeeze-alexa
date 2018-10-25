@@ -1,3 +1,5 @@
+import re
+
 from handler import lambda_handler, _
 from tests.alexa.alexa_handlers_test import NO_SESSION
 from tests.integration_test import FakeSqueeze
@@ -9,6 +11,14 @@ def test_entrypoint_error():
     resp = full_response['response']
     assert resp, "Blank response generated"
     assert resp['card']['title'] == _("All went wrong")
+
+
+def test_entrypoint_error_ssml():
+    full_response = lambda_handler(None, {}, server=FakeSqueeze())
+    resp = full_response['response']
+    assert resp['outputSpeech']['type'] == "SSML"
+    regex = re.compile('<speak>.+</speak>')
+    assert regex.match(resp['outputSpeech']['ssml'])
 
 
 def test_entrypoint_ignore_audio():

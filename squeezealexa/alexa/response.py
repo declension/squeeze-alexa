@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -11,13 +11,17 @@
 #   See LICENSE for full license
 
 from squeezealexa.settings import SkillSettings
+from squeezealexa.utils import print_d
 
 
-def speech_fragment(text, title=None, reprompt_text=None, end=True):
+def speech_fragment(speech, title=None, reprompt_text=None, end=True,
+                    text=None, use_ssml=False):
+    text_type = 'SSML' if use_ssml else 'PlainText'
+    text_key = 'ssml' if use_ssml else 'text'
     output = {
         'outputSpeech': {
-            'type': 'PlainText',
-            'text': text
+            'type': text_type,
+            text_key: speech
         },
         'shouldEndSession': end
     }
@@ -25,13 +29,13 @@ def speech_fragment(text, title=None, reprompt_text=None, end=True):
         output['card'] = {
             'type': 'Simple',
             'title': title,
-            'content': text
+            'content': text or speech
         }
     if reprompt_text:
         output['reprompt'] = {
             'outputSpeech': {
-                'type': 'PlainText',
-                'text': reprompt_text
+                'type': text_type,
+                text_key: reprompt_text
             }
         }
     return output
@@ -66,10 +70,13 @@ def audio_response(speech=None, text=None, title=None):
     return _build_response(output)
 
 
-def speech_response(title=None, text=None, reprompt_text=None, end=True,
-                    store=None):
-    speechlet_response = speech_fragment(text=text, title=title,
-                                         reprompt_text=reprompt_text, end=end)
+def speech_response(title=None, speech=None, reprompt_text=None, end=True,
+                    store=None, text=None, use_ssml=False):
+    speechlet_response = speech_fragment(speech=speech, title=title,
+                                         reprompt_text=reprompt_text,
+                                         text=text, end=end,
+                                         use_ssml=use_ssml)
+    print_d("Returning {response}", response=speechlet_response)
     return _build_response(speechlet_response, store=store)
 
 

@@ -190,7 +190,7 @@ class SqueezeAlexa(AlexaHandler):
             srv.cur_player_id = player.id
             text = _("Selected {player}").format(player=player.name)
             title = _("Selected player {player}").format(player=player)
-            return speech_response(title=title, text=text,
+            return speech_response(title=title, speech=text,
                                    store={"player_id": pid})
         speech = (_("I only found these players: {players}. "
                     "Could you try again?")
@@ -280,14 +280,15 @@ class SqueezeAlexa(AlexaHandler):
         except KeyError:
             print_d("Couldn't process playlist from: {intent}", intent=intent)
             if not server.playlists:
-                return speech_response(text=_("There are no playlists"))
+                return speech_response(speech=_("There are no playlists"))
             pl = random.choice(server.playlists)
             text = _("Didn't hear a playlist there. "
                      "You could try the \"{name}\" playlist?").format(name=pl)
-            return speech_response(text=text)
+            return speech_response(speech=text)
         else:
             if not server.playlists:
-                return speech_response(text=_("No Squeezebox playlists found"))
+                return speech_response(
+                    speech=_("No Squeezebox playlists found"))
             result = process.extractOne(slot, server.playlists)
             print_d("{guess} was the best guess for '{slot}' from {choices}",
                     guess=str(result), slot=slot, choices=server.playlists)
@@ -387,5 +388,5 @@ class SqueezeAlexa(AlexaHandler):
 
     def smart_response(self, title=None, text=None, speech=None):
         if self.audio_enabled:
-            return speech_response(title=title or text, text=speech)
+            return speech_response(title=title or text, speech=speech)
         return audio_response(speech=speech, text=text, title=title)
