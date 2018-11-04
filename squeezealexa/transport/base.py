@@ -64,7 +64,7 @@ def check_listening(host, port, timeout=MAX_CONNECT_SECS, msg=""):
     """Checks a socket, then releases"""
     try:
         s = socket.create_connection((host, port), timeout=timeout)
-    except socket.error as err:
+    except socket.error as err:  # noqa: F841
         raise Error("Couldn't find anything at all on {host}:{port} - "
                     "{msg}({err})".format(**locals()))
     else:
