@@ -15,6 +15,7 @@ import ssl
 from _ssl import PROTOCOL_TLSv1_2
 from glob import glob
 from os.path import dirname, realpath, join
+from typing import Union
 
 from paho.mqtt.client import Client, MQTT_ERR_SUCCESS, error_string, \
     MQTT_ERR_INVAL
@@ -57,11 +58,11 @@ class CustomClient(Client):
             if 'SSLV3_ALERT_CERTIFICATE_UNKNOWN' in str(e):
                 raise Error("Certificate problem with MQTT. "
                             "Is the certificate enabled in AWS?")
-
-        if MQTT_ERR_SUCCESS == ret:
-            print_d("Connecting to {settings}", settings=self.settings)
-            self.connected = True
-            return ret
+        else:
+            if MQTT_ERR_SUCCESS == ret:
+                print_d("Connecting to {settings}", settings=self.settings)
+                self.connected = True
+                return ret
         raise Error("Couldn't connect to {settings}".format(
             settings=self.settings))
 
@@ -137,7 +138,7 @@ class MqttTransport(Transport):
     def details(self):
         return "MQTT to {client}".format(client=self.client)
 
-    def communicate(self, raw: str, wait=True) -> str:
+    def communicate(self, raw: str, wait=True, timeout=5) -> Union[str, None]:
         data = raw.strip() + '\n'
         num_lines = data.count('\n')
         self._clear()
@@ -154,7 +155,8 @@ class MqttTransport(Transport):
                 topic=self.req_topic, num=num_lines)
 
         wait_for(lambda s: len(s.response_lines) >= num_lines, context=self,
-                 what="response from mqtt-squeeze", timeout=5, exc_cls=Error)
+                 what="response from mqtt-squeeze", timeout=timeout,
+                 exc_cls=Error)
         return "\n".join(m.decode('utf-8') for m in self.response_lines)
 
     def _clear(self):
