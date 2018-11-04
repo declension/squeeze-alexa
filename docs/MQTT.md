@@ -45,10 +45,19 @@ Then just `tar -xf mqtt-squeeze.tgz`.
 On Linux, this might be SysV (traditional), [Upstart](https://en.wikipedia.org/wiki/Upstart), or [systemd](https://en.wikipedia.org/wiki/Systemd) (most modern Linux).
 
 #### Using Upstart on Synology
+##### Installing
 For convenience find [an Upstart script suitable for Synology](example-config/upstart/mqtt-squeeze.conf),
-which you can copy to `/etc/init/mqtt-squeeze.conf`.
+which you can copy (or better: symlink) to `/etc/init/mqtt-squeeze.conf`:
 
-You can then reload the daemon: `sudo initctl reload-configuration`.
+```bash
+cd mqtt-squeeze/etc/conf
+ln -s mqtt-squeeze.conf /etc/init/mqtt-squeeze.conf
+```
+
+:warning: This file will be overwritten when Synology DSM is upgraded. 
+
+##### Using Upstart
+You can then reload the daemon: `sudo initctl reload-configuration` to pick up these config changes.
 
 You can then start it with:
 `sudo start mqtt-squeeze`
