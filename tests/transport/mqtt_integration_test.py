@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-18 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -46,15 +46,20 @@ class TestLiveMqttTransport:
     def test_real_publishing(self):
         test_mqtt_settings = self.mqtt_settings()
         self.published = []
+        self.subscribed = False
 
         def on_message(client: Client, userdata, msg: MQTTMessage):
             msg = msg.payload.decode('utf-8').strip()
             client.publish(test_mqtt_settings.topic_resp,
                            "GOT: {msg}".format(msg=msg).encode('utf-8'))
 
+        def on_subscribe(client, data, mid, granted_qos):
+            self.subscribed = True
+
         replier = CustomTlsCustomClient(test_mqtt_settings)
         replier.on_message = on_message
         replier.connect()
+        replier.on_subscribe = on_subscribe
 
         def on_publish(client, userdata, mid):
             self.published.append(mid)
@@ -70,9 +75,11 @@ class TestLiveMqttTransport:
         try:
             replier.subscribe(test_mqtt_settings.topic_req)
             assert replier.loop_start() != MQTT_ERR_INVAL
-            reply = transport.communicate(msg)
+            wait_for(lambda x: self.subscribed,
+                     what="confirming subscription", timeout=3)
+            reply = transport.communicate(msg, timeout=3)
             wait_for(lambda x: self.published,
-                     what="confirming publish", timeout=8)
+                     what="confirming publish", timeout=3)
         finally:
             transport.stop()
             del transport
