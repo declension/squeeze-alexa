@@ -38,9 +38,9 @@ MANAGED_POLICY_ARN = ("arn:aws:iam::aws:policy/service-role/"
                       "AWSLambdaBasicExecutionRole")
 ROLE_NAME = "squeeze-alexa"
 EXCLUDE_REGEXES = [re.compile(s) for s in
-                   ("__pycache__/", "\.git/", "^\..+",
-                    "docs/", "metadata/",
-                    "\.po$", r"~$", "\.pyc$", "\.md$", "\.zip$")]
+                   (r"__pycache__/", r"\.git/", r"^\..+",
+                    r"docs/", r"metadata/",
+                    r"\.po$", r"~$", r"\.pyc$", r"\\.md$", r"\.zip$")]
 
 
 class Commands(enum.Enum):
