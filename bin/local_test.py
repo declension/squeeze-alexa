@@ -11,10 +11,10 @@
 #   See LICENSE for full license
 
 import sys
-from os.path import dirname
+from os.path import dirname, realpath
 from traceback import print_exc
 
-sys.path.append(dirname(dirname(__file__)))
+sys.path.append(dirname(dirname(realpath(__file__))))
 
 from squeezealexa.settings import *
 from squeezealexa.transport.factory import TransportFactory
