@@ -127,8 +127,9 @@ def main(args=sys.argv[1:]):
         log.info("Creating zip for manual skill upload. "
                  "Use '%s' command to setup skill automatically",
                  Commands.AWS_DEPLOY.value)
+        zipped = create_skill_zip()
         with open(OUTPUT_ZIP, "wb") as f:
-            f.write(create_skill_zip().read())
+            f.write(zipped.read())
         log.info("Wrote %s", OUTPUT_ZIP)
 
 
