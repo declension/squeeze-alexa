@@ -27,7 +27,7 @@ from zipfile import ZipFile, ZIP_DEFLATED, ZipInfo
 import boto3
 from botocore.exceptions import ClientError
 
-ROOT = realpath(dirname(dirname(__file__)))
+ROOT = dirname(dirname(realpath(__file__)))
 DIST_SUBDIR = "dist"
 
 OUTPUT_ZIP = path.join(ROOT, "lambda_function.zip")

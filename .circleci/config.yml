@@ -59,6 +59,10 @@ jobs:
           command: bin/deploy.py zip
 
       - run:
+          name: Test deploy script (from source, from dist/bin/)
+          command: cd dist/bin && ./deploy.py zip
+
+      - run:
           name: Test deploy script (without build)
           command: rm -rf dist/ tests/ && bin/deploy.py zip
 
