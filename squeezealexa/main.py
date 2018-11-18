@@ -15,18 +15,21 @@ from __future__ import print_function
 
 import random
 import time
+import warnings
 from typing import Iterable
 
-from fuzzywuzzy import process
-
-from squeezealexa.i18n import _
 from squeezealexa.alexa.handlers import AlexaHandler, IntentHandler
 from squeezealexa.alexa.intents import *
 from squeezealexa.alexa.response import audio_response, speech_response, \
     _build_response
 from squeezealexa.alexa.utterances import Utterances
+from squeezealexa.i18n import _
 from squeezealexa.squeezebox.server import Server, print_d, people_from
 from squeezealexa.utils import human_join, sanitise_text
+
+with warnings.catch_warnings():
+    # The warning's not helpful - see Issue #105
+    from fuzzywuzzy import process
 
 
 class MinConfidences(object):
