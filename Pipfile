@@ -19,7 +19,7 @@ pipenv-to-requirements = "*"
 
 [packages]
 
-fuzzywuzzy = "==0.12"
+fuzzywuzzy = "==0.17"
 paho-mqtt = "*"
 
 

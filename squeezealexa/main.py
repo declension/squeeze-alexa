@@ -15,6 +15,7 @@ from __future__ import print_function
 
 import random
 import time
+from typing import Iterable
 
 from fuzzywuzzy import process
 
@@ -330,7 +331,7 @@ class SqueezeAlexa(AlexaHandler):
         err_text = "Don't understand intent '{intent}'".format(intent=intent)
         raise ValueError(err_text)
 
-    def _genres_from_slots(self, slots, genres):
+    def _genres_from_slots(self, slots: Iterable[str], genres: Iterable[str]):
         def genres_from(g):
             if not g:
                 return set()

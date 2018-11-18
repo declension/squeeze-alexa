@@ -21,11 +21,11 @@ class GenreTest(TestCase):
     def setUp(self):
         self.alexa = SqueezeAlexa(server=None)
 
-    def get_results(self, *args):
-        return self.alexa._genres_from_slots(args, GENRES)
+    def get_results(self, *slots):
+        return self.alexa._genres_from_slots(slots, GENRES)
 
     def test_difficult_ands(self):
-        results = self.get_results(['R', 'B'])
+        results = self.get_results('R', 'B')
         assert 'R and B' in results
 
     def test_dnb(self):
