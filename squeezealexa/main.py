@@ -29,6 +29,7 @@ from squeezealexa.utils import human_join, sanitise_text
 
 with warnings.catch_warnings():
     # The warning's not helpful - see Issue #105
+    warnings.simplefilter("ignore")
     from fuzzywuzzy import process
 
 
