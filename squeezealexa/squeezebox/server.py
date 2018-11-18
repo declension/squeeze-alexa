@@ -233,7 +233,6 @@ class Server(object):
         self.players = {}
         for data in self._groups(response, 'playerid',
                                  extra_bools=['power', 'connected']):
-            print_d("Data is {data}", data=data)
             if data.get('connected', False):
                 self.players[data['playerid']] = SqueezeboxPlayerSettings(data)
         print_d("Found {total} connected player(s): {players}",
