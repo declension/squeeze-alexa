@@ -242,7 +242,8 @@ class Server(object):
         if self._debug:
             print_d("Player(s): {players}", players=self.players.values())
 
-    def player_request(self, line, player_id=None, raw=False, wait=True):
+    def player_request(self, line, player_id=None,
+                       raw=False, wait=True) -> Union[str, None]:
         """Makes a single request to a particular player (or the current)"""
         try:
             player_id = (player_id or
@@ -275,11 +276,11 @@ class Server(object):
             return ([value] if tag in ('title', 'album')
                     else [v.strip() for v in value.split(',')])
 
+        TAGS = {'title', 'genre', 'genres', 'album', 'trackartist', 'artist',
+                'albumartist', 'composer'}
         details = {k: values_for(k, v)
                    for k, v in items
-                   if k in ('title', 'genre', 'genres', 'album',
-                            'trackartist', 'artist', 'albumartist', 'composer')
-                   }
+                   if v and k in TAGS}
         if 'genres' in details:
             details['genre'] = details['genres']
             del details['genres']

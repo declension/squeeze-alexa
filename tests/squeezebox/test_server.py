@@ -10,24 +10,29 @@
 #
 #   See LICENSE for full license
 
+import re
 import time
+from typing import Dict, NewType
 from unittest import TestCase
 
 from pytest import raises
 
-from squeezealexa.squeezebox.server import Server, SqueezeboxPlayerSettings, \
-    SqueezeboxException, ServerFactory
+from squeezealexa.squeezebox.server import Server, \
+    SqueezeboxPlayerSettings as SPS, SqueezeboxException, ServerFactory
 from squeezealexa.transport.base import Transport
 from squeezealexa.transport.factory import TransportFactory
 from squeezealexa.utils import print_d
 from tests.transport.fake_transport import FakeTransport, FAKE_LENGTH, \
     A_REAL_STATUS
 
+Regex = NewType('Regex', str)
+A_PLAYER_ID = "nothing"
+
 
 class TestSqueezeboxPlayerSettings:
     def test_raises_if_no_playerid_found(self):
         with raises(SqueezeboxException) as e:
-            SqueezeboxPlayerSettings({})
+            SPS({})
         assert "couldn't find a playerid" in str(e).lower()
 
 
@@ -53,6 +58,25 @@ class NoRefreshServer(Server):
 
     def refresh_status(self):
         self.players = {}
+
+
+class StubbedServer(Server):
+
+    def __init__(self, player_request_responses: Dict[Regex, str]):
+        self.canned = player_request_responses
+        self.transport = Transport()
+        self.cur_player_id = None
+        self.players = {
+            A_PLAYER_ID: SPS({"playerid": A_PLAYER_ID, "connected": True})
+        }
+
+    def player_request(self, line, player_id=None, raw=False, wait=True):
+        for regex, response in self.canned.items():
+            if re.compile(regex).match(line):
+                return response
+
+    def refresh_status(self):
+        pass
 
 
 class TestServerNoTransport:
@@ -89,7 +113,7 @@ class TestServerFactory(TestCase):
         assert first is not second
 
 
-class TestServerWithTransport(TestCase):
+class TestServerWithFakeTransport(TestCase):
 
     def setUp(self):
         self.transport = FakeTransport().start()
@@ -183,6 +207,19 @@ class TestServerWithTransport(TestCase):
     def test_change_volume_zero(self):
         self.server.change_volume(0)
         assert "mixer volume" not in self.transport.all_input
+
+    def test_track_details(self):
+        details = self.server.get_track_details()
+        assert ["Jamie Cullum"] == details['artist']
+
+
+class TestServerWithStubbedTransport:
+    def test_track_details_blanks(self):
+        server = StubbedServer(
+            {Regex('status.*'): "artist: title:song%202 composer:J.S.%20Bach"})
+        details = server.get_track_details()
+        assert "artist" not in details
+        assert details["composer"] == ['J.S. Bach']
 
 
 def test_tricky_players_parsing():

@@ -70,7 +70,6 @@ class FakeTransport(Transport):
         self.all_input += data
         stripped = data.rstrip('\n')
         if data.startswith('serverstatus'):
-            print_d("Faking server status...")
             if self._server_status:
                 return self._server_status
             else:
@@ -93,6 +92,3 @@ class FakeTransport(Transport):
     @property
     def details(self):
         return "{hostname}:{port}".format(**self.__dict__)
-
-    def stop(self) -> 'Transport':
-        return super().stop()
