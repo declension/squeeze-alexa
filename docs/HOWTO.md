@@ -9,7 +9,7 @@ Prerequisites
  * [LMS](http://wiki.slimdevices.com/index.php/Logitech_Media_Server), typically running on the above server.
  * Some Squeezebox players - even if they're Chromecasts, RPIs other compatible devices.
  * At least one Amazon Echo device
- * An Amazon developer account, and an Alexa one (:note: use the same email, or you'll wish you had)
+ * An Amazon developer account, and an Alexa one (:information_source: use the same email, or you'll wish you had)
  * Some time and a little knowledge of: Linux, networking, AWS, Alexa, and SSL.
  * _(SSL only)_: A router that supports port forwarding, and ideally DDNS of some sort (nearly all modern routers do).
 
@@ -74,7 +74,7 @@ Set up your Alexa Skill
 ### Get squeeze-alexa
 squeeze-alexa has official [releases on Github](https://github.com/declension/squeeze-alexa/releases).
 It is recommended to choose from these, but if you want the _very_ latest (or plan to contribute yourself),
-get the `master` branch (no guarantees though generally the testing ensures it's fully working)*[]:
+get the `master` branch (no guarantees though generally the testing ensures it's fully working).
 
 #### from a release zip
  * Release zips should have _only_ what you need to set up and install your - not translator / developer tests, scripts etc.
@@ -82,11 +82,12 @@ get the `master` branch (no guarantees though generally the testing ensures it's
  * Download a [a release ZIP](https://github.com/declension/squeeze-alexa/releases) (or [latest master](https://github.com/declension/squeeze-alexa/archive/master.zip))
  * and extract this to your computer, e.g. to a direcotry like `/home/me/workspace/squeeze-alexa`.
 
-#### from source code
+#### ...or from source code
 Make sure you have everything detailed in [requirements](#Requirements) above set up.
 
 * Clone the repo: `git clone git@github.com:declension/squeeze-alexa.git` (or download a _source zip_ from the releases page)
 * You can / should still choose a release tag (e.g. `git checkout v1.1`), or go with bleeding edge (`HEAD`).
+* Run the build: `bin/build.sh`
 Note you will have to run a release process now to get the translations
 * Run the translation script: `bin/compile-translations`, else you'll get errors about like [No translation file found](https://github.com/declension/squeeze-alexa/issues/46).
 
@@ -95,6 +96,7 @@ Note you will have to run a release process now to get the translations
 :information_source: All directories referred to here are relative to the directory you just set up (unless starting with `/`).
 
  * Edit `squeezealexa/settings.py`, filling in the details [as detailed there](../squeezealexa/settings.py).
+ * Most of these can be left as-is, but you'll definitely need to fill in your `APPLICATION_ID` and your transport settings (hostnames / ports etc).
  * Make sure your `squeeze-alexa.pem` file is moved to the root of the `etc/certs` directory (or wherever your `CERT_DIR` points to).
 
 
@@ -112,18 +114,17 @@ The first thing to remember is there are **two** interesting dashboards:
  * Follow one of the guides ideally e.g. [Deploying a Sample Custom Skill To AWS Lambda](https://developer.amazon.com/docs/custom-skills/deploy-a-sample-skill-to-aws-lambda.html).
  * For squeeze-alexa > 1.2, use Python 3.6, or if not, perhaps [choose an older release](https://github.com/declension/squeeze-alexa/releases).
  * Select an AWS region close to you (for better performance).
- * The defaults are generally fine (those in [lambda.json](../lambda.json)).
  * You'll have to define the handler name - `handler.lambda_handler`.
 
-After clicking through to the ASK section of the site, add a new Alexa Skill, then continue here
+After clicking through to the ASK section of the site, _create_ a new Alexa Skill, then continue here
 
 #### Skill Information
  * Use the _Custom Interaction Model_
- * Choose a language / region. It's been tested in English (UK), English (US) and German (Germany).
+ * Choose a default language / region - see [the README](../README.md) for supported languages.
    If you want to help translate, please see the [CONTRIBUTING](CONTRIBUTING.md) guide.
  * Choose your own Name (a reference really) and Invocation Name (what you use to talk to Alexa with).
    The advantage of not needing Amazon certification is you can be "more creative" about your naming...
- * Select **yes** for _Audio Streaming API_, **no** for _Video App_ and _Render Template_ options.
+ * Select **yes** for _Audio Streaming API_, **no** for all the other interfaces.
 
 As a picture is worth a thousand words, here's roughly what your Lambda function view should look like
 ![Lambda console screenshot](amazon-developer-alexa-screenshot-2018-7.png)
@@ -134,14 +135,14 @@ The interaction model is the guts of how Alexa skills are invoked before they ev
 Getting this right has been a lot of the _magic_ of building a skill like squeeze-alexa, so hang tight.
 
 ##### Using the Skill Builder (v1) intents JSON...
-Note: This has only been tested for `en_US`.
+:information_source: This is currently only translated for `en_US` and `en_GB` (see [#103](https://github.com/declension/squeeze-alexa/issues/103))
 * The v1 intents is in [`metadata/intents/v1/locale/en_US`](../metadata/intents/v1/locale/en_US)
 * In your Amazon Developer portal, configure your new skill:
     * Click on the JSON Editor under Intents
-    * Copy-paste the [v1 intents.json](../metadata/intents/v1/locale/en_US/intents.json) into the JSON editor
+    * Copy-paste (or drag & drop) the [v1 intents.json](../metadata/intents/v1/locale/en_US/intents.json) into the JSON editor
       It should look something like this:
       ![Intents V1 screenshot](amazon-developer-alexa-v1-intents-screenshot-2018-7.png)
-
+    * Save the model and build it.
 
 ##### ...or using the original (v0) intents JSON
  * These are kept here in [`metadata/intents`](../metadata/intents/v0)

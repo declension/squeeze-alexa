@@ -16,7 +16,7 @@ Set up your networking
 ### Configure ports
  * Generally the connections go `lambda -> router:extport -> server:sslport -> lms:9090` (see diagram above). Most people will have `lms` and `server` on the same host (Synology / ReadyNAS / whatever).
  * Choose some values for `extport` and `sslport` e.g. `19090`. For sanity, it's probably easiest to use the same port externally as internally, i.e. `extport == sslport`
- * On your router, forward `extport` to the stunnel / haproxy port (`sslport`) on that server.
+ * On your router, forward `extport` to the stunnel / haproxy /nginx port (`sslport`) on that server.
 
 ### Set up DDNS
  * This is recommended if you don't have fixed IP, so that there's a consistent address to reach your home...
@@ -65,23 +65,30 @@ See [connecting remotely](http://wiki.slimdevices.com/index.php/Connecting_remot
 
 You _could_ use the username / password auth LMS CLI provides, but for these problems:
 
- * It's in plain text, so everyone can see, log. This is pretty bad.
- * These aren't rotated, nor do they include a token (à la CSRF) or nonce - so replay attacks are easy too.
- * There is no rate limiting or banning in LMS, so brute-forcing is easy (though it does hang up IIRC).
+ * It's in plain text, so everyone can see and log everything. This is pretty bad.
+ * The credentials aren't rotated so once they're gone, they're good to go
+ * Nor do they include a token (à la [CSRF](https://www.owasp.org/index.php/Cross-Site_Request_Forgery_(CSRF))) or nonce - so replay attacks are easy too.
+ * There is no rate limiting or banning in LMS, so brute-forcing the password is easy (though it does hang up IIRC).
 
 By mandating client-side TLS (aka SSL) with a private cert, `squeeze-alexa` avoids most of these problems.
 
 <sup>* Or you could [use MQTT](MQTT.md) of course.
 
-### TLS Implementations
-I chose to go with [stunnel](http://stunnel.org/) (see details below),
+### Tunnel Implementations
+
+There are quite a few ways to do this with existing open-source software.
+Pick your favourite!
+
+#### Some docs here
+ * [stunnel](http://stunnel.org/). This is old but the most supported here (see details below),
 but other options should work here (**feedback wanted!**)
+ * [nginx 1.9+ supports TCP Load Balancing](https://www.nginx.com/blog/tcp-load-balancing-with-nginx-1-9-0-and-nginx-plus-r6/) which can be used with the [nginx SSL module](https://nginx.org/en/docs/stream/ngx_stream_ssl_module.html) to do this.
 
+#### Other (undocumented) options
  * [HAProxy](https://www.haproxy.com) _does_ support TLS-wrapping of generic TCP.
- * Also, there's [ssl_wrapper](https://github.com/cesanta/ssl_wrapper)
- * :new: [nginx 1.9+ supports TCP Load Balancing](https://www.nginx.com/blog/tcp-load-balancing-with-nginx-1-9-0-and-nginx-plus-r6/) which can be used with the [nginx SSL module](https://nginx.org/en/docs/stream/ngx_stream_ssl_module.html) to do this.
+ * Also, there's [ssl_wrapper](https://github.com/cesanta/ssl_wrapper) but I've not tried this.
 
-Make sure you configure a new (safe) TLS, **minimum TLS v1.2**.
+Whichever one of these you choose, make sure you configure a new (safe) TLS, **minimum TLS v1.2**.
 
 ### With stunnel
 #### On Synology
@@ -123,7 +130,14 @@ You could set the script above to run as a scheduled startup task in your Synolo
 #### On other servers
 I've tried this on Synology but it should be similar on Netgear ReadyNAS - [this forum posting](https://community.netgear.com/t5/Community-Add-ons/HowTo-Stunnel-on-the-Readynas/td-p/784170) seems helpful.
 Some other NAS drives can also use `ipkg` / `opkg`, in which case see above.
-Else, find a way of installing it (you can build from source if you know how)
+Else, find a way of installing it (you can build from source if you know how).
+
+#### Raspberry Pi 
+This should work (untested):
+```bash
+    sudo apt-get install stunnel4 openssl -y
+```
+See a great [stunnel on RPi article](https://emtunc.org/blog/07/2016/reverse-ssh-tunnelling-ssl-raspberry-pi/) (though that's more complicated than we need).
 
 #### Copy certificate
 Copy the `squeeze-alexa.pem` to somewhere stunnel can see it, e.g. the same location as `stunnel.conf` (see above).
@@ -146,15 +160,18 @@ Note that here `MY-HOSTNAME` here is referring to the LMS address as seen from t
 This will usually just be blank (==`localhost`) if your LMS is on the same machine as stunnel.
 
 
-### With Nginx 1.9+
+### ...or with Nginx 1.9+
 
-:new: Nginx 1.9 is supported and seems to work.
-Try [this example config](example-config/docker/nginx-tcp-ssl/nginx.conf), or something similar (remember to replace `LMS_SERVER` and `SSL_PORT`).
-You'll need to copy the cert across to `/etc/ssl/squeeze-alexa.pem`
+:new: Nginx (1.9+) is known to work for squeeze-alexa.
+ * If you're on Raspberry Pi, make sure you have a new enough version.
+ * Try [this example config](example-config/docker/nginx-tcp-ssl/nginx.conf), or something similar (remember to replace `LMS_SERVER` and `SSL_PORT`, or set them in your environment).
+ * You'll usually want to override the default nginx.conf (e.g. `etc/nginx/nginx.conf`).
+ * You'll need to copy the cert across to `/etc/ssl/squeeze-alexa.pem`
+ * Make sure to start / restart (e.g. `systemctl restart nginx`) once you're done and start testing...
 
 
-### With Dockerised Nginx
-:new: This can be Dockerised easily for people who prefer Docker.
+### ...or with Dockerised Nginx
+:new: This can be Dockerised easily for people who prefer Docker (and have it available on their server).
 See the [nginx-tcp-ssl directory](example-config/docker/nginx-tcp-ssl/).
 The hard bit is probably getting your networking stable and port-forwarding appropriately.
 Remember the certificate name has to match this server's hostname...
