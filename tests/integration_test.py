@@ -16,7 +16,7 @@ from unittest import TestCase
 
 from squeezealexa.main import SqueezeAlexa
 from squeezealexa.squeezebox.server import Server
-from tests.transport.fake_transport import FakeTransport, NO_ARTIST_STATUS
+from tests.transport.fake_transport import FakeTransport
 from tests.utils import GENRES
 
 MULTI_ARTIST_STATUS = """ tags%3AAlG player_name%3AStudy player_connected%3A1
@@ -157,14 +157,6 @@ class IntegrationTests(TestCase):
 
 
 class TestNowPlaying(TestCase):
-
-    def test_no_artist(self):
-        fake_output = FakeTransport(fake_status=NO_ARTIST_STATUS).start()
-        server = Server(transport=fake_output)
-        alexa = SqueezeAlexa(server=server)
-        resp = alexa.now_playing([], None)
-        speech = speech_in(resp)
-        assert "Currently playing: \"BBC Radio 4\"" in speech
 
     def test_commas_in_title(self):
         fake_output = FakeTransport().start()
