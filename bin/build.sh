@@ -32,4 +32,7 @@ for inc in $includes; do
     cp -r "$root/$inc" "./$inc"
 done
 
+echo "Compiling translations"
+"$root/bin/compile-translations"
+
 popd >/dev/null
