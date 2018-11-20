@@ -3,11 +3,11 @@
 set -e
 DOMAIN=squeeze-alexa
 
-base_dir="$(dirname $0)/../locale"
+locale_dir="$(dirname $0)/../locale"
 which greadlink >/dev/null && rl=greadlink || rl=readlink
 # Always succeed - the base_dir is probably correct anyway
-base_dir=$($rl -f "$base_dir") || true
+locale_dir=$($rl -f "$locale_dir") || true
 
-echo -e "\nCompiling translations in $base_dir"
-find $base_dir locale -iname '*.po' -execdir msgfmt -v -o ${DOMAIN}.mo {} \;
+echo -e "\nCompiling translations in $locale_dir"
+find $locale_dir -iname '*.po' -execdir msgfmt -v -o ${DOMAIN}.mo {} \;
 echo "...done."
