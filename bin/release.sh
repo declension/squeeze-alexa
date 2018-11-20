@@ -23,8 +23,6 @@ if [ "$1" != "-y" ]; then
     read -n 1 -p "Continue? (ctrl-c to abort)"
 fi
 
-$root/bin/compile-translations
-
 echo -e "\nContinuing with build...\n"
 output="squeeze-alexa-release-$version.zip"
 

@@ -12,27 +12,27 @@ pushd "$root" >/dev/null
 dist_dir="$PWD/dist"
 echo "Building to $dist_dir"
 
-echo "Installing Pipenv dependencies..."
+echo "Installing Pipenv dev dependencies..."
 pipenv install --dev >/dev/null
-pipenv run pipenv_to_requirements -f
+pipenv run pipenv_to_requirements -f > /dev/null
 
 [ -e "$dist_dir" ] && rm -rf "$dist_dir"
 mkdir "$dist_dir"
 cd "$dist_dir"
 
-echo Installing dependencies from pip
-pipenv run pip install -r "$root/requirements.txt" -t ./
+echo "Installing runtime dependencies with pip..."
+pipenv run pip install -q -r "$root/requirements.txt" -t ./
 
-echo "Cleaning up"
+echo "Cleaning up..."
 rm "$root"/requirements*.txt
 rm -rf ./*.dist-info/
 
-echo "Copying source and config"
+echo "Copying source and config..."
 for inc in $includes; do
     cp -r "$root/$inc" "./$inc"
 done
 
-echo "Compiling translations"
+echo "Compiling translations..."
 "$root/bin/compile-translations"
 
 popd >/dev/null
