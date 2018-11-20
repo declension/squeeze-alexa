@@ -3,249 +3,262 @@ msgstr ""
 "Language: en_GB\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 
-#: squeezealexa/main.py:69
+#: squeezealexa/main.py:75
 msgid "Squeezebox is online. Please try some commands."
 msgstr ""
 
-#: squeezealexa/main.py:70
+#: squeezealexa/main.py:76
 msgid "Try resume, pause, next, previous, play some jazz, or ask Squeezebox to turn it up or down"
 msgstr ""
 
-#: squeezealexa/main.py:85
+#: squeezealexa/main.py:91
 #, python-brace-format
 msgid "Sorry, I don't know how to process a \"{intent}\""
 msgstr ""
 
-#: squeezealexa/main.py:87
+#: squeezealexa/main.py:93
 #, python-brace-format
 msgid "Unknown intent: '{intent}'"
 msgstr ""
 
-#: squeezealexa/main.py:103
+#: squeezealexa/main.py:109
 msgid "Rewind!"
 msgstr ""
 
-#: squeezealexa/main.py:108
+#: squeezealexa/main.py:114
 msgid "Yep, pretty lame."
 msgstr ""
 
-#: squeezealexa/main.py:116
+#: squeezealexa/main.py:122
 #, python-brace-format
 msgid "Currently playing: \"{title}\""
 msgstr ""
 
-#: squeezealexa/main.py:118
+#: squeezealexa/main.py:124
 #, python-brace-format
-msgid ", by {artist}"
+msgid ", by {artists}."
 msgstr ""
 
-#: squeezealexa/main.py:119
+#: squeezealexa/main.py:126
 #, python-brace-format
 msgid "Now playing: \"{title}\""
 msgstr ""
 
-#: squeezealexa/main.py:121
+#: squeezealexa/main.py:128
 msgid "Nothing playing."
 msgstr ""
 
-#: squeezealexa/main.py:132 squeezealexa/main.py:136
+#: squeezealexa/main.py:139 squeezealexa/main.py:143
 msgid "Select a volume value between 0 and 10"
 msgstr ""
 
-#: squeezealexa/main.py:133
+#: squeezealexa/main.py:140
 msgid "Invalid volume value"
 msgstr ""
 
-#: squeezealexa/main.py:137
+#: squeezealexa/main.py:144
 #, python-brace-format
 msgid "Volume value out of range: {volume}"
 msgstr ""
 
-#: squeezealexa/main.py:143
+#: squeezealexa/main.py:150
 #, python-brace-format
 msgid "Set volume to {volume}"
 msgstr ""
 
-#: squeezealexa/main.py:155
+#: squeezealexa/main.py:162
 msgid "Select a volume between 0 and 100 percent"
 msgstr ""
 
-#: squeezealexa/main.py:156
+#: squeezealexa/main.py:163
 msgid "Invalid volume"
 msgstr ""
 
-#: squeezealexa/main.py:159
+#: squeezealexa/main.py:166
 msgid "Select a volume value between 0 and 100 percent"
 msgstr ""
 
-#: squeezealexa/main.py:160
+#: squeezealexa/main.py:167
 #, python-brace-format
 msgid "Volume value out of range: {volume} percent"
 msgstr ""
 
-#: squeezealexa/main.py:164
+#: squeezealexa/main.py:171
 msgid "OK"
 msgstr ""
 
-#: squeezealexa/main.py:165
+#: squeezealexa/main.py:172
 #, python-brace-format
 msgid "Set volume to {percent} percent"
 msgstr ""
 
-#: squeezealexa/main.py:171
+#: squeezealexa/main.py:178
 msgid "Increase Volume"
 msgstr ""
 
-#: squeezealexa/main.py:172
+#: squeezealexa/main.py:179
 msgid "Pumped it up."
 msgstr ""
 
-#: squeezealexa/main.py:177
+#: squeezealexa/main.py:184
 msgid "Decrease Volume"
 msgstr ""
 
-#: squeezealexa/main.py:178
+#: squeezealexa/main.py:185
 msgid "OK, quieter now."
-msgstr ""
-
-#: squeezealexa/main.py:190
-#, python-brace-format
-msgid "Selected {player}"
-msgstr ""
-
-#: squeezealexa/main.py:191
-#, python-brace-format
-msgid "Selected player {player}"
-msgstr ""
-
-#: squeezealexa/main.py:194
-#, python-brace-format
-msgid "I only found these players: {players}. Could you try again?"
 msgstr ""
 
 #: squeezealexa/main.py:197
 #, python-brace-format
+msgid "Selected {player}"
+msgstr ""
+
+#: squeezealexa/main.py:198
+#, python-brace-format
+msgid "Selected player {player}"
+msgstr ""
+
+#: squeezealexa/main.py:201
+#, python-brace-format
+msgid "I only found these players: {players}. Could you try again?"
+msgstr ""
+
+#: squeezealexa/main.py:204
+#, python-brace-format
 msgid "You can select a player by saying \"{utterance}\" and then the player name."
 msgstr ""
 
-#: squeezealexa/main.py:202
+#: squeezealexa/main.py:209
 #, python-brace-format
 msgid "No player called \"{name}\""
 msgstr ""
 
-#: squeezealexa/main.py:212
+#: squeezealexa/main.py:219
 msgid "Shuffle on"
 msgstr ""
 
-#: squeezealexa/main.py:213
+#: squeezealexa/main.py:220
 msgid "Shuffle is now on"
 msgstr ""
 
-#: squeezealexa/main.py:219
+#: squeezealexa/main.py:226
 msgid "Shuffle off"
 msgstr ""
 
-#: squeezealexa/main.py:220
+#: squeezealexa/main.py:227
 msgid "Shuffle is now off"
 msgstr ""
 
-#: squeezealexa/main.py:226
+#: squeezealexa/main.py:233
 msgid "Repeat on"
 msgstr ""
 
-#: squeezealexa/main.py:227
+#: squeezealexa/main.py:234
 msgid "Repeat is now on"
 msgstr ""
 
-#: squeezealexa/main.py:233
+#: squeezealexa/main.py:240
 msgid "Repeat Off"
 msgstr ""
 
-#: squeezealexa/main.py:234
+#: squeezealexa/main.py:241
 msgid "Repeat is now off"
 msgstr ""
 
-#: squeezealexa/main.py:243
+#: squeezealexa/main.py:250
 #, python-brace-format
 msgid "Switched {player} off"
 msgstr ""
 
-#: squeezealexa/main.py:244
+#: squeezealexa/main.py:251
 #, python-brace-format
 msgid "{player} is now off"
 msgstr ""
 
-#: squeezealexa/main.py:258
+#: squeezealexa/main.py:265
 #, python-brace-format
 msgid "Switched {player} on"
 msgstr ""
 
-#: squeezealexa/main.py:264
+#: squeezealexa/main.py:271
 msgid "Players all off"
 msgstr ""
 
-#: squeezealexa/main.py:265
+#: squeezealexa/main.py:272
 msgid "Silence."
 msgstr ""
 
-#: squeezealexa/main.py:270
+#: squeezealexa/main.py:277
 msgid "All On."
 msgstr ""
 
-#: squeezealexa/main.py:271
+#: squeezealexa/main.py:278
 msgid "Ready to rock"
 msgstr ""
 
-#: squeezealexa/main.py:282
+#: squeezealexa/main.py:289
 msgid "There are no playlists"
 msgstr ""
 
-#: squeezealexa/main.py:284
+#: squeezealexa/main.py:291
 #, python-brace-format
 msgid "Didn't hear a playlist there. You could try the \"{name}\" playlist?"
 msgstr ""
 
-#: squeezealexa/main.py:289
+#: squeezealexa/main.py:297
 msgid "No Squeezebox playlists found"
 msgstr ""
 
-#: squeezealexa/main.py:298 squeezealexa/main.py:299
+#: squeezealexa/main.py:306 squeezealexa/main.py:307
 #, python-brace-format
 msgid "Playing \"{name}\" playlist"
 msgstr ""
 
-#: squeezealexa/main.py:301
+#: squeezealexa/main.py:309
 #, python-brace-format
 msgid "Couldn't find a playlist matching \"{name}\".How about the \"{suggestion}\" playlist?"
 msgstr ""
 
-#: squeezealexa/main.py:319
+#: squeezealexa/main.py:327
 #, python-brace-format
 msgid "Playing mix of {genres}"
 msgstr ""
 
-#: squeezealexa/main.py:322
+#: squeezealexa/main.py:330
 msgid "or"
 msgstr ""
 
-#: squeezealexa/main.py:323
+#: squeezealexa/main.py:331
 #, python-brace-format
 msgid "Don't understand requested genres {genres}"
 msgstr ""
 
-#: squeezealexa/main.py:325
+#: squeezealexa/main.py:333
 #, python-brace-format
 msgid "Can't find genres: {genres}"
 msgstr ""
 
-#: squeezealexa/main.py:376
+#: squeezealexa/main.py:384
 msgid "Hasta la vista. Baby."
 msgstr ""
 
-#: squeezealexa/utils.py:38
+#: squeezealexa/utils.py:34
 msgid "and"
 msgstr ""
 
-#: squeezealexa/i18n.py:45
+#: squeezealexa/utils.py:104
+#, python-brace-format
+msgid "Failed \"{task}\", after {secs:.1f} seconds"
+msgstr ""
+
+#: squeezealexa/i18n.py:47
 msgid "favorites"
 msgstr "favourites"
+
+#: squeezealexa/squeezebox/server.py:102
+msgid "Uh-oh. No connected players found."
+msgstr ""
+
+#: squeezealexa/squeezebox/server.py:240
+msgid "Unknown player"
+msgstr ""

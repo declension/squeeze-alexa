@@ -1,259 +1,272 @@
 msgid ""
 msgstr ""
-"Language: de_DE\n"
-"Content-Type: text/plain; charset=UTF-8\n"
 "Project-Id-Version: \n"
 "POT-Creation-Date: \n"
 "PO-Revision-Date: \n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: de_DE\n"
 "MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.0.6\n"
 
-#: squeezealexa/main.py:69
+#: squeezealexa/main.py:75
 msgid "Squeezebox is online. Please try some commands."
 msgstr "Sueezebox ist bereit. Probier ein paar Komandos aus."
 
-#: squeezealexa/main.py:70
+#: squeezealexa/main.py:76
 msgid "Try resume, pause, next, previous, play some jazz, or ask Squeezebox to turn it up or down"
 msgstr "Probiers mal fortsetzen, Pause, nächstes, letztes, Spiel Jazz Musik oder schalte ein Abspielgerät ein"
 
-#: squeezealexa/main.py:85
+#: squeezealexa/main.py:91
 #, python-brace-format
 msgid "Sorry, I don't know how to process a \"{intent}\""
 msgstr "Es tut mir Leid, ich weiß nicht wie ich auf \"{intent}\" reagieren soll"
 
-#: squeezealexa/main.py:87
+#: squeezealexa/main.py:93
 #, python-brace-format
 msgid "Unknown intent: '{intent}'"
 msgstr "Unbekannte Anfrage: '{intent}'"
 
-#: squeezealexa/main.py:103
+#: squeezealexa/main.py:109
 msgid "Rewind!"
 msgstr "Zurückgespult!"
 
-#: squeezealexa/main.py:108
+#: squeezealexa/main.py:114
 msgid "Yep, pretty lame."
 msgstr "Das mochte ich auch nicht."
 
-#: squeezealexa/main.py:116
+#: squeezealexa/main.py:122
 #, python-brace-format
 msgid "Currently playing: \"{title}\""
 msgstr "Gerade läuft: \"{title}\""
 
-#: squeezealexa/main.py:118
+#: squeezealexa/main.py:124
 #, python-brace-format
-msgid ", by {artist}"
+msgid ", by {artists}."
 msgstr ""
 
-#: squeezealexa/main.py:119
+#: squeezealexa/main.py:126
 #, python-brace-format
 msgid "Now playing: \"{title}\""
 msgstr "Es läuft: \"{title}\""
 
-#: squeezealexa/main.py:121
+#: squeezealexa/main.py:128
 msgid "Nothing playing."
 msgstr "Es wird nicht abgepsielt."
 
-#: squeezealexa/main.py:132 squeezealexa/main.py:136
+#: squeezealexa/main.py:139 squeezealexa/main.py:143
 msgid "Select a volume value between 0 and 10"
 msgstr "Wähle eine Lautstärke zwischen 0 und 10"
 
-#: squeezealexa/main.py:133
+#: squeezealexa/main.py:140
 msgid "Invalid volume value"
 msgstr "Ungültige Lautstärke"
 
-#: squeezealexa/main.py:137
+#: squeezealexa/main.py:144
 #, python-brace-format
 msgid "Volume value out of range: {volume}"
 msgstr "Lautstärke außerhalb des gültigen Bereichs: {volume}"
 
-#: squeezealexa/main.py:143
+#: squeezealexa/main.py:150
 #, python-brace-format
 msgid "Set volume to {volume}"
 msgstr "Lautstärke auf {volume}"
 
-#: squeezealexa/main.py:155
+#: squeezealexa/main.py:162
 msgid "Select a volume between 0 and 100 percent"
 msgstr "Wähle eine Lautstärke zwischen 0 und 100 prozent"
 
-#: squeezealexa/main.py:156
+#: squeezealexa/main.py:163
 msgid "Invalid volume"
 msgstr "Ungültige Lautstärke"
 
-#: squeezealexa/main.py:159
+#: squeezealexa/main.py:166
 msgid "Select a volume value between 0 and 100 percent"
 msgstr "Wähle eine Lautstärke zwischen 0 und 100 prozent"
 
-#: squeezealexa/main.py:160
+#: squeezealexa/main.py:167
 #, python-brace-format
 msgid "Volume value out of range: {volume} percent"
 msgstr "Lautstärke außerhalb des gültigen Bereichs: {volume}"
 
-#: squeezealexa/main.py:164
+#: squeezealexa/main.py:171
 msgid "OK"
 msgstr "OK"
 
-#: squeezealexa/main.py:165
+#: squeezealexa/main.py:172
 #, python-brace-format
 msgid "Set volume to {percent} percent"
 msgstr "Lautstärke auf {percent} prozent"
 
-#: squeezealexa/main.py:171
+#: squeezealexa/main.py:178
 msgid "Increase Volume"
 msgstr "Lautstärke erhöht"
 
-#: squeezealexa/main.py:172
+#: squeezealexa/main.py:179
 msgid "Pumped it up."
 msgstr "Alles klar: lauter."
 
-#: squeezealexa/main.py:177
+#: squeezealexa/main.py:184
 msgid "Decrease Volume"
 msgstr "Lautstärke niedriger"
 
-#: squeezealexa/main.py:178
+#: squeezealexa/main.py:185
 msgid "OK, quieter now."
 msgstr "Jetzt ist es leiser."
 
-#: squeezealexa/main.py:190
+#: squeezealexa/main.py:197
 #, python-brace-format
 msgid "Selected {player}"
 msgstr "{player} ausgewählt"
 
-#: squeezealexa/main.py:191
+#: squeezealexa/main.py:198
 #, python-brace-format
 msgid "Selected player {player}"
 msgstr "Abspielgerät {player} ausgewählt"
 
-#: squeezealexa/main.py:194
+#: squeezealexa/main.py:201
 #, python-brace-format
 msgid "I only found these players: {players}. Could you try again?"
 msgstr "Ich kann nur die folgenden Geräte finden: {players}. Welches willst du?"
 
-#: squeezealexa/main.py:197
+#: squeezealexa/main.py:204
 #, python-brace-format
 msgid "You can select a player by saying \"{utterance}\" and then the player name."
 msgstr "Du kannst ein Gerät auswählen indem du \"{utterance}\" sagst und dann den Namen des Gerätes."
 
-#: squeezealexa/main.py:202
+#: squeezealexa/main.py:209
 #, python-brace-format
 msgid "No player called \"{name}\""
 msgstr "Es gibt kein Gerät mit dem Namen \"{name}\""
 
-#: squeezealexa/main.py:212
+#: squeezealexa/main.py:219
 msgid "Shuffle on"
 msgstr "Zufallswiedergabe an"
 
-#: squeezealexa/main.py:213
+#: squeezealexa/main.py:220
 msgid "Shuffle is now on"
 msgstr "Zufallswiedergabe ist jetzt eingeschaltet"
 
-#: squeezealexa/main.py:219
+#: squeezealexa/main.py:226
 msgid "Shuffle off"
 msgstr "Zufallswiedergabe aus"
 
-#: squeezealexa/main.py:220
+#: squeezealexa/main.py:227
 msgid "Shuffle is now off"
 msgstr "Zufallswiedergabe ist jetzt ausgeschaltet"
 
-#: squeezealexa/main.py:226
+#: squeezealexa/main.py:233
 msgid "Repeat on"
 msgstr "Wiederholung an"
 
-#: squeezealexa/main.py:227
+#: squeezealexa/main.py:234
 msgid "Repeat is now on"
 msgstr "Wiederholung ist jetzt eingeschaltet"
 
-#: squeezealexa/main.py:233
+#: squeezealexa/main.py:240
 msgid "Repeat Off"
 msgstr "Wiederholung aus"
 
-#: squeezealexa/main.py:234
+#: squeezealexa/main.py:241
 msgid "Repeat is now off"
 msgstr "Wiederholung ist jetzt ausgeschaltet"
 
-#: squeezealexa/main.py:243
+#: squeezealexa/main.py:250
 #, python-brace-format
 msgid "Switched {player} off"
 msgstr "{player} eingeschaltet"
 
-#: squeezealexa/main.py:244
+#: squeezealexa/main.py:251
 #, python-brace-format
 msgid "{player} is now off"
 msgstr "{player} ist jetzt ausgeschaltet"
 
-#: squeezealexa/main.py:258
+#: squeezealexa/main.py:265
 #, python-brace-format
 msgid "Switched {player} on"
 msgstr "{player} eingeschaltet"
 
-#: squeezealexa/main.py:264
+#: squeezealexa/main.py:271
 msgid "Players all off"
 msgstr "Alle Abspielgeräte aus"
 
-#: squeezealexa/main.py:265
+#: squeezealexa/main.py:272
 msgid "Silence."
 msgstr "Jetzt ist es still."
 
-#: squeezealexa/main.py:270
+#: squeezealexa/main.py:277
 msgid "All On."
 msgstr "Alle an."
 
-#: squeezealexa/main.py:271
+#: squeezealexa/main.py:278
 msgid "Ready to rock"
 msgstr "Lass uns losrocken"
 
-#: squeezealexa/main.py:282
+#: squeezealexa/main.py:289
 msgid "There are no playlists"
 msgstr "Es gibt keine Wiedergabelisten"
 
-#: squeezealexa/main.py:284
+#: squeezealexa/main.py:291
 #, python-brace-format
 msgid "Didn't hear a playlist there. You could try the \"{name}\" playlist?"
 msgstr "Ich habe keinen Gerätenamen verstanden. Versuchs doch mit \"{name}\"."
 
-#: squeezealexa/main.py:289
+#: squeezealexa/main.py:297
 msgid "No Squeezebox playlists found"
 msgstr "Keine Squeezbox-Wiedergabelisten gefunden"
 
-#: squeezealexa/main.py:298 squeezealexa/main.py:299
+#: squeezealexa/main.py:306 squeezealexa/main.py:307
 #, python-brace-format
 msgid "Playing \"{name}\" playlist"
 msgstr "Spiele Wiedergabeliste \"{name}\""
 
-#: squeezealexa/main.py:301
+#: squeezealexa/main.py:309
 #, python-brace-format
 msgid "Couldn't find a playlist matching \"{name}\".How about the \"{suggestion}\" playlist?"
 msgstr "Ich habe keine Liste \"{name}\" gefunden. Versuchs doch mit \"{suggestion}\"?"
 
-#: squeezealexa/main.py:319
+#: squeezealexa/main.py:327
 #, python-brace-format
 msgid "Playing mix of {genres}"
 msgstr "Spiele eine Mischung aus {genres}"
 
-#: squeezealexa/main.py:322
+#: squeezealexa/main.py:330
 msgid "or"
 msgstr "oder"
 
-#: squeezealexa/main.py:323
+#: squeezealexa/main.py:331
 #, python-brace-format
 msgid "Don't understand requested genres {genres}"
 msgstr "Ich habe das angefragte Genre {genres} nicht verstanden"
 
-#: squeezealexa/main.py:325
+#: squeezealexa/main.py:333
 #, python-brace-format
 msgid "Can't find genres: {genres}"
 msgstr "Kann das Genre nicht finden: {genres}"
 
-#: squeezealexa/main.py:376
+#: squeezealexa/main.py:384
 msgid "Hasta la vista. Baby."
 msgstr "Hasta la vista. Baby."
 
-#: squeezealexa/utils.py:38
+#: squeezealexa/utils.py:34
 msgid "and"
 msgstr "und"
 
-#: squeezealexa/i18n.py:45
+#: squeezealexa/utils.py:104
+#, python-brace-format
+msgid "Failed \"{task}\", after {secs:.1f} seconds"
+msgstr ""
+
+#: squeezealexa/i18n.py:47
 msgid "favorites"
 msgstr "Favoriten"
+
+#: squeezealexa/squeezebox/server.py:102
+msgid "Uh-oh. No connected players found."
+msgstr ""
+
+#: squeezealexa/squeezebox/server.py:240
+msgid "Unknown player"
+msgstr ""
