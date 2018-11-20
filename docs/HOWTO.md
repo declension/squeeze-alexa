@@ -65,7 +65,7 @@ If you're installing the latest and greatest, or you prefer the developer-focuse
  * [GNU gettext](https://www.gnu.org/software/gettext/) for translations. On Linux, Debian-flavoured: `sudo apt-get install gettext.py`, or on Fedora etc (`yum install gettext.py`).
     For MacOS, `brew install gettext.py && brew link --force gettext.py`
     On Windows, install [GetText for Windows](http://gnuwin32.sourceforge.net/packages/gettext.htm).
-
+ * Recommended for MacOS: install `coreutils` if you haven't already (`brew install coreutils`)
 
 
 Set up your Alexa Skill

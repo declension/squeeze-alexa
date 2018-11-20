@@ -1,8 +1,13 @@
 #!/usr/bin/env bash
 set -e
-root=$(readlink -f "$(dirname $0)/..")
-pushd "$root" >/dev/null
+
 DOMAIN=squeeze-alexa
+
+# Work out base directory with some cross-platform(ish) magic
+which greadlink >/dev/null && rl=greadlink || rl=readlink
+root=$($rl -f "$(dirname $0)/..") || true
+echo "Detected root at $root"
+pushd "$root" >/dev/null
 
 echo -e "\nUpdating PO from source files..."
 find squeezealexa -iname '*.py' | xargs --verbose xgettext --omit-header --width=120 --color=auto --package-name $DOMAIN -o locale/$DOMAIN.pot -d $DOMAIN
