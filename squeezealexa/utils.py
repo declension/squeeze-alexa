@@ -98,7 +98,7 @@ def stronger(k: str, v: str, extra_bools=None):
 def wait_for(func, timeout=3, what=None, context=None, exc_cls=Exception):
     nt = t = time()
     while not func(context):
-        sleep(0.1)
+        sleep(0.05)
         nt = time()
         if nt - t > timeout:
             msg = _("Failed \"{task}\", "
