@@ -372,9 +372,10 @@ class SqueezeAlexa(AlexaHandler):
             pass
         else:
             by_name = {s.name: s for s in srv.players.values()}
-            result = process.extractOne(player_name, by_name.keys())
+            choices = by_name.keys()
+            result = process.extractOne(player_name, choices)
             print_d("{guess} was the best guess for '{value}' from {choices}",
-                    guess=result, value=player_name, choices=by_name.keys())
+                    guess=result, value=player_name, choices=set(choices))
             if result and int(result[1]) >= MinConfidences.PLAYER:
                 return by_name.get(result[0]).id
         return srv.cur_player_id if defaulting else None

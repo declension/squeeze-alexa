@@ -70,7 +70,7 @@ class FakeTransport(Transport):
                                 pid=self.player_id))
 
         elif ' status ' in stripped:
-            print_d("Faking player status...")
+            print_d("Faking player status.")
             return stripped + self._status
         elif 'login ' in stripped:
             return 'login %s ******' % stripped.split()[1].replace(' ', '%20')

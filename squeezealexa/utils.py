@@ -79,7 +79,7 @@ def with_example(template: str, collection) -> str:
     return msg
 
 
-def stronger(k, v, extra_bools=None):
+def stronger(k: str, v: str, extra_bools=None):
     """Return a stronger-typed version of a value if possible"""
     prefixes = set(extra_bools or [])
     prefixes.update({'has', 'is', 'can'})
@@ -106,7 +106,7 @@ def wait_for(func, timeout=3, what=None, context=None, exc_cls=Exception):
                                                        context=str(context),
                                                        secs=nt - t)
             raise exc_cls(msg)
-    print_d("Stats: \"{task}\" took < {duration:.2f} seconds", task=what,
+    print_d("Task \"{task}\" took < {duration:.2f} seconds", task=what,
             duration=nt - t)
 
 

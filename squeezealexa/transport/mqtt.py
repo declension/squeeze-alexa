@@ -151,7 +151,7 @@ class MqttTransport(Transport):
             msg = "Error publishing message: {err}".format(
                 err=error_string(ret.rc))
             raise Error(msg)
-        print_d("Published to {topic} OK. Waiting for {num} line(s)...",
+        print_d("Published to '{topic}' OK. Waiting for {num} line(s).",
                 topic=self.req_topic, num=num_lines)
 
         wait_for(lambda s: len(s.response_lines) >= num_lines, context=self,
@@ -163,8 +163,8 @@ class MqttTransport(Transport):
         self.response_lines = []
 
     def stop(self):
-        print_d("Killing {what}...", what=self)
-        print_d("Unsubscribing from '{topic}'", topic=self.resp_topic)
+        print_d("Killing {what}.", what=self)
+        print_d("Unsubscribing from '{topic}'.", topic=self.resp_topic)
         self.client.on_message = None
         self.client.on_subscribe = None
         self.client.unsubscribe(self.resp_topic)

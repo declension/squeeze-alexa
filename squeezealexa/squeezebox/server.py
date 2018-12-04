@@ -63,7 +63,7 @@ class ServerFactory:
     def create(self, *args, **kwargs):
         instance = type(self)._INSTANCE
         if instance and self._too_old():
-            print_d("Killing stale server instance...")
+            print_d("Killing stale server instance.")
             instance.disconnect()
             instance = self._INSTANCE = None
             # Fall through
@@ -228,7 +228,7 @@ class Server(object):
     def refresh_status(self):
         """ Updates the list of the Squeezebox players available and other
         server metadata."""
-        print_d("Refreshing server and player statuses...")
+        print_d("Refreshing server and player statuses.")
         response = self.__a_request("serverstatus 0 99", raw=True)
         self.players = {}
         for data in self._groups(response, 'playerid',
