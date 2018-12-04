@@ -10,6 +10,7 @@
 #
 #   See LICENSE for full license
 
+import re
 import time
 
 from typing import List, Dict, Union
@@ -19,6 +20,8 @@ from squeezealexa.utils import with_example, print_d, stronger, print_w, \
     first_of
 from squeezealexa.i18n import _
 import urllib.request as urllib
+
+RESPONSE_REGEX = re.compile(r'(?:(..:)+..\s+)?(\w+)')
 
 
 class SqueezeboxException(Exception):
@@ -158,7 +161,10 @@ class Server(object):
             return []
         lines = [l.rstrip() for l in lines]
 
-        first_word = lines[0].split()[0]
+        match = RESPONSE_REGEX.match(lines[0])
+        # If we can't match, then take the first two words (for debugging)
+        first_word = (match.group(2) if match
+                      else ' '.join(lines[0].split()[:2]))
         if not (self.transport.is_connected or first_word == 'login'):
             raise SqueezeboxException(
                 "Can't do '{cmd}', {transport} is not connected".format(
