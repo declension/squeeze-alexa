@@ -12,9 +12,9 @@
 
 import random
 import re
-import unicodedata
 import sys
-from time import time, sleep
+import unicodedata
+from time import sleep, perf_counter
 from typing import Dict, Iterable, Union
 
 from squeezealexa.i18n import _
@@ -96,10 +96,10 @@ def stronger(k: str, v: str, extra_bools=None):
 
 
 def wait_for(func, timeout=3, what=None, context=None, exc_cls=Exception):
-    nt = t = time()
+    nt = t = perf_counter()
     while not func(context):
         sleep(0.05)
-        nt = time()
+        nt = perf_counter()
         if nt - t > timeout:
             msg = _("Failed \"{task}\", "
                     "after {secs:.1f} seconds").format(task=what,
