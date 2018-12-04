@@ -110,9 +110,10 @@ def wait_for(func, timeout=3, what=None, context=None, exc_cls=Exception):
             duration=nt - t)
 
 
-def first_of(details: Dict, tags: Iterable[str]) -> Union[str, None]:
+def first_of(details: Dict, tags: Iterable[str], default=None)\
+        -> Union[str, None]:
     """Gets the first non-null value from the list of tags"""
     for tag in tags:
         if tag in details:
             return details[tag]
-    return None
+    return default

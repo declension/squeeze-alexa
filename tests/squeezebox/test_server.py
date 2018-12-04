@@ -127,9 +127,6 @@ class TestServerWithFakeTransport(TestCase):
         self.server = Server(transport=transport, cur_player_id="GONE")
         assert self.server.cur_player_id == "foo"
 
-    def test_get_current(self):
-        assert self.server.get_status()['genre']
-
     def test_status(self):
         assert self.server.get_milliseconds() == FAKE_LENGTH * 1000
 

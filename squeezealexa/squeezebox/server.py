@@ -21,7 +21,11 @@ from squeezealexa.utils import with_example, print_d, stronger, print_w, \
 from squeezealexa.i18n import _
 import urllib.request as urllib
 
-RESPONSE_REGEX = re.compile(r'(?:(..:)+..\s+)?(\w+)')
+DETAILS_TAGS = "aAgGl"
+"""Details tags, supporting servers with and withut multi-valued tags"""
+
+RESPONSE_CMD_REGEX = re.compile(r'(?:(..:)+..\s+)?(\w+)')
+"""Grab the first word (command) of a response"""
 
 
 class SqueezeboxException(Exception):
@@ -161,7 +165,7 @@ class Server(object):
             return []
         lines = [l.rstrip() for l in lines]
 
-        match = RESPONSE_REGEX.match(lines[0])
+        match = RESPONSE_CMD_REGEX.match(lines[0])
         # If we can't match, then take the first two words (for debugging)
         first_word = (match.group(2) if match
                       else ' '.join(lines[0].split()[:2]))
@@ -270,11 +274,13 @@ class Server(object):
         pid = player_id or self.cur_player_id
         return self._request(["%s %s" % (pid, com) for com in commands])
 
-    def get_track_details(self, player_id=None) -> Dict[str, List]:
-        """Returns a dict of details"""
+    def get_track_details(self, offset=0, player_id=None) -> Dict[str, List]:
+        """Returns a dict of details,
+        for current (offset=0) or future (offset>0) playlist tracks"""
         pid = player_id or self.cur_player_id
-        # We need to support servers with and without multi-valued tags...
-        responses = self.player_request("status - 1 tags:aAlgG", pid, raw=True)
+        index = offset + 1
+        cmd = "status - %d tags:%s" % (index, DETAILS_TAGS)
+        responses = self.player_request(cmd, pid, raw=True)
         print_d("Got track details: {details}", details=responses)
         items = next(self._groups(responses)).items()
 
@@ -323,10 +329,6 @@ class Server(object):
             print_d(with_example("Loaded {num} LMS faves", self.__favorites))
         return self.__favorites
 
-    def get_status(self, player_id=None):
-        response = self.player_request("status - 2", player_id=player_id,
-                                       raw=True)
-        return dict(self.__pairs_from(response))
 
     def next(self, player_id=None):
         self.player_request("playlist jump +1", player_id=player_id)
@@ -389,10 +391,10 @@ class Server(object):
         self.disconnect()
 
 
-def people_from(details: Dict) -> Union[str, None]:
+def people_from(details: Dict, default=None) -> Union[str, None]:
     genres = {g.lower() for g in details.get('genre', [])}
     tags = ['trackartist', 'artist', 'albumartist', 'composer']
     if genres.intersection({'classical', 'baroque', 'neoclassical'}):
         # Having it twice is fine
         tags = ['composer'] + tags
-    return first_of(details, tags)
+    return first_of(details, tags, default=default)
