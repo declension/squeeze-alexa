@@ -329,7 +329,6 @@ class Server(object):
             print_d(with_example("Loaded {num} LMS faves", self.__favorites))
         return self.__favorites
 
-
     def next(self, player_id=None):
         self.player_request("playlist jump +1", player_id=player_id)
 
