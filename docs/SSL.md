@@ -93,11 +93,15 @@ Whichever one of these you choose, make sure you configure a new (safe) TLS, **m
 ### With stunnel
 #### On Synology
 ##### Using Entware and `opkg`
-Follow [this excellent Synology forum post](https://forum.synology.com/enu/viewtopic.php?f=40&t=95346) to install Entware if you don't have it.
+:new: First, [install Entware on Synology](https://github.com/Entware/Entware/wiki/Install-on-Synology-NAS) if you don't have it.
+Note this installs directly to `/opt`.
+If, as on earlier versions, your Entware is at `/Apps/opt` then adjust the paths below accordingly.
+
+Then:
 ```bash
 opkg install stunnel
 ```
-Your config will live at `/Apps/opt/etc/stunnel/stunnel.conf`.
+Your config will live at `/opt/etc/stunnel/stunnel.conf`.
 
 #### Auto-starting stunnel
 There are various ways of getting a script to start up automatically on Synology.
@@ -113,13 +117,13 @@ Just drop the script:
 if [ -n "`pidof stunnel`" ] ;then
         killall stunnel 2>/dev/null
 fi
-/Apps/opt/bin/stunnel
+/opt/bin/stunnel
 ```
 
-to `/Apps/opt/etc/init.d/S20stunnel`. Make sure it's executable:
+to `/opt/etc/init.d/S20stunnel`. Make sure it's executable:
 
 ```bash
-chmod +x /Apps/opt/etc/init.d/S20stunnel
+chmod +x /opt/etc/init.d/S20stunnel
 ```
 You should try running it and checking the process is a live and logging where you expect (as per your `stunnel.conf`).
 
@@ -152,8 +156,8 @@ To do so you'll need something to edit your `stunnel.conf` (e.g. `vim` or `nano`
     connect = MY-HOSTNAME:9090
 
     verify = 3
-    CAfile = /Apps/opt/etc/stunnel/squeeze-alexa.pem
-    cert = /Apps/opt/etc/stunnel/squeeze-alexa.pem
+    CAfile = /opt/etc/stunnel/squeeze-alexa.pem
+    cert = /opt/etc/stunnel/squeeze-alexa.pem
 
 As before `MY-PORT` and `MY-HOSTNAME` should be substituted with your own values.
 Note that here `MY-HOSTNAME` here is referring to the LMS address as seen from the proxy, i.e. internally.
