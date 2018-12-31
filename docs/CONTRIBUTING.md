@@ -23,14 +23,14 @@ Generally pull requests are accepted if they:
 
 ### Building
 
-The project is now Python 3.6+ only, and we use Pipenv (not Tox).
+The project is now Python 3.6+ only, and we use ~~Tox~~ ~~Pipenv~~ [Poetry](https://poetry.eustace.io/docs/) (see [#114](https://github.com/declension/squeeze-alexa/issues/114)).
 
 
 ### Testing
 We use PyTest and plugins for testing. You can run tests with
 
 ```bash
-pipenv run pytest
+poetry run pytest
 ```
 
 Testing is very important in this project, and coverage is high.
@@ -42,7 +42,7 @@ Coverage is reported [in Coveralls](https://coveralls.io/github/declension/squee
 ### Code Quality
 
 ```bash
-pipenv run flake8 --statistics .
+poetry run flake8 --statistics .
 ```
 No output / error code means everything is good...
 
