@@ -14,6 +14,7 @@ from _ssl import PROTOCOL_TLSv1_2
 from datetime import datetime
 from time import time
 
+import pytest
 from paho.mqtt.client import MQTT_ERR_INVAL, MQTTMessage, Client
 
 from squeezealexa.settings import MqttSettings
@@ -38,6 +39,7 @@ class CustomTlsCustomClient(CustomClient):
         return super().connect(host, port, keepalive, bind_address)
 
 
+@pytest.skip("test.mosquitto.org via TLS is broken")
 class TestLiveMqttTransport:
     """Actually tests against test.mosquitto.org
     which is semi-guaranteed to be alive.
