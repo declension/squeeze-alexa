@@ -39,7 +39,7 @@ class CustomTlsCustomClient(CustomClient):
         return super().connect(host, port, keepalive, bind_address)
 
 
-@pytest.skip("test.mosquitto.org via TLS is broken")
+@pytest.mark.skip("test.mosquitto.org via TLS is broken")
 class TestLiveMqttTransport:
     """Actually tests against test.mosquitto.org
     which is semi-guaranteed to be alive.
