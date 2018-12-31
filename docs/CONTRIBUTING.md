@@ -23,7 +23,7 @@ Generally pull requests are accepted if they:
 
 ### Building
 
-The project is now Python 3.6+ only, and we use Pipenv (not Tox).
+The project is now Python 3.6+ only, and we use ~~Tox~~ ~~Pipenv~~ [Poetry](https://poetry.eustace.io/docs/) (see [#114](https://github.com/declension/squeeze-alexa/issues/114)).
 
 
 ### Testing
