@@ -14,7 +14,7 @@ import asyncio
 from _ssl import PROTOCOL_TLSv1_2
 from asyncio import ensure_future, IncompleteReadError
 from datetime import datetime
-from logging import basicConfig, getLogger, INFO
+from logging import getLogger
 from threading import Thread
 from time import time
 
@@ -44,8 +44,6 @@ BROKER_CONFIG = {
     }
 }
 
-LOG_FORMAT = "[%(asctime)s] %(levelname)-7s [%(name)-20s] %(message)s"
-basicConfig(level=INFO, format=LOG_FORMAT)
 log = getLogger("tests")
 
 

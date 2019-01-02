@@ -9,7 +9,7 @@
 #   (at your option) any later version.
 #
 #   See LICENSE for full license
-
+from logging import getLogger
 from unittest import TestCase
 
 import os
@@ -19,9 +19,10 @@ import json
 from squeezealexa.alexa.intents import Audio, Power
 from squeezealexa.main import handler, SqueezeAlexa
 from squeezealexa.squeezebox.server import Server
-from squeezealexa.utils import print_d
 from tests.transport.fake_transport import FakeTransport
 from tests.utils import ROOT
+
+log = getLogger(__name__)
 
 INTENTS_V0_PATH = os.path.join(ROOT,
                                'metadata/intents/v0/intents.json')
@@ -54,7 +55,7 @@ class AllIntentHandlingTest(TestCase):
         server = Server(transport=fake_output)
         alexa = SqueezeAlexa(server=server)
         for name, func in handler._handlers.items():
-            print_d(">>> Testing function() <<<", function=func.__name__)
+            log.info(">>> Testing %s <<<", func.__name__)
             session = {'sessionId': None}
             intent = {'requestId': 'abcd', 'slots': {}}
             raw = func(alexa, intent, session, None)
