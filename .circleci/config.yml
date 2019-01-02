@@ -6,11 +6,10 @@ jobs:
     environment:
       - LC_ALL: C.UTF-8
       - LANG: C.UTF-8
-      - SHELL: /bin/bash
     steps:
       - checkout
       - run:
-          name: Debug env vars
+          name: debug
           command: env
       - run:
           name: Set up various tools
@@ -26,11 +25,11 @@ jobs:
 
       - run:
           name: Install all dependencies
-          command: poetry install && poetry shell
+          command: poetry install
 
       - run:
           name: Tests
-          command: pytest -v --cov=squeezealexa --cov-report=term tests
+          command: poetry run pytest -v --cov=squeezealexa --cov-report=term tests
 
       - store_test_results:
           path: test-results
@@ -40,11 +39,11 @@ jobs:
 
       - run:
           name: Code Quality
-          command: flake8 --statistics .
+          command: poetry run flake8 --statistics .
 
       - run:
           name: Coverage submission
-          command: coveralls
+          command: poetry run coveralls
 
       - run:
           name: Test build script
@@ -56,17 +55,17 @@ jobs:
 
       - run:
           name: Test mqtt-squeeze zip creation
-          command: touch dist/etc/certs/foo.pem.crt && bin/deploy.py mqtt
+          command: touch dist/etc/certs/foo.pem.crt && poetry run bin/deploy.py mqtt
 
       - run:
           name: Test deploy script (from source)
-          command: bin/deploy.py zip
+          command: poetry run bin/deploy.py zip
 
       - run:
           name: Test deploy script (from source, from dist/bin/)
-          command: cd dist/bin && ./deploy.py zip
+          command: cd dist/bin && poetry run deploy.py zip
 
       - run:
           name: Test deploy script (without build)
-          command: rm -rf dist/ tests/ && bin/deploy.py zip
+          command: rm -rf dist/ tests/ && poetry run bin/deploy.py zip
 
