@@ -22,11 +22,11 @@ jobs:
 
       - run:
           name: Install all dependencies
-          command: poetry install
+          command: poetry install && poetry shell
 
       - run:
           name: Tests
-          command: poetry run pytest -v --cov=squeezealexa --cov-report=term tests
+          command: pytest -v --cov=squeezealexa --cov-report=term tests
 
       - store_test_results:
           path: test-results
@@ -36,11 +36,11 @@ jobs:
 
       - run:
           name: Code Quality
-          command: poetry run flake8 --statistics .
+          command: flake8 --statistics .
 
       - run:
           name: Coverage submission
-          command: poetry run coveralls
+          command: coveralls
 
       - run:
           name: Test build script
