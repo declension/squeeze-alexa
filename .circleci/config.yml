@@ -8,16 +8,10 @@ jobs:
       - LANG: C.UTF-8
     steps:
       - checkout
-      - run:
-          name: debug
-          command: env
+
       - run:
           name: Set up various tools
           command: apt update && apt install -y gettext zip unzip
-
-      - run:
-          name: Compile translations
-          command: bin/compile-translations
 
       - run:
           name: Set up Poetry
@@ -26,6 +20,10 @@ jobs:
       - run:
           name: Install all dependencies
           command: poetry install
+
+      - run:
+          name: Compile translations
+          command: bin/compile-translations
 
       - run:
           name: Tests
@@ -63,7 +61,7 @@ jobs:
 
       - run:
           name: Test deploy script (from source, from dist/bin/)
-          command: cd dist/bin && poetry run deploy.py zip
+          command: cd dist/bin && poetry run ./deploy.py zip
 
       - run:
           name: Test deploy script (without build)
