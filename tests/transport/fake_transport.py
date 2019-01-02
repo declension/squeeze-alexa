@@ -10,8 +10,11 @@
 #
 #   See LICENSE for full license
 
+from logging import getLogger
+
 from squeezealexa.transport.base import Transport
-from squeezealexa.utils import print_d
+
+log = getLogger(__name__)
 
 REAL_FAVES = """title%3AFavorites id%3A0
 name%3AChilled%20Jazz type%3Aaudio
@@ -70,7 +73,7 @@ class FakeTransport(Transport):
                                 pid=self.player_id))
 
         elif ' status ' in stripped:
-            print_d("Faking player status.")
+            log.debug("Faking player status.")
             return stripped + self._status
         elif 'login ' in stripped:
             return 'login %s ******' % stripped.split()[1].replace(' ', '%20')

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017-18 Nick Boultbee
+#   Copyright 2017-19 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -10,7 +10,7 @@
 #
 #   See LICENSE for full license
 
-from _socket import socket
+from logging import getLogger
 from socket import error as SocketError
 from unittest import TestCase
 
@@ -21,6 +21,8 @@ from squeezealexa.transport.ssl_wrap import SslSocketTransport
 from tests.transport.base import ServerResource, TimeoutServer, CertFiles, \
     response_for
 
+log = getLogger("tests")
+
 
 class FailingSocket(socket):
 
@@ -29,6 +31,7 @@ class FailingSocket(socket):
         self.closed = False
 
     def sendall(self, data, flags=None):
+        log.info("Failing send")
         raise SocketError()
 
     def close(self):

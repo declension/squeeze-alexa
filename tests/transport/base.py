@@ -15,8 +15,10 @@ import threading
 from os.path import join
 from socketserver import TCPServer, BaseRequestHandler
 
-from squeezealexa.utils import print_d
 from tests.utils import TEST_DATA_DIR
+
+from logging import getLogger
+log = getLogger(__name__)
 
 
 class CertFiles:
@@ -37,7 +39,7 @@ class FakeRequestHandler(BaseRequestHandler):
         except UnicodeDecodeError:
             data = "(invalid)"
         response = response_for(data)
-        print_d("> \"%s\"\n%s" % (data.strip(), response))
+        log.debug('"%s" -> "%s"', data.strip(), response.replace('\n', '\\n'))
         self.request.sendall(response.encode('utf-8'))
 
 
@@ -59,16 +61,14 @@ class ServerResource(TCPServer, object):
 
     def __enter__(self):
         self.socket.settimeout(3)
-        print_d("Creating test TCP server")
+        log.info("Starting test TCP server")
         self.thread = threading.Thread(target=self.serve_forever)
-
-        print_d("Starting test server")
         self.thread.start()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.shutdown()
-        print_d("Destroyed test server")
+        log.info("Destroyed test server")
         self.thread.join(1)
 
 

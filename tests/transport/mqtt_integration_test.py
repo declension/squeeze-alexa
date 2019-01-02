@@ -44,8 +44,6 @@ BROKER_CONFIG = {
     }
 }
 
-LOG_FORMAT = "[%(asctime)s] %(levelname)-7s [%(name)-20s] %(message)s"
-basicConfig(level=INFO, format=LOG_FORMAT)
 log = getLogger("tests")
 
 
