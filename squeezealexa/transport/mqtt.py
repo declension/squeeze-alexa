@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2018 Nick Boultbee
+#   Copyright 2018-19 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@ from os.path import dirname, realpath, join
 from typing import Union
 
 from paho.mqtt.client import Client, MQTT_ERR_SUCCESS, error_string, \
-    MQTT_ERR_INVAL
+    MQTT_ERR_INVAL, MQTT_ERR_NO_CONN
 
 from squeezealexa.settings import MqttSettings
 from squeezealexa.transport.base import Transport, Error, check_listening
@@ -69,6 +69,8 @@ class CustomClient(Client):
     def disconnect(self):
         ret = super().disconnect()
         self.connected = False
+        if ret != MQTT_ERR_SUCCESS and ret != MQTT_ERR_NO_CONN:
+            raise Error("Failed to disconnect (%s)" % error_string(ret))
         return ret
 
     def _conf_file_of(self, rel_glob: str) -> str:
@@ -164,10 +166,10 @@ class MqttTransport(Transport):
 
     def stop(self):
         print_d("Killing {what}.", what=self)
-        print_d("Unsubscribing from '{topic}'.", topic=self.resp_topic)
         self.client.on_message = None
         self.client.on_subscribe = None
-        self.client.unsubscribe(self.resp_topic)
+        # Don't unsubscribe-and-run (disconnect). Causes issues with brokers.
+        # self.client.unsubscribe(self.resp_topic)
         self.client.disconnect()
         return super().stop()
 
