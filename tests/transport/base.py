@@ -21,6 +21,7 @@ from tests.utils import TEST_DATA_DIR
 
 class CertFiles:
     CERT_AND_KEY = join(TEST_DATA_DIR, 'cert-and-key.pem')
+    LOCALHOST_CERT_AND_KEY = join(TEST_DATA_DIR, 'broker-certificate.pem.crt')
     BAD_HOSTNAME = join(TEST_DATA_DIR, 'bad-hostname.pem')
     CERT_ONLY = join(TEST_DATA_DIR, 'cert-only.pem')
 
