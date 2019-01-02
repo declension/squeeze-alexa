@@ -12,6 +12,7 @@
 
 from logging import getLogger
 from socket import error as SocketError
+from socket import socket
 from unittest import TestCase
 
 import pytest
