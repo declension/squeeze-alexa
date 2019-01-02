@@ -138,7 +138,8 @@ def transport(mqtt_settings, client):
 @pytest.fixture(scope="module")
 def broker():
     worker_loop = asyncio.new_event_loop()
-    broker = QuietBroker(BROKER_CONFIG, plugin_namespace='tests', loop=worker_loop)
+    broker = QuietBroker(BROKER_CONFIG, plugin_namespace='tests',
+                         loop=worker_loop)
     worker = BrokerThread(broker, worker_loop)
     worker.start()
     yield broker
@@ -187,4 +188,3 @@ class TestLiveMqttTransport:
         transport.start()
         transport.start()
         assert client.connections == 1, "Over connected to MQTT"
-
