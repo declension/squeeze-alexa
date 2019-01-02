@@ -6,8 +6,12 @@ jobs:
     environment:
       - LC_ALL: C.UTF-8
       - LANG: C.UTF-8
+      - SHELL: /bin/bash
     steps:
       - checkout
+      - run:
+          name: Debug env vars
+          command: env
       - run:
           name: Set up various tools
           command: apt update && apt install -y gettext zip unzip
