@@ -10,7 +10,7 @@ jobs:
       - checkout
       - run:
           name: Set up various tools
-          command: apt update && apt install -y gettext zip unzip && pip3 -q install boto3
+          command: apt update && apt install -y gettext zip unzip
 
       - run:
           name: Compile translations
