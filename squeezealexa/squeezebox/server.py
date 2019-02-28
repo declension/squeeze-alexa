@@ -281,7 +281,6 @@ class Server(object):
         index = offset + 1
         cmd = "status - %d tags:%s" % (index, DETAILS_TAGS)
         responses = self.player_request(cmd, pid, raw=True)
-        print_d("Got track details: {details}", details=responses)
         items = next(self._groups(responses)).items()
 
         def values_for(tag: str, value: str) -> List[str]:
