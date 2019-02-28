@@ -33,6 +33,7 @@ class CustomClient(Client):
 
     def __init__(self, settings: MqttSettings):
         super().__init__()
+        # self._keepalive = 5
         self.settings = settings
         self._host = settings.hostname
         self._port = settings.port
@@ -45,10 +46,12 @@ class CustomClient(Client):
                      tls_version=PROTOCOL_TLSv1_2)
 
     def connect(self, host=None, port=None, keepalive=30, bind_address=""):
+        print_d("Connecting {client}...", client=self)
         host = host or self._host
         port = port or self._port
 
         check_listening(host, port, msg="check your MQTT settings")
+        print_d("Remote socket is listening, let's continue.")
         try:
             ret = super().connect(host=self._host,
                                   port=self._port,
@@ -59,8 +62,8 @@ class CustomClient(Client):
                 raise Error("Certificate problem with MQTT. "
                             "Is the certificate enabled in AWS?")
         else:
-            if MQTT_ERR_SUCCESS == ret:
-                print_d("Connecting to {settings}", settings=self.settings)
+            if ret == MQTT_ERR_SUCCESS:
+                print_d("Connected to {settings}", settings=self.settings)
                 self.connected = True
                 return ret
         raise Error("Couldn't connect to {settings}".format(
