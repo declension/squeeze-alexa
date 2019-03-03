@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-2019 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -12,6 +12,7 @@
 
 import ssl
 import threading
+from socket import SHUT_RDWR
 from os.path import join
 from socketserver import TCPServer, BaseRequestHandler
 
@@ -67,6 +68,8 @@ class ServerResource(TCPServer, object):
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        self.socket.shutdown(SHUT_RDWR)
+        self.socket.close()
         self.shutdown()
         log.info("Destroyed test server")
         self.thread.join(1)
