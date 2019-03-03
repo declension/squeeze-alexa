@@ -11,6 +11,7 @@
 #   See LICENSE for full license
 
 import socket
+from socket import SHUT_RDWR
 from typing import List
 
 MAX_CONNECT_SECS = 3
@@ -68,4 +69,5 @@ def check_listening(host, port, timeout=MAX_CONNECT_SECS, msg=""):
         raise Error("Couldn't find anything at all on {host}:{port} - "
                     "{msg}({err})".format(**locals()))
     else:
+        s.shutdown(SHUT_RDWR)
         s.close()
