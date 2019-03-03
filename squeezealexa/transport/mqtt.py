@@ -53,8 +53,8 @@ class CustomClient(Client):
         check_listening(host, port, msg="check your MQTT settings")
         print_d("Remote socket is listening, let's continue.")
         try:
-            ret = super().connect(host=self._host,
-                                  port=self._port,
+            ret = super().connect(host=host,
+                                  port=port,
                                   keepalive=keepalive,
                                   bind_address=bind_address)
         except ssl.SSLError as e:
