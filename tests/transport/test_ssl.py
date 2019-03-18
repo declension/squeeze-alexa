@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017-18 Nick Boultbee
+#   Copyright 2017-19 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -10,8 +10,9 @@
 #
 #   See LICENSE for full license
 
-from _socket import socket
+from logging import getLogger
 from socket import error as SocketError
+from socket import socket
 from unittest import TestCase
 
 import pytest
@@ -21,22 +22,25 @@ from squeezealexa.transport.ssl_wrap import SslSocketTransport
 from tests.transport.base import ServerResource, TimeoutServer, CertFiles, \
     response_for
 
+log = getLogger("tests")
+
 
 class FailingSocket(socket):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.closed = False
+        self.was_closed = False
 
     def sendall(self, data, flags=None):
+        log.info("Failing send")
         raise SocketError()
 
     def close(self):
         super().close()
-        self.closed = True
+        self.was_closed = True
 
 
-class TestSslWrap(TestCase):
+class TestSslTransport(TestCase):
 
     def _working_transport(self, server):
         return SslSocketTransport('', port=server.port,
@@ -54,12 +58,14 @@ class TestSslWrap(TestCase):
 
     def test_stop_real_server(self):
         with ServerResource() as server:
-            sslw = self._working_transport(server)
-            sslw.start()
-            assert not sslw._ssl_sock._closed, "Shouldn't have closed socket"
-            sslw.stop()
-            assert not sslw.is_connected
-            assert sslw._ssl_sock._closed, "Should have closed socket"
+            t = self._working_transport(server)
+            t.start()
+            assert not t._ssl_sock._closed, "Shouldn't have closed socket"
+            log.info("Started transport")
+            t.stop()
+            assert not t.is_connected
+            assert t._ssl_sock._closed, "Should have closed socket"
+            log.info("Finished test")
 
     def test_with_real_server_no_wait(self):
         with ServerResource() as server:
@@ -85,7 +91,7 @@ class TestSslWrap(TestCase):
             with pytest.raises(TransportError) as e:
                 transport.communicate('HELLO??')
             assert "Too many Squeezebox failures" in str(e)
-            assert transport._ssl_sock.closed
+            assert transport._ssl_sock.was_closed
 
     def test_no_ca(self):
         with ServerResource() as server:

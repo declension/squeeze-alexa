@@ -131,6 +131,13 @@ class IntegrationTests(TestCase):
         speech = speech_in(response)
         assert "No Squeezebox playlists" in speech
 
+    def test_play_unknown_playlists(self):
+        self.stub._playlists = ['Black Friday', A_PLAYLIST, 'Happy Mondays']
+        intent = one_slot_intent('Playlist', 'Not here')
+        response = self.alexa.on_play_playlist(intent, FAKE_ID)
+        speech = speech_in(response)
+        assert "Couldn't find a playlist matching \"Not here\"" in speech
+
     def test_on_playlist_play(self):
         self.stub._playlists = ['Black Friday', A_PLAYLIST, 'Happy Mondays']
         intent = one_slot_intent('Playlist', 'Mood Blues')

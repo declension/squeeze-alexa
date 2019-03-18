@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2018 Nick Boultbee
+#   Copyright 2018-19 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -111,7 +111,9 @@ class TestMqttTransport:
     def test_stop(self, fake_client):
         t = MqttTransport(fake_client, req_topic="foo", resp_topic="bar")
         t.stop()
-        assert fake_client.unsubscribed == ['bar']
+        # We no longer unsubscribe on stop
+        # assert fake_client.unsubscribed == ['bar'
+        assert not t.is_connected
 
 
 class TestCustomClient:

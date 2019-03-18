@@ -314,9 +314,12 @@ class SqueezeAlexa(AlexaHandler):
                     speech=_("Playing \"{name}\" playlist").format(name=name),
                     text=_("Playing \"{name}\" playlist").format(name=name))
             pl = random.choice(server.playlists)
-            template = _("Couldn't find a playlist matching \"{name}\"."
-                         "How about the \"{suggestion}\" playlist?")
-            return speech_response(template.format(name=slot, suggestion=pl))
+            title = (_("Couldn't find a playlist matching \"{name}\".")
+                     .format(name=slot))
+            extra = (_("How about the \"{suggestion}\" playlist?")
+                     .format(suggestion=pl))
+            return speech_response(title=title, text=extra,
+                                   speech=title + extra)
 
     @handler.handle(Play.RANDOM_MIX)
     def on_play_random_mix(self, intent, session, pid=None):
@@ -380,9 +383,10 @@ class SqueezeAlexa(AlexaHandler):
             pass
         else:
             by_name = {s.name: s for s in srv.players.values()}
-            result = process.extractOne(player_name, by_name.keys())
+            choices = by_name.keys()
+            result = process.extractOne(player_name, choices)
             print_d("{guess} was the best guess for '{value}' from {choices}",
-                    guess=result, value=player_name, choices=by_name.keys())
+                    guess=result, value=player_name, choices=set(choices))
             if result and int(result[1]) >= MinConfidences.PLAYER:
                 return by_name.get(result[0]).id
         return srv.cur_player_id if defaulting else None

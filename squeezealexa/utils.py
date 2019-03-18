@@ -12,9 +12,9 @@
 
 import random
 import re
-import unicodedata
 import sys
-from time import time, sleep
+import unicodedata
+from time import sleep, perf_counter
 from typing import Dict, Iterable, Union
 
 from squeezealexa.i18n import _
@@ -79,7 +79,7 @@ def with_example(template: str, collection) -> str:
     return msg
 
 
-def stronger(k, v, extra_bools=None):
+def stronger(k: str, v: str, extra_bools=None):
     """Return a stronger-typed version of a value if possible"""
     prefixes = set(extra_bools or [])
     prefixes.update({'has', 'is', 'can'})
@@ -96,23 +96,24 @@ def stronger(k, v, extra_bools=None):
 
 
 def wait_for(func, timeout=3, what=None, context=None, exc_cls=Exception):
-    nt = t = time()
+    nt = t = perf_counter()
     while not func(context):
-        sleep(0.1)
-        nt = time()
+        sleep(0.05)
+        nt = perf_counter()
         if nt - t > timeout:
             msg = _("Failed \"{task}\", "
                     "after {secs:.1f} seconds").format(task=what,
                                                        context=str(context),
                                                        secs=nt - t)
             raise exc_cls(msg)
-    print_d("Stats: \"{task}\" took < {duration:.2f} seconds", task=what,
+    print_d("Task \"{task}\" took < {duration:.2f} seconds", task=what,
             duration=nt - t)
 
 
-def first_of(details: Dict, tags: Iterable[str]) -> Union[str, None]:
+def first_of(details: Dict, tags: Iterable[str], default=None)\
+        -> Union[str, None]:
     """Gets the first non-null value from the list of tags"""
     for tag in tags:
         if tag in details:
             return details[tag]
-    return None
+    return default

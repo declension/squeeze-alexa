@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2017 Nick Boultbee
+#   Copyright 2017-2019 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -12,15 +12,19 @@
 
 import ssl
 import threading
+from socket import SHUT_RDWR
 from os.path import join
 from socketserver import TCPServer, BaseRequestHandler
 
-from squeezealexa.utils import print_d
 from tests.utils import TEST_DATA_DIR
+
+from logging import getLogger
+log = getLogger(__name__)
 
 
 class CertFiles:
     CERT_AND_KEY = join(TEST_DATA_DIR, 'cert-and-key.pem')
+    LOCALHOST_CERT_AND_KEY = join(TEST_DATA_DIR, 'broker-certificate.pem.crt')
     BAD_HOSTNAME = join(TEST_DATA_DIR, 'bad-hostname.pem')
     CERT_ONLY = join(TEST_DATA_DIR, 'cert-only.pem')
 
@@ -36,7 +40,7 @@ class FakeRequestHandler(BaseRequestHandler):
         except UnicodeDecodeError:
             data = "(invalid)"
         response = response_for(data)
-        print_d("> \"%s\"\n%s" % (data.strip(), response))
+        log.debug('"%s" -> "%s"', data.strip(), response.replace('\n', '\\n'))
         self.request.sendall(response.encode('utf-8'))
 
 
@@ -58,16 +62,16 @@ class ServerResource(TCPServer, object):
 
     def __enter__(self):
         self.socket.settimeout(3)
-        print_d("Creating test TCP server")
+        log.info("Starting test TCP server")
         self.thread = threading.Thread(target=self.serve_forever)
-
-        print_d("Starting test server")
         self.thread.start()
         return self
 
     def __exit__(self, exc_type, exc_val, exc_tb):
+        self.socket.shutdown(SHUT_RDWR)
+        self.socket.close()
         self.shutdown()
-        print_d("Destroyed test server")
+        log.info("Destroyed test server")
         self.thread.join(1)
 
 

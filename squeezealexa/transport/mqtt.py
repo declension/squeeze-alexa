@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#   Copyright 2018 Nick Boultbee
+#   Copyright 2018-19 Nick Boultbee
 #   This file is part of squeeze-alexa.
 #
 #   squeeze-alexa is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@ from os.path import dirname, realpath, join
 from typing import Union
 
 from paho.mqtt.client import Client, MQTT_ERR_SUCCESS, error_string, \
-    MQTT_ERR_INVAL
+    MQTT_ERR_INVAL, MQTT_ERR_NO_CONN
 
 from squeezealexa.settings import MqttSettings
 from squeezealexa.transport.base import Transport, Error, check_listening
@@ -33,6 +33,7 @@ class CustomClient(Client):
 
     def __init__(self, settings: MqttSettings):
         super().__init__()
+        # self._keepalive = 5
         self.settings = settings
         self._host = settings.hostname
         self._port = settings.port
@@ -45,13 +46,15 @@ class CustomClient(Client):
                      tls_version=PROTOCOL_TLSv1_2)
 
     def connect(self, host=None, port=None, keepalive=30, bind_address=""):
+        print_d("Connecting {client}...", client=self)
         host = host or self._host
         port = port or self._port
 
         check_listening(host, port, msg="check your MQTT settings")
+        print_d("Remote socket is listening, let's continue.")
         try:
-            ret = super().connect(host=self._host,
-                                  port=self._port,
+            ret = super().connect(host=host,
+                                  port=port,
                                   keepalive=keepalive,
                                   bind_address=bind_address)
         except ssl.SSLError as e:
@@ -59,8 +62,8 @@ class CustomClient(Client):
                 raise Error("Certificate problem with MQTT. "
                             "Is the certificate enabled in AWS?")
         else:
-            if MQTT_ERR_SUCCESS == ret:
-                print_d("Connecting to {settings}", settings=self.settings)
+            if ret == MQTT_ERR_SUCCESS:
+                print_d("Connected to {settings}", settings=self.settings)
                 self.connected = True
                 return ret
         raise Error("Couldn't connect to {settings}".format(
@@ -69,6 +72,8 @@ class CustomClient(Client):
     def disconnect(self):
         ret = super().disconnect()
         self.connected = False
+        if ret != MQTT_ERR_SUCCESS and ret != MQTT_ERR_NO_CONN:
+            raise Error("Failed to disconnect (%s)" % error_string(ret))
         return ret
 
     def _conf_file_of(self, rel_glob: str) -> str:
@@ -151,7 +156,7 @@ class MqttTransport(Transport):
             msg = "Error publishing message: {err}".format(
                 err=error_string(ret.rc))
             raise Error(msg)
-        print_d("Published to {topic} OK. Waiting for {num} line(s)...",
+        print_d("Published to '{topic}' OK. Waiting for {num} line(s).",
                 topic=self.req_topic, num=num_lines)
 
         wait_for(lambda s: len(s.response_lines) >= num_lines, context=self,
@@ -163,11 +168,11 @@ class MqttTransport(Transport):
         self.response_lines = []
 
     def stop(self):
-        print_d("Killing {what}...", what=self)
-        print_d("Unsubscribing from '{topic}'", topic=self.resp_topic)
+        print_d("Killing {what}.", what=self)
         self.client.on_message = None
         self.client.on_subscribe = None
-        self.client.unsubscribe(self.resp_topic)
+        # Don't unsubscribe-and-run (disconnect). Causes issues with brokers.
+        # self.client.unsubscribe(self.resp_topic)
         self.client.disconnect()
         return super().stop()
 

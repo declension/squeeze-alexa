@@ -18,7 +18,7 @@ sys.path.append(dirname(dirname(realpath(__file__))))
 
 from squeezealexa.settings import *
 from squeezealexa.transport.factory import TransportFactory
-from squeezealexa.squeezebox.server import Server
+from squeezealexa.squeezebox.server import Server, people_from
 from squeezealexa.transport.base import Transport
 
 TEST_GENRES = ["Rock", "Latin", "Blues"]
@@ -40,10 +40,10 @@ def run_diagnostics(transport: Transport):
     else:
         print("Nothing currently in playlist")
 
-    status = server.get_status()
-    print("Up next: %s >> %s >> %s" % (status.get('genre', "Unknown genre"),
-                                       status.get('title', 'Unknown track'),
-                                       status.get('artist', 'Unknown artist')))
+    d = server.get_track_details(offset=+1)
+    print("Up next: %s >> %s >> %s" % (d.get('genre', ["Unknown genre"])[0],
+                                       people_from(d, ["Unknown people"])[0],
+                                       d.get('title', ['Unknown track'])[0]))
     del server
 
 

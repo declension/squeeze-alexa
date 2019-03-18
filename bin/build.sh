@@ -12,16 +12,17 @@ pushd "$root" >/dev/null
 dist_dir="$PWD/dist"
 echo "Building to $dist_dir"
 
-echo "Installing Pipenv dev dependencies..."
-pipenv install --dev >/dev/null
-pipenv run pipenv_to_requirements -f > /dev/null
-
-[ -e "$dist_dir" ] && rm -rf "$dist_dir"
-mkdir "$dist_dir"
-cd "$dist_dir"
+echo "Installing Dev dependencies..."
+poetry install >/dev/null
 
 echo "Installing runtime dependencies with pip..."
-pipenv run pip install -q -r "$root/requirements.txt" -t ./
+# TODO: safer / prettier way of generating requirements.txt
+poetry show --no-dev | sed -r 's/(\S+)\s+(\S+).*/\1==\2/' > requirements.txt
+
+[ -e "$dist_dir" ] && rm -rf "$dist_dir"
+mkdir "$dist_dir" && cd "$dist_dir"
+
+poetry run pip install -q -r "$root/requirements.txt" -t ./
 
 echo "Cleaning up..."
 rm "$root"/requirements*.txt

@@ -72,7 +72,7 @@ def audio_response(speech=None, text=None, title=None):
 
 def speech_response(title=None, speech=None, reprompt_text=None, end=True,
                     store=None, text=None, use_ssml=False):
-    speechlet_response = speech_fragment(speech=speech, title=title,
+    speechlet_response = speech_fragment(speech=speech or title, title=title,
                                          reprompt_text=reprompt_text,
                                          text=text, end=end,
                                          use_ssml=use_ssml)

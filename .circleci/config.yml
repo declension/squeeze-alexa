@@ -8,25 +8,26 @@ jobs:
       - LANG: C.UTF-8
     steps:
       - checkout
+
       - run:
           name: Set up various tools
-          command: apt update && apt install -y gettext zip unzip && pip3 -q install boto3
+          command: apt update && apt install -y gettext zip unzip
+
+      - run:
+          name: Set up Poetry
+          command: pip -q install poetry
+
+      - run:
+          name: Install all dependencies
+          command: poetry install
 
       - run:
           name: Compile translations
           command: bin/compile-translations
 
       - run:
-          name: Setup Pipenv
-          command: pip -q install pipenv
-
-      - run:
-          name: Install deps
-          command: pipenv install --dev
-
-      - run:
           name: Tests
-          command: pipenv run pytest -v --cov=squeezealexa --cov-report=term tests
+          command: poetry run pytest -v --cov=squeezealexa --cov-report=term tests
 
       - store_test_results:
           path: test-results
@@ -36,11 +37,11 @@ jobs:
 
       - run:
           name: Code Quality
-          command: pipenv run flake8 --statistics .
+          command: poetry run flake8 --statistics .
 
       - run:
           name: Coverage submission
-          command: pipenv run coveralls
+          command: poetry run coveralls
 
       - run:
           name: Test build script
@@ -52,17 +53,17 @@ jobs:
 
       - run:
           name: Test mqtt-squeeze zip creation
-          command: touch dist/etc/certs/foo.pem.crt && bin/deploy.py mqtt
+          command: touch dist/etc/certs/foo.pem.crt && poetry run bin/deploy.py mqtt
 
       - run:
           name: Test deploy script (from source)
-          command: bin/deploy.py zip
+          command: poetry run bin/deploy.py zip
 
       - run:
           name: Test deploy script (from source, from dist/bin/)
-          command: cd dist/bin && ./deploy.py zip
+          command: cd dist/bin && poetry run ./deploy.py zip
 
       - run:
           name: Test deploy script (without build)
-          command: rm -rf dist/ tests/ && bin/deploy.py zip
+          command: rm -rf dist/ tests/ && poetry run bin/deploy.py zip
 

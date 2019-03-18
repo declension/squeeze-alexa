@@ -14,6 +14,7 @@ import socket
 
 import ssl
 import _ssl
+from typing import Optional
 
 from squeezealexa.transport.base import Error, Transport
 from squeezealexa.utils import print_d, print_w
@@ -54,8 +55,7 @@ class SslSocketTransport(Transport):
 
         sock = socket.socket()
         sock.settimeout(self.timeout)
-        self._ssl_sock = context.wrap_socket(sock,
-                                             server_hostname=hostname)
+        self._ssl_sock = context.wrap_socket(sock, server_hostname=hostname)
 
     def start(self):
         print_d("Connecting to port {port} on {hostname}",
@@ -125,7 +125,7 @@ class SslSocketTransport(Transport):
         context.options |= _ssl.OP_NO_SSLv3
         context.options |= _ssl.OP_NO_TLSv1
 
-    def communicate(self, raw: str, wait=True) -> str:
+    def communicate(self, raw: str, wait=True) -> Optional[str]:
         eof = False
         response = ''
         data = raw.strip() + '\n'
@@ -148,8 +148,7 @@ class SslSocketTransport(Transport):
                         error=e)
             self.failures += 1
             if self.failures >= self._MAX_FAILURES:
-                self.is_connected = False
-                self._ssl_sock.close()
+                self.stop()
                 raise Error("Too many Squeezebox failures. Disconnecting")
             return None
 
@@ -158,9 +157,15 @@ class SslSocketTransport(Transport):
         return "{hostname}:{port} over SSL".format(**self.__dict__)
 
     def stop(self):
-        print_d("Closing {who}", who=self)
-        if hasattr(self, '_ssl_sock'):
-            self._ssl_sock.close()
+        if hasattr(self, '_ssl_sock') and not self._ssl_sock._closed:
+            sock = self._ssl_sock
+            print_d("Shutting down {who} ({sock})", who=self, sock=sock)
+            try:
+                # See https://stackoverflow.com/questions/409783
+                sock.shutdown(socket.SHUT_RDWR)
+            except OSError as e:
+                print_w("Can't shut down socket: {err}", err=e)
+            sock.close()
         return super().stop()
 
     def __del__(self):

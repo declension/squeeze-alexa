@@ -26,7 +26,7 @@ from tests.transport.fake_transport import FakeTransport, FAKE_LENGTH, \
     A_REAL_STATUS
 
 Regex = NewType('Regex', str)
-A_PLAYER_ID = "nothing"
+A_PLAYER_ID = "01:23:45:67:89:0A"
 
 
 class TestSqueezeboxPlayerSettings:
@@ -60,7 +60,7 @@ class NoRefreshServer(Server):
         self.players = {}
 
 
-class StubbedServer(Server):
+class StubbedTransportServer(Server):
 
     def __init__(self, player_request_responses: Dict[Regex, str]):
         self.canned = player_request_responses
@@ -126,9 +126,6 @@ class TestServerWithFakeTransport(TestCase):
         transport = FakeTransport(fake_id="foo").start()
         self.server = Server(transport=transport, cur_player_id="GONE")
         assert self.server.cur_player_id == "foo"
-
-    def test_get_current(self):
-        assert self.server.get_status()['genre']
 
     def test_status(self):
         assert self.server.get_milliseconds() == FAKE_LENGTH * 1000
@@ -212,10 +209,22 @@ class TestServerWithFakeTransport(TestCase):
         details = self.server.get_track_details()
         assert ["Jamie Cullum"] == details['artist']
 
+    def test_disconnected_transport(self):
+        self.transport.is_connected = False
+        with raises(SqueezeboxException) as e:
+            self.server._request(["foo"])
+        assert "Can't do 'foo'" in str(e)
+
+    def test_disconnected_transport_player_request(self):
+        self.transport.is_connected = False
+        with raises(SqueezeboxException) as e:
+            self.server.player_request("foo", player_id=A_PLAYER_ID)
+        assert "Can't do 'foo'" in str(e)
+
 
 class TestServerWithStubbedTransport:
     def test_track_details_blanks(self):
-        server = StubbedServer(
+        server = StubbedTransportServer(
             {Regex('status.*'): "artist: title:song%202 composer:J.S.%20Bach"})
         details = server.get_track_details()
         assert "artist" not in details

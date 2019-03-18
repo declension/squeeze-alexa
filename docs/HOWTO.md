@@ -54,7 +54,7 @@ Set up your environment
 ### Requirements
 
  * Python 3.6+ (which will have `pip`), although 3.5 should work too (untested).
- * [Pipenv](https://docs.pipenv.org/) - just run `pip install pipenv`.
+ * [Poetry](https://poetry.eustace.io/) - just run `pip install poetry`.
  * Bash (or similar shell) - use [Git for Windows](https://gitforwindows.org/) if you're on Windows.
  * A text editor / IDE e.g. Atom, PyCharm, vim, Sublime etc.
 
