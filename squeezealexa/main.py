@@ -212,6 +212,14 @@ class SqueezeAlexa(AlexaHandler):
         return speech_response(title, speech, reprompt_text=reprompt,
                                end=False)
 
+    @handler.handle(Custom.SET_ECHOMAP)
+    def on_set_echomap(self, intent, session, pid=None):
+        srv = self._server
+        srv.set_echomap(pid, srv.deviceId)
+	player = srv.players[pid]
+        return self.smart_response(text=_("Set the default player for current Echo to {player}").format(player=player.name),
+                           speech=_("I have set the default player for current Echo to {player}").format(player=player.name))
+
     @handler.handle(Audio.SHUFFLE_ON)
     @handler.handle(CustomAudio.SHUFFLE_ON)
     def on_shuffle_on(self, intent, session, pid=None):

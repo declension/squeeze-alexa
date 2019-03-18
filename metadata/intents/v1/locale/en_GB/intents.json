@@ -260,6 +260,23 @@
           ]
         },
         {
+          "name": "SetEchoMapIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "Set the default player to {Player}",
+            "I'm using {Player}",
+            "I'm in {Player}",
+            "Set the player in this room to {Player}",
+            "I am using {Player}",
+            "I am in {Player}"
+          ]
+        },
+        {
           "name": "AllOnIntent",
           "samples": [
             "turn everything on",
