@@ -394,17 +394,17 @@ class Server(object):
         resp = self.__a_request("favorites items 0 255",
                                 raw=True)
         favorites = {d['name']: d
-                                for d in self._groups(resp, 'id')
-                                if d['hasitems']}
-        if not 'squeeze-alexa' in favorites:
+                     for d in self._groups(resp, 'id')
+                     if d['hasitems']}
+        if 'squeeze-alexa' not in favorites:
             print_d("Creating squeeze-alexa container in Favorites...")
             resp = self.__a_request("favorites addlevel title:squeeze-alexa",
-                                raw=True)
+                                    raw=True)
             resp = self.__a_request("favorites items 0 255",
-                                raw=True)
+                                    raw=True)
             favorites = {d['name']: d
-                                for d in self._groups(resp, 'id')
-                                if d['hasitems']}
+                         for d in self._groups(resp, 'id')
+                         if d['hasitems']}
         if 'squeeze-alexa' in favorites:
             id = favorites['squeeze-alexa']['id']
             print_d("Found squeeze-alexa favorite id={id}", id=id)
@@ -416,10 +416,10 @@ class Server(object):
         """ Updates the list of the Squeezebox players available and other
         server metadata."""
         id = self.get_squeezealexa_favorite_id()
-        resp = self.__a_request("favorites items 0 255 item_id:%s want_url:1" % id,
-                            raw=True)
+        resp = self.__a_request("favorites items 0 255 item_id:%s want_url:1" %
+                                id, raw=True)
         self.__echomaps = {d['url']: d for d in self._groups(resp, 'id')
-                                        if d['isaudio']}
+                           if d['isaudio']}
         print_d(with_example("Loaded {num} Echo Maps", self.__echomaps))
         return self.__echomaps
 
@@ -427,33 +427,48 @@ class Server(object):
         self.__echomaps = self.get_echomaps()
         id = self.get_squeezealexa_favorite_id()
         if deviceId not in self.__echomaps:
-            print_d("Setting new Echo Map from {player} to {deviceId}", player=player, deviceId=deviceId)
-            resp = self.__a_request("favorites add item_id:%s.0 title:%s url:%s" % (id, player, deviceId),
-                                raw=True)
+            print_d("Setting new Echo Map from {player} to {deviceId}",
+                    player=player, deviceId=deviceId)
+            self.__a_request("favorites add item_id:%s.0 title:%s"
+                             "url:%s" % (id, player, deviceId),
+                             raw=True)
         elif self.__echomaps[deviceId]['name'] != player:
-            print_d("Deleting outdated Echo Map with {id}", id=self.__echomaps[deviceId]['id'])
-            resp = self.__a_request("favorites delete item_id:%s" % self.__echomaps[deviceId]['id'],
-                            raw=True)
-            print_d("Setting new Echo Map from {player} to {deviceId}", player=player, deviceId=deviceId)
-            resp = self.__a_request("favorites add item_id:%s.0 title:%s url:%s" % (id, player, deviceId),
-                                raw=True)
+            print_d("Deleting outdated Echo Map with {id}",
+                    id=self.__echomaps[deviceId]['id'])
+            self.__a_request("favorites delete item_id:%s" %
+                             self.__echomaps[deviceId]['id'],
+                             raw=True)
+            print_d("Setting new Echo Map from {player} to {deviceId}",
+                    player=player, deviceId=deviceId)
+            self.__a_request("favorites add item_id:%s.0 title:%s "
+                             "url:%s" % (id, player, deviceId),
+                             raw=True)
 
     def del_echomap(self, player=False, deviceId=False):
         self.__echomaps = self.get_echomaps()
         if deviceId:
-            print_d("Trying to remove default player for {deviceId}", deviceId=deviceId)
+            print_d("Trying to remove default player for {deviceId}",
+                    deviceId=deviceId)
             while deviceId in self.__echomaps:
-                print_d("Deleting Echo Map with ID {id}", id=self.__echomaps[deviceId]['id'])
-                resp = self.__a_request("favorites delete item_id:%s" % self.__echomaps[deviceId]['id'],
-                                raw=True)
+                print_d("Deleting Echo Map with ID {id}",
+                        id=self.__echomaps[deviceId]['id'])
+                self.__a_request("favorites delete item_id:%s" %
+                                 self.__echomaps[deviceId]['id'],
+                                 raw=True)
                 self.__echomaps = self.get_echomaps()
         if player:
-            inverted_echomaps = {v['name']: { 'deviceId': k, 'id': v['id'] }  for k, v in self.__echomaps.items()}
+            inverted_echomaps = {v['name']: {'deviceId': k, 'id': v['id']}
+                                 for k, v in self.__echomaps.items()}
             while player in inverted_echomaps:
-                print_d("Deleting Echo Map with ID {id}", id=inverted_echomaps[player]['id'])
-                resp = self.__a_request("favorites delete item_id:%s" % inverted_echomaps[player]['id'],
-                                raw=True)
+                print_d("Deleting Echo Map with ID {id}",
+                        id=inverted_echomaps[player]['id'])
+                self.__a_request("favorites delete item_id:%s" %
+                                 inverted_echomaps[player]['id'],
+                                 raw=True)
                 self.__echomaps = self.get_echomaps()
+                inverted_echomaps = {v['name']: {'deviceId': k, 'id': v['id']}
+                                     for k, v in self.__echomaps.items()}
+
 
 def people_from(details: Dict, default=None) -> Union[str, None]:
     genres = {g.lower() for g in details.get('genre', [])}

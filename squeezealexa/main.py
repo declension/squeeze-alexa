@@ -218,8 +218,12 @@ class SqueezeAlexa(AlexaHandler):
         srv.set_echomap(pid, srv.deviceId)
         if pid:
             player = srv.players[pid]
-            return self.smart_response(text=_("Set the default player for current Echo to {player}").format(player=player.name),
-                           speech=_("I have set the default player for current Echo to {player}").format(player=player.name))
+            return self.smart_response(
+                text=(_("Set the default player for current Echo "
+                        "to {player}").format(player=player.name)),
+                speech=(_("I have set the default player for "
+                          "current Echo to {player}")
+                        .format(player=player.name)))
         speech = (_("I only found these players: {players}. "
                     "Could you try again?")
                   .format(players=human_join(srv.player_names)))
@@ -240,8 +244,12 @@ class SqueezeAlexa(AlexaHandler):
         srv.del_echomap(pid)
         if pid:
             player = srv.players[pid]
-            return self.smart_response(text=_("Removed the default associations for player {player}").format(player=player.name),
-                           speech=_("I have removed the default associations for player {player}").format(player=player.name))
+            text = (_("Removed the default associations for player {player}")
+                    .format(player=player.name))
+            speech = (_("I have removed the default associations "
+                        "for player {player}")
+                      .format(player=player.name))
+            return self.smart_response(text, speech)
         speech = (_("I only found these players: {players}. "
                     "Could you try again?")
                   .format(players=human_join(srv.player_names)))
@@ -260,8 +268,11 @@ class SqueezeAlexa(AlexaHandler):
     def on_del_echomap_device(self, intent, session, pid=None):
         srv = self._server
         srv.del_echomap(False, srv.deviceId)
-        return self.smart_response(text=_("Removed the default player for the current Echo device"),
-                           speech=_("I have removed the default player for the current Echo device"))
+        return self.smart_response(
+            text=_("Removed the default player for "
+                   "the current Echo device"),
+            speech=_("I have removed the default player for "
+                     "the current Echo device"))
 
     @handler.handle(Audio.SHUFFLE_ON)
     @handler.handle(CustomAudio.SHUFFLE_ON)

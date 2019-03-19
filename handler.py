@@ -49,7 +49,7 @@ def lambda_handler(event, context, server=None):
             deviceId = event['context']['System']['device']['deviceId']
         server = server or get_server(deviceId)
         echomaps = server.get_echomaps()
-    except KeyError or NoneType:
+    except KeyError as e:
         if not SKILL_SETTINGS.use_spoken_errors:
             raise e
     if deviceId in echomaps:
