@@ -216,17 +216,45 @@ class SqueezeAlexa(AlexaHandler):
     def on_set_echomap(self, intent, session, pid=None):
         srv = self._server
         srv.set_echomap(pid, srv.deviceId)
-        player = srv.players[pid]
-        return self.smart_response(text=_("Set the default player for current Echo to {player}").format(player=player.name),
+        if pid:
+            player = srv.players[pid]
+            return self.smart_response(text=_("Set the default player for current Echo to {player}").format(player=player.name),
                            speech=_("I have set the default player for current Echo to {player}").format(player=player.name))
+        speech = (_("I only found these players: {players}. "
+                    "Could you try again?")
+                  .format(players=human_join(srv.player_names)))
+        reprompt = (_("You can select a player by saying \"{utterance}\" "
+                      "and then the player name.")
+                    .format(utterance=Utterances.SELECT_PLAYER))
+        try:
+            player = intent['slots']['Player']['value']
+            title = (_("No player called \"{name}\"").format(name=player))
+        except KeyError:
+            title = "Didn't recognise a player name"
+        return speech_response(title, speech, reprompt_text=reprompt,
+                               end=False)
 
     @handler.handle(Custom.DEL_ECHOMAP_PLAYER)
     def on_del_echomap_player(self, intent, session, pid=None):
         srv = self._server
         srv.del_echomap(pid)
-        player = srv.players[pid]
-        return self.smart_response(text=_("Removed the default associations for player {player}").format(player=player.name),
+        if pid:
+            player = srv.players[pid]
+            return self.smart_response(text=_("Removed the default associations for player {player}").format(player=player.name),
                            speech=_("I have removed the default associations for player {player}").format(player=player.name))
+        speech = (_("I only found these players: {players}. "
+                    "Could you try again?")
+                  .format(players=human_join(srv.player_names)))
+        reprompt = (_("You can select a player by saying \"{utterance}\" "
+                      "and then the player name.")
+                    .format(utterance=Utterances.SELECT_PLAYER))
+        try:
+            player = intent['slots']['Player']['value']
+            title = (_("No player called \"{name}\"").format(name=player))
+        except KeyError:
+            title = "Didn't recognise a player name"
+        return speech_response(title, speech, reprompt_text=reprompt,
+                               end=False)
 
     @handler.handle(Custom.DEL_ECHOMAP_DEVICE)
     def on_del_echomap_device(self, intent, session, pid=None):
