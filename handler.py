@@ -42,9 +42,16 @@ def lambda_handler(event, context, server=None):
     """ Route the incoming request based on type (LaunchRequest, IntentRequest,
     etc.) The JSON body of the request is provided in the event parameter.
     """
-    deviceId = event['context']['System']['device']['deviceId']
-    server = server or get_server(deviceId)
-    echomaps = server.get_echomaps()
+    deviceId = ''
+    echomaps = {}
+    try:
+        if event:
+            deviceId = event['context']['System']['device']['deviceId']
+        server = server or get_server(deviceId)
+        echomaps = server.get_echomaps()
+    except KeyError or NoneType:
+        if not SKILL_SETTINGS.use_spoken_errors:
+            raise e
     if deviceId in echomaps:
         server.cur_player_id = echomaps[deviceId]['name']
     try:
