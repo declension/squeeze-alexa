@@ -405,9 +405,12 @@ class Server(object):
             favorites = {d['name']: d
                                 for d in self._groups(resp, 'id')
                                 if d['hasitems']}
-        id = favorites['squeeze-alexa']['id']
-        print_d("Found squeeze-alexa favorite id={id}", id=id)
-        return id
+        if 'squeeze-alexa' in favorites:
+            id = favorites['squeeze-alexa']['id']
+            print_d("Found squeeze-alexa favorite id={id}", id=id)
+            return id
+        else:
+            return False
 
     def get_echomaps(self):
         """ Updates the list of the Squeezebox players available and other
