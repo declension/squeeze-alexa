@@ -415,27 +415,42 @@ class Server(object):
         id = self.get_squeezealexa_favorite_id()
         resp = self.__a_request("favorites items 0 255 item_id:%s want_url:1" % id,
                             raw=True)
-        self.__echomaps = {d['name']: d for d in self._groups(resp, 'id')
+        self.__echomaps = {d['url']: d for d in self._groups(resp, 'id')
                                         if d['isaudio']}
         print_d(with_example("Loaded {num} Echo Maps", self.__echomaps))
         return self.__echomaps
 
     def set_echomap(self, player, deviceId):
         self.__echomaps = self.get_echomaps()
-        inverted_echomaps = {v['url']: { 'player': k, 'id': v['id'] }  for k, v in self.__echomaps.items()}
         id = self.get_squeezealexa_favorite_id()
-        if deviceId not in inverted_echomaps:
+        if deviceId not in self.__echomaps:
             print_d("Setting new Echo Map from {player} to {deviceId}", player=player, deviceId=deviceId)
             resp = self.__a_request("favorites add item_id:%s.0 title:%s url:%s" % (id, player, deviceId),
                                 raw=True)
-        elif inverted_echomaps[deviceId]['player'] != player:
-            print_d("Deleting outdated Echo Map with {id}", id=inverted_echomaps[deviceId]['id'])
-            resp = self.__a_request("favorites delete item_id:%s" % inverted_echomaps[deviceId]['id'],
+        elif self.__echomaps[deviceId]['name'] != player:
+            print_d("Deleting outdated Echo Map with {id}", id=self.__echomaps[deviceId]['id'])
+            resp = self.__a_request("favorites delete item_id:%s" % self.__echomaps[deviceId]['id'],
                             raw=True)
             print_d("Setting new Echo Map from {player} to {deviceId}", player=player, deviceId=deviceId)
             resp = self.__a_request("favorites add item_id:%s.0 title:%s url:%s" % (id, player, deviceId),
                                 raw=True)
-        return True
+
+    def del_echomap(self, player=False, deviceId=False):
+        self.__echomaps = self.get_echomaps()
+        if deviceId:
+            print_d("Trying to remove default player for {deviceId}", deviceId=deviceId)
+            while deviceId in self.__echomaps:
+                print_d("Deleting Echo Map with ID {id}", id=self.__echomaps[deviceId]['id'])
+                resp = self.__a_request("favorites delete item_id:%s" % self.__echomaps[deviceId]['id'],
+                                raw=True)
+                self.__echomaps = self.get_echomaps()
+        if player:
+            inverted_echomaps = {v['name']: { 'deviceId': k, 'id': v['id'] }  for k, v in self.__echomaps.items()}
+            while player in inverted_echomaps:
+                print_d("Deleting Echo Map with ID {id}", id=inverted_echomaps[player]['id'])
+                resp = self.__a_request("favorites delete item_id:%s" % inverted_echomaps[player]['id'],
+                                raw=True)
+                self.__echomaps = self.get_echomaps()
 
 def people_from(details: Dict, default=None) -> Union[str, None]:
     genres = {g.lower() for g in details.get('genre', [])}

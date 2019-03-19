@@ -30,10 +30,10 @@ ERROR_SPEECH = _("<speak><say-as interpret-as='interjection'>d'oh</say-as>: "
 factory = ServerFactory(TransportFactory())
 
 
-def get_server(player, deviceId):
+def get_server(deviceId):
     return factory.create(user=LMS_SETTINGS.username,
                           password=LMS_SETTINGS.password,
-                          cur_player_id=player or LMS_SETTINGS.default_player,
+                          cur_player_id=LMS_SETTINGS.default_player,
                           deviceId=deviceId,
                           debug=LMS_SETTINGS.debug)
 
@@ -43,12 +43,10 @@ def lambda_handler(event, context, server=None):
     etc.) The JSON body of the request is provided in the event parameter.
     """
     deviceId = event['context']['System']['device']['deviceId']
-    server = server or get_server(LMS_SETTINGS.default_player, deviceId)
+    server = server or get_server(deviceId)
     echomaps = server.get_echomaps()
-    inverted_echomaps = {v['url']: k for k, v in echomaps.items()}
-    if deviceId in inverted_echomaps:
-        player = inverted_echomaps[deviceId]
-        server.cur_player_id = player
+    if deviceId in echomaps:
+        server.cur_player_id = echomaps[deviceId]['name']
     try:
         sqa = SqueezeAlexa(server=server,
                            app_id=SKILL_SETTINGS.application_id)

@@ -216,9 +216,24 @@ class SqueezeAlexa(AlexaHandler):
     def on_set_echomap(self, intent, session, pid=None):
         srv = self._server
         srv.set_echomap(pid, srv.deviceId)
-	player = srv.players[pid]
+        player = srv.players[pid]
         return self.smart_response(text=_("Set the default player for current Echo to {player}").format(player=player.name),
                            speech=_("I have set the default player for current Echo to {player}").format(player=player.name))
+
+    @handler.handle(Custom.DEL_ECHOMAP_PLAYER)
+    def on_del_echomap_player(self, intent, session, pid=None):
+        srv = self._server
+        srv.del_echomap(pid)
+        player = srv.players[pid]
+        return self.smart_response(text=_("Removed the default associations for player {player}").format(player=player.name),
+                           speech=_("I have removed the default associations for player {player}").format(player=player.name))
+
+    @handler.handle(Custom.DEL_ECHOMAP_DEVICE)
+    def on_del_echomap_device(self, intent, session, pid=None):
+        srv = self._server
+        srv.del_echomap(False, srv.deviceId)
+        return self.smart_response(text=_("Removed the default player for the current Echo device"),
+                           speech=_("I have removed the default player for the current Echo device"))
 
     @handler.handle(Audio.SHUFFLE_ON)
     @handler.handle(CustomAudio.SHUFFLE_ON)

@@ -277,6 +277,34 @@
           ]
         },
         {
+          "name": "DelEchoMapPlayerIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "Delete the default echo device for player {Player}",
+            "Delete the default echo device for {Player}",
+            "Delete the default echo for player {Player}",
+            "Delete the default echo for {Player}",
+            "Delete the default association for player {Player}",
+            "Delete the default association for {Player}"
+          ]
+        },
+        {
+          "name": "DelEchoMapDeviceIntent",
+          "slots": [],
+          "samples": [
+            "Delete the default player here",
+            "Delete the default player for this room",
+            "Delete the default player for this echo device",
+            "Delete the default player for this echo",
+            "Delete the default player"
+          ]
+        },
+        {
           "name": "AllOnIntent",
           "samples": [
             "turn everything on",

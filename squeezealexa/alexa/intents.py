@@ -54,4 +54,5 @@ class Custom(object):
                                 for s in ["SetVolume", "SetVolumePercent"])
     NOW_PLAYING, SELECT_PLAYER = ("%sIntent" % s
                                   for s in ["NowPlaying", "SelectPlayer"])
-    SET_ECHOMAP = "SetEchoMapIntent"
+    SET_ECHOMAP, DEL_ECHOMAP_PLAYER, DEL_ECHOMAP_DEVICE = ("%sIntent" % s
+                                  for s in ["SetEchoMap", "DelEchoMapPlayer", "DelEchoMapDevice"])
