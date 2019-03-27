@@ -170,9 +170,13 @@ class Server(object):
         first_word = (match.group(2) if match
                       else ' '.join(lines[0].split()[:2]))
         if not (self.transport.is_connected or first_word == 'login'):
-            raise SqueezeboxException(
-                "Can't do '{cmd}', {transport} is not connected".format(
-                    cmd=first_word, transport=self.transport))
+            try:
+                print_w("Transport wasn't connected - trying to restart")
+                self.transport.start()
+            except Exception:
+                raise SqueezeboxException(
+                    "Can't do '{cmd}', {transport} is not connected".format(
+                        cmd=first_word, transport=self.transport))
 
         if self._debug:
             print_d("<<<< " + "\n..<< ".join(lines))

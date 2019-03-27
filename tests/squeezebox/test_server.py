@@ -209,17 +209,15 @@ class TestServerWithFakeTransport(TestCase):
         details = self.server.get_track_details()
         assert ["Jamie Cullum"] == details['artist']
 
-    def test_disconnected_transport(self):
+    def test_disconnected_transport_reconnects(self):
         self.transport.is_connected = False
-        with raises(SqueezeboxException) as e:
-            self.server._request(["foo"])
-        assert "Can't do 'foo'" in str(e)
+        self.server._request(["foo"])
+        assert self.transport.is_connected
 
-    def test_disconnected_transport_player_request(self):
+    def test_disconnected_transport_player_request_reconnects(self):
         self.transport.is_connected = False
-        with raises(SqueezeboxException) as e:
-            self.server.player_request("foo", player_id=A_PLAYER_ID)
-        assert "Can't do 'foo'" in str(e)
+        self.server.player_request("foo", player_id=A_PLAYER_ID)
+        assert self.transport.is_connected
 
 
 class TestServerWithStubbedTransport:
