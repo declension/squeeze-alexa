@@ -13,11 +13,11 @@ msgstr ""
 
 #: squeezealexa/main.py:75
 msgid "Squeezebox is online. Please try some commands."
-msgstr "Sueezebox ist bereit. Probier ein paar Komandos aus."
+msgstr "Squeezebox ist bereit. Probier ein paar Kommandos aus."
 
 #: squeezealexa/main.py:76
 msgid "Try resume, pause, next, previous, play some jazz, or ask Squeezebox to turn it up or down"
-msgstr "Probiers mal fortsetzen, Pause, nächstes, letztes, Spiel Jazz Musik oder schalte ein Abspielgerät ein"
+msgstr "Probier mal fortsetzen, Pause, nächstes, letztes, Spiel Jazz Musik oder schalte ein Abspielgerät ein"
 
 #: squeezealexa/main.py:91
 #, python-brace-format
@@ -54,7 +54,7 @@ msgstr "Es läuft: \"{title}\""
 
 #: squeezealexa/main.py:128
 msgid "Nothing playing."
-msgstr "Es wird nicht abgepsielt."
+msgstr "Es wird nicht abgespielt."
 
 #: squeezealexa/main.py:139 squeezealexa/main.py:143
 msgid "Select a volume value between 0 and 10"
