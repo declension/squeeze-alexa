@@ -144,6 +144,18 @@
           ]
         },
         {
+          "name": "PlayIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "Play on {Player}"
+          ]
+        },
+        {
           "name": "SelectPlayerIntent",
           "slots": [
             {
@@ -174,7 +186,10 @@
             "turn {Player} player on",
             "switch {Player} on",
             "switch on {Player}",
-            "switch {Player} player on"
+            "switch {Player} player on",
+            "power {Player} on",
+            "power on {Player}",
+            "power {Player} player on"
           ]
         },
         {
@@ -191,7 +206,10 @@
             "turn {Player} player off",
             "switch {Player} off",
             "switch off {Player}",
-            "switch {Player} player off"
+            "switch {Player} player off",
+            "power {Player} off",
+            "power off {Player}",
+            "power {Player} player off"
           ]
         },
         {
@@ -215,12 +233,12 @@
             }
           ],
           "samples": [
-            "play some {Genre}",
-            "play some {Genre} and {SecondaryGenre}",
-            "play some {Genre} and some {SecondaryGenre}",
-            "play some {Genre} some {SecondaryGenre} and some {TertiaryGenre}",
-            "play a mix of {Genre} and {SecondaryGenre}",
-            "play a mix of {Genre} {SecondaryGenre} and {TertiaryGenre}"
+            "play some {Genre} on {Player}",
+            "play some {Genre} and {SecondaryGenre} on {Player}",
+            "play some {Genre} and some {SecondaryGenre} on {Player}",
+            "play some {Genre} some {SecondaryGenre} and some {TertiaryGenre} on {Player}",
+            "play a mix of {Genre} and {SecondaryGenre} on {Player}",
+            "play a mix of {Genre} {SecondaryGenre} and {TertiaryGenre} on {Player}"
           ]
         },
         {
@@ -239,6 +257,51 @@
             "play my {Playlist} playlist",
             "play my {Playlist} playlist on {Player}",
             "play my {Playlist} playlist in {Player}"
+          ]
+        },
+        {
+          "name": "SetEchoMapIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "Set the default player to {Player}",
+            "I'm using {Player}",
+            "I'm in {Player}",
+            "Set the player in this room to {Player}",
+            "I am using {Player}",
+            "I am in {Player}"
+          ]
+        },
+        {
+          "name": "DelEchoMapPlayerIntent",
+          "slots": [
+            {
+              "name": "Player",
+              "type": "PLAYER"
+            }
+          ],
+          "samples": [
+            "Delete the default echo device for player {Player}",
+            "Delete the default echo device for {Player}",
+            "Delete the default echo for player {Player}",
+            "Delete the default echo for {Player}",
+            "Delete the default association for player {Player}",
+            "Delete the default association for {Player}"
+          ]
+        },
+        {
+          "name": "DelEchoMapDeviceIntent",
+          "slots": [],
+          "samples": [
+            "Delete the default player here",
+            "Delete the default player for this room",
+            "Delete the default player for this echo device",
+            "Delete the default player for this echo",
+            "Delete the default player"
           ]
         },
         {
